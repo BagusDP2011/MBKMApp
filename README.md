@@ -27,3 +27,31 @@ Aplikasi MBKM untuk Polibatam adalah sebuah platform berbasis web yang dirancang
 1. **Clone repository:**
    ```bash
    git clone https://github.com/BagusDP2011/MBKMApp.git
+2. **Masuk ke direktori proyek:**
+   ```bash
+   cd aplikasi-mbkm-polibatam
+3. **Instal dependensi:**
+   ```bash
+   npm install
+4. **Jalankan aplikasi:**
+   ```bash
+   npm start
+5. Buka browser dan akses aplikasi:
+   Akses di http://localhost:3000
+
+**Cara Penggunaan**
+  Registrasi: Buat akun menggunakan email dan NIM Polibatam.
+  Login: Masuk ke aplikasi menggunakan akun yang telah terdaftar.
+  Ajukan MBKM: Isi dan ajukan formulir program MBKM yang diinginkan.
+  Pantau Status: Cek status pengajuan di dashboard akun Anda.
+  Notifikasi: Dapatkan notifikasi terkait pengajuan atau informasi terbaru melalui email atau di dalam aplikasi.
+  
+  Lisensi
+  Aplikasi ini dilisensikan di bawah MIT License.
+  
+  Kontak
+  Jika Anda memiliki pertanyaan atau masalah, silakan hubungi kami di:
+  
+  Developer: bagusdp2011@gmail.com
+  Email: contact@polibatam.ac.id
+  Website: www.polibatam.ac.id
