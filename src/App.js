@@ -17,6 +17,7 @@ function App() {
         >
           Learn React
         </a>
+        Ini percobaan aplikasi MBKM
       </header>
     </div>
   );
