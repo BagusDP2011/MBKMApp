@@ -64,32 +64,6 @@ export default function TableSubmission() {
         checkboxSelection
         onSelectionModelChange={(newSelectionModel) => handleSelectionChange(newSelectionModel)}
         selectionModel={selectedRows}
-        slotProps={{
-            filterPanel: {
-              filterFormProps: {
-                logicOperatorInputProps: {
-                  variant: "outlined",
-                  size: "small",
-                },
-                columnInputProps: {
-                  variant: "outlined",
-                  size: "small",
-                  sx: { mt: "auto" },
-                },
-                operatorInputProps: {
-                  variant: "outlined",
-                  size: "small",
-                  sx: { mt: "auto" },
-                },
-                valueInputProps: {
-                  InputComponentProps: {
-                    variant: "outlined",
-                    size: "small",
-                  },
-                },
-              },
-            },
-          }}        
       />
     </Paper>
   );
