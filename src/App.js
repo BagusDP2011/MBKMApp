@@ -1,10 +1,12 @@
-import SideMenu from "./components/sidemenu/SideMenu";
 import DashboardOutlinedIcon from "@mui/icons-material/DashboardOutlined";
-import DescriptionOutlinedIcon from "@mui/icons-material/DescriptionOutlined";
-import TrendingUpIcon from "@mui/icons-material/TrendingUp";
+import GroupsOutlinedIcon from '@mui/icons-material/GroupsOutlined';
+import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
+import DescriptionOutlinedIcon from '@mui/icons-material/DescriptionOutlined';
+import SegmentOutlinedIcon from '@mui/icons-material/SegmentOutlined';
 import "./App.css";
-import { SignalCellularNullOutlined } from "@mui/icons-material";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
+import DashboardLayout from "./components/layout/DashboardLayout";
+import ListSubmission from "./pages/menu/Submission/ListSubmission";
 
 let menus = [
   {
@@ -16,7 +18,7 @@ let menus = [
     parentId: 1,
     index: true,
     child: [],
-    element: <SideMenu />,
+    element: <DashboardLayout />,
   },
   {
     webMenuId: 2,
@@ -31,19 +33,19 @@ let menus = [
   },
   {
     webMenuId: 3,
-    title: "Files",
-    path: "menu/files",
-    url: "files",
-    icon: <DescriptionOutlinedIcon />,
+    title: "MBKM",
+    path: "menu/mbkm",
+    url: "mbkm",
+    icon: <GroupsOutlinedIcon />,
     parentId: 1,
     index: false,
     child: [
       {
         webMenuId: 4,
-        title: "Achivement",
-        path: "menu/files/achivement",
-        url: "files/achivement",
-        icon: <TrendingUpIcon />,
+        title: "Informasi",
+        path: "menu/mbkm/informasi",
+        url: "mbkm/informasi",
+        icon: <InfoOutlinedIcon />,
         index: false,
         parentId: 3,
         child: [],
@@ -51,14 +53,25 @@ let menus = [
       },
       {
         webMenuId: 5,
-        title: "Submission",
-        path: "menu/files/submission",
-        url: "files/submission",
-        icon: <TrendingUpIcon />,
+        title: "Pengajuan",
+        path: "menu/mbkm/pengajuan",
+        url: "mbkm/pengajuan",
+        icon: <DescriptionOutlinedIcon />,
         index: false,
         parentId: 3,
         child: [],
         element: null,
+      },
+      {
+        webMenuId: 6,
+        title: "Daftar Pengajuan",
+        path: "menu/mbkm/daftar pengajuan",
+        url: "mbkm/daftar pengajuan",
+        icon: <SegmentOutlinedIcon />,
+        index: false,
+        parentId: 3,
+        child: [],
+        element: <ListSubmission/>,
       },
     ],
     element: null,
@@ -81,7 +94,7 @@ function App() {
   return (
     <BrowserRouter>
       <Routes>
-        <Route path="/menu" element={<SideMenu menus={menus} />}>
+        <Route path="/menu" element={<DashboardLayout menus={menus} />}>
           {generateRoutes(menus)}
         </Route>
         {/* <Route path="*" element={<NoPage />} /> */}

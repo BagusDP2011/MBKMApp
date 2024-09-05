@@ -10,6 +10,15 @@ import {
 } from "@mui/material";
 import { ExpandLess, ExpandMore } from "@mui/icons-material";
 import { Link } from "react-router-dom";
+import SettingsSuggestOutlinedIcon from '@mui/icons-material/SettingsSuggestOutlined';
+import InfoOutlined from "@mui/icons-material/InfoOutlined";
+import { HelpOutline } from "@mui/icons-material";
+
+const secondaryListItems = [
+  { text: 'Settings', icon: <SettingsSuggestOutlinedIcon /> },
+  { text: 'About', icon: <InfoOutlined /> },
+  { text: 'Feedback', icon: <HelpOutline /> },
+];
 
 export default function MenuContent({ menus }) {
   const [selectedMenu, setSelectedMenu] = useState(0);
@@ -32,7 +41,7 @@ export default function MenuContent({ menus }) {
   };
 
   return (
-    <Stack>
+    <Stack sx={{ flexGrow:1 ,justifyContent: 'space-between', mt:'60px' }}>
       <List disablePadding dense>
         {menus.map((item) => (
           <React.StrictMode key={item.webMenuId}>
@@ -101,6 +110,18 @@ export default function MenuContent({ menus }) {
               </Collapse>
             )}
           </React.StrictMode>
+        ))}
+      </List>
+
+      <List disablePadding dense>
+        {secondaryListItems.map((item, index) => (
+          <ListItem key={index} 
+           sx={{ display: 'block' }}>
+            <ListItemButton sx={{ columnGap: 1 }}>
+              <ListItemIcon sx={{ minWidth: "max-content" }}>{item.icon}</ListItemIcon>
+              <ListItemText primary={item.text} />
+            </ListItemButton>
+          </ListItem>
         ))}
       </List>
     </Stack>
