@@ -3,6 +3,8 @@ import { styled } from "@mui/material/styles";
 import MuiDrawer, { drawerClasses } from "@mui/material/Drawer";
 import MenuContent from "./MenuContent";
 import { Divider } from "@mui/material";
+import { Outlet } from "react-router-dom";
+
 
 const drawerWidth = 240;
 
@@ -15,11 +17,14 @@ const Drawer = styled(MuiDrawer)({
   },
 });
 
-export default function SideMenu() {
+export default function SideMenu({ menus }) {
   return (
-    <Drawer variant="permanent">
-      <MenuContent/>
-      <Divider/>
-    </Drawer>
+    <div>
+      <Drawer variant="permanent">
+        <MenuContent menus={menus} />
+        <Divider />
+      </Drawer>
+      <Outlet/>
+    </div>
   );
 }

@@ -8,42 +8,10 @@ import {
   ListItemText,
   Collapse,
 } from "@mui/material";
-import DashboardOutlinedIcon from "@mui/icons-material/DashboardOutlined";
-import DescriptionOutlinedIcon from "@mui/icons-material/DescriptionOutlined";
-import TrendingUpIcon from "@mui/icons-material/TrendingUp";
 import { ExpandLess, ExpandMore } from "@mui/icons-material";
+import { Link } from "react-router-dom";
 
-const menus = [
-  {
-    webMenuId: 0,
-    title: "Menu",
-    url: "/menu",
-    index: true,
-  },
-  {
-    webMenuId: 1,
-    title: "Dashboard",
-    url: "/dashboard",
-    icon: <DashboardOutlinedIcon />,
-  },
-  {
-    webMenuId: 2,
-    title: "Files",
-    icon: <DescriptionOutlinedIcon />,
-    child: [
-      {
-        webMenuId: 3,
-        title: "Achievements",
-        url: "/achievements",
-        icon: <TrendingUpIcon />,
-      },
-    ],
-  },
-].filter(item => !item.index);
-
-
-
-export default function MenuContent(menu) {
+export default function MenuContent({ menus }) {
   const [selectedMenu, setSelectedMenu] = useState(0);
   const [selectedSubMenu, setSelectedSubMenu] = useState(null);
   const [openSubmenu, setOpenSubmenu] = useState(null);
@@ -70,10 +38,18 @@ export default function MenuContent(menu) {
           <React.StrictMode key={item.webMenuId}>
             <ListItem dense>
               <ListItemButton
+                component={Link}
+                to={
+                  item.webMenuId === item.parentId &&
+                  item.child &&
+                  item.child.length > 0
+                    ? null
+                    : item.url
+                }
                 sx={{ columnGap: 1 }}
                 selected={item.webMenuId === selectedMenu && !isSubMenu}
                 onClick={() =>
-                  item.child
+                  item.child && item.child.length > 0
                     ? handleOpenSubMenuClick(item.webMenuId)
                     : handleMenuClick(item.webMenuId)
                 }
@@ -82,7 +58,7 @@ export default function MenuContent(menu) {
                   {item.icon}
                 </ListItemIcon>
                 <ListItemText>{item.title}</ListItemText>
-                {item.child ? (
+                {item.child && item.child.length > 0 ? (
                   item.webMenuId === openSubmenu ? (
                     <ExpandLess />
                   ) : (
@@ -92,7 +68,7 @@ export default function MenuContent(menu) {
               </ListItemButton>
             </ListItem>
 
-            {item.child && (
+            {item.child && item.child.length > 0 && (
               <Collapse
                 in={item.webMenuId === openSubmenu}
                 timeout="auto"
@@ -106,6 +82,8 @@ export default function MenuContent(menu) {
                       sx={{ pl: 4 }}
                     >
                       <ListItemButton
+                        component={Link}
+                        to={subMenu.url}
                         sx={{ columnGap: 1 }}
                         selected={
                           subMenu.webMenuId === selectedSubMenu && isSubMenu
