@@ -1,0 +1,255 @@
+body {
+  font-family: 'Poppins', sans-serif;
+  background-color: #fff;
+}
+
+@media (min-width: 1600px) {
+  .container {
+    max-width: 1540px;
+  }
+}
+
+.bg-silam {
+  background-color: #7e9fbb !important;
+}
+
+.navbar-brand {
+  max-height: 80px;
+  font-size: 24pt !important;
+  font-weight: 600;
+}
+
+.navbar-nav .dropdown-item {
+  color: white;
+}
+
+.navbar-nav .dropdown-item:hover {
+  color: #7e9fbb;
+}
+
+.navbar-dark .navbar-nav .nav-link.active {
+  font-weight: 600 !important;
+}
+
+.btn-navbar-right {
+  margin-top: -18px !important;
+  margin-bottom: -18px !important;
+  margin-right: -18px !important;
+  height: 75px;
+  border-radius: 0;
+}
+
+.btn-login {
+  background-color: #fff;
+  color: #7e9fbb;
+  font-weight: 600;
+}
+
+.btn-login:hover {
+  background-color: #9DADBC;
+  color: #fff;
+}
+
+header {
+  padding: 250px 0;
+  margin-top: -100px !important;
+  /* background-image: url("../img/Headergambar.png"); */
+  background-image: url("../img/cobacoba.JPG");
+  background-size: cover;
+  background-position: center;
+  height: 800px;
+}
+
+header .judul {
+  color: rgb(44, 44, 44);
+  font-size: 36pt;
+  font-weight: 800;
+  margin-top: -50px;
+}
+
+header .sub-judul {
+  color: rgb(44, 44, 44);
+  font-size: 20pt;
+  font-weight: 400;
+}
+
+.pengumuman {
+  margin-top: -80px;
+  width: 1000px;
+  padding: 20px 20px;
+  height: auto;
+  background-color: rgba(236, 240, 245, 0.8);
+  border-radius: 15px;
+}
+
+.pengumuman .pengumuman-header {
+  color: #000;
+  font-size: 18pt;
+  font-weight: 600;
+}
+
+.pengumuman .pengumuman-body {
+  color: #000;
+  font-size: 14pt;
+  font-weight: 400;
+}
+
+.btn-pengumuman {
+  background-color: #7e9fbb;
+  color: #fff;
+}
+
+.btn-pengumuman:hover {
+  background-color: #4d7194;
+  color: #fff;
+}
+
+@media (max-width: 1200px) {
+  .pengumuman2 img {
+    display: none !important;
+  }
+}
+
+.pengumuman2 .penguman2-header {
+  font-size: 30pt;
+  font-weight: 500;
+}
+
+.pengumuman2 .penguman3-header {
+  font-size: 14pt;
+  font-weight: 500;
+  margin-left: 1px;
+}
+
+.pengumuman2 .penguman2-body {
+  font-size: 14pt;
+  font-weight: 400;
+  text-align: left;
+}
+
+.footer-brand {
+  font-size: 40pt;
+  font-weight: 600;
+  color: #fff;
+}
+
+.footer-brand:hover {
+  color: #002B41;
+}
+
+.footer-informasi {
+  color: #ececec;
+}
+
+.footer-sosmed .ion-icon {
+  font-size: 20pt;
+  margin-right: 20px;
+  color: #ececec;
+}
+
+.footer-sosmed .ion-icon:hover {
+  color: #fff;
+}
+
+.footer-saran {
+  font-size: 20pt;
+  color: #ececec;
+  font-weight: 500;
+}
+
+.btn-saran {
+  background-color: #fff;
+  color: #7e9fbb;
+  font-weight: 600;
+}
+
+.btn-saran:hover {
+  background-color: #9DADBC;
+  color: #fff;
+}
+
+.btn-saran2 {
+  background-color: #fff;
+  color: #7e9fbb;
+  font-weight: 600;
+}
+
+.btn-saran2:hover {
+  background-color: #9DADBC;
+  color: #fff;
+}
+
+.pelayanan-ukt {
+  margin-top: 10px;
+  color: #fff;
+}
+
+.btn-srn {
+  color: #fff;
+  background-color: #7e9fbb;
+  /* margin-left: 500px; */
+}
+
+.btn-srn:hover {
+  background-color: #9DADBC;
+  color: #fff;
+}
+
+.session {
+  background-color: #83ACD1;
+  border-radius: 4px;
+  color: ivory;
+  font-size: 15px;
+}
+
+.btn-modall {
+  background-color: #7e9fbb;
+  color: #fff;
+  font-weight: 600;
+}
+
+.btn-modall:hover {
+  background-color: #002B41;
+  color: #7e9fbb;
+}
+
+.nav .nav-item .nav-link {
+  color: #394855;
+}
+
+.nav .nav-item .nav-link:hover {
+  background-color: #7e9fbb;
+  color: #fff;
+}
+
+.nav .nav-item .nav-link.active {
+  background-color: #7e9fbb;
+  color: #fff;
+}
+
+.sub-judul-beasiswa {
+  color: #7e9fbb;
+}
+
+.btn-pdf {
+  color: #fff;
+  background-color: #7e9fbb;
+}
+
+.btn-pdf:hover {
+  background-color: #7e9fbb;
+  color: #9DADBC;
+}
+
+.btn-link {
+  color: #7e9fbb;
+}
+
+.btn-link:hover {
+  color: #9DADBC;
+}
+
+.card-header {
+  background-color: #fff;
+}
+/*# sourceMappingURL=main.css.map */
