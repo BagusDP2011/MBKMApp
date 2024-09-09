@@ -1,5 +1,6 @@
 import React from "react";
-import { AppBar, Typography } from "@mui/material";
+import { AppBar, Typography, Box, Stack } from "@mui/material";
+import Logo from "../../assets/img/KampusMerdekaBelajar.png";
 
 export default function AppNavbar() {
   return (
@@ -11,14 +12,22 @@ export default function AppNavbar() {
         backgroundImage: "none",
         borderBottom: "1px solid",
         borderColor: "divider",
-        px:'32px',
-        py:1,
-        zIndex:1201
+        px: "32px",
+        py: 1,
+        zIndex: 1201,
       }}
     >
-      <Typography variant="h5" component="h5" sx={{ color: "text.primary", fontWeight:'bold' }}>
-        Progam MBKM
-      </Typography>
+      <Stack direction="row" sx={{gap:1}}>
+        {/* <Box sx={{ width: "70px", height: "auto" }}>
+          <img src={Logo} width="100%" />
+        </Box> */}
+        <Typography
+          variant="h5"
+          sx={{ color: "text.primary", fontWeight: "bold" }}
+        >
+          MBKM
+        </Typography>
+      </Stack>
     </AppBar>
   );
 }

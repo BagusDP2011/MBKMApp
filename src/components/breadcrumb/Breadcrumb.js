@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { Breadcrumbs, Typography } from "@mui/material";
 import { useLocation } from "react-router-dom";
 import { Link as LinkRouter } from "@mui/material";
@@ -7,14 +7,28 @@ import { Link } from "react-router-dom";
 export default function Breadcrumb() {
   const location = useLocation();
   const pathnames = location.pathname.split("/").filter((x) => x);
-  const breadcrumbNameMap = {
-    "/menu": "Menu",
-    "/menu/dashboard": "Dashboard",
-    "/menu/mbkm": "MBKM",
-    "/menu/mbkm/informasi": "Informasi",
-    "/menu/mbkm/pengajuan": "Pengajuan",
-    "/menu/mbkm/daftar%20pengajuan": "Daftar Pengajuan",
-  };
+  const [breadcrumbNameMap, setBreadcrumbMap] = useState({});
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    async function getBreadcrumb() {
+      try {
+        const response = await fetch('http://localhost:3001/api/breadcrumb');
+        const data = await response.json();
+        console.log(data)
+        setBreadcrumbMap(data);
+      } catch (error) {
+        console.error('Error fetching menu:', error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+    getBreadcrumb();
+  }, []);
+
+  if (isLoading) {
+    return <div>Loading...</div>;
+  }
 
   return (
     <Breadcrumbs aria-label="breadcrumb">

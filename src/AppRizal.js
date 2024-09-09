@@ -82,7 +82,7 @@ function App() {
   function generateRoutes(menuItems) {
     return menuItems.map((menu) => {
       return (
-        <Route key={menu.webMenuId} path={menu.title} element={menu.element}>
+        <Route key={menu.menuId} path={menu.title} element={menu.element}>
           {menu.child && menu.child.length > 0 && generateRoutes(menu.child)}
         </Route>
       );

@@ -63,7 +63,7 @@ export default function TableSubmission() {
         pageSizeOptions={[5, 10]}
         checkboxSelection
         onSelectionModelChange={(newSelectionModel) => handleSelectionChange(newSelectionModel)}
-        selectionModel={selectedRows}
+        selectionModel={selectedRows}  
       />
     </Paper>
   );

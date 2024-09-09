@@ -13,6 +13,7 @@ import { Link } from "react-router-dom";
 import SettingsSuggestOutlinedIcon from '@mui/icons-material/SettingsSuggestOutlined';
 import InfoOutlined from "@mui/icons-material/InfoOutlined";
 import { HelpOutline } from "@mui/icons-material";
+import { iconsMap } from "../../mapItem/mapItem";
 
 const secondaryListItems = [
   { text: 'Settings', icon: <SettingsSuggestOutlinedIcon /> },
@@ -40,35 +41,39 @@ export default function MenuContent({ menus }) {
     setOpenSubmenu(openSubmenu === id ? null : id);
   };
 
+  const getIcon = (iconString) => {
+    return iconsMap[iconString];
+  }
+
   return (
     <Stack sx={{ flexGrow:1 ,justifyContent: 'space-between', mt:'60px' }}>
       <List disablePadding dense>
         {menus.map((item) => (
-          <React.StrictMode key={item.webMenuId}>
+          <React.StrictMode key={item.menuId}>
             <ListItem dense>
               <ListItemButton
                 component={Link}
                 to={
-                  item.webMenuId === item.parentId &&
+                  item.menuId === item.parentId &&
                   item.child &&
                   item.child.length > 0
                     ? null
                     : item.url
                 }
                 sx={{ columnGap: 1 }}
-                selected={item.webMenuId === selectedMenu && !isSubMenu}
+                selected={item.menuId === selectedMenu && !isSubMenu}
                 onClick={() =>
                   item.child && item.child.length > 0
-                    ? handleOpenSubMenuClick(item.webMenuId)
-                    : handleMenuClick(item.webMenuId)
+                    ? handleOpenSubMenuClick(item.menuId)
+                    : handleMenuClick(item.menuId)
                 }
               >
                 <ListItemIcon sx={{ minWidth: "max-content" }}>
-                  {item.icon}
+                  {getIcon(item.icon)}
                 </ListItemIcon>
                 <ListItemText>{item.title}</ListItemText>
                 {item.child && item.child.length > 0 ? (
-                  item.webMenuId === openSubmenu ? (
+                  item.menuId === openSubmenu ? (
                     <ExpandLess />
                   ) : (
                     <ExpandMore />
@@ -79,14 +84,14 @@ export default function MenuContent({ menus }) {
 
             {item.child && item.child.length > 0 && (
               <Collapse
-                in={item.webMenuId === openSubmenu}
+                in={item.menuId === openSubmenu}
                 timeout="auto"
                 unmountOnExit
               >
                 <List component="div" dense>
                   {item.child.map((subMenu) => (
                     <ListItem
-                      key={subMenu.webMenuId}
+                      key={subMenu.menuId}
                       disablePadding
                       sx={{ pl: 4 }}
                     >
@@ -95,12 +100,12 @@ export default function MenuContent({ menus }) {
                         to={subMenu.url}
                         sx={{ columnGap: 1 }}
                         selected={
-                          subMenu.webMenuId === selectedSubMenu && isSubMenu
+                          subMenu.menuId === selectedSubMenu && isSubMenu
                         }
-                        onClick={() => handleSubMenuClick(subMenu.webMenuId)}
+                        onClick={() => handleSubMenuClick(subMenu.menuId)}
                       >
                         <ListItemIcon sx={{ minWidth: "max-content" }}>
-                          {subMenu.icon}
+                          {getIcon(subMenu.icon)}
                         </ListItemIcon>
                         <ListItemText primary={subMenu.title} />
                       </ListItemButton>
