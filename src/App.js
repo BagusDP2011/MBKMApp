@@ -4,6 +4,7 @@ import DashboardLayout from "./components/layout/DashboardLayout";
 import { componentsMap } from "./mapItem/mapItem";
 import { useEffect, useState } from "react";
 import NotFound from "./pages/NotFound";
+import SilamKW from "./pages/SilamKW";
 
 
 function App() {
@@ -45,6 +46,7 @@ function App() {
   return (
     <BrowserRouter>
       <Routes>
+        <Route path="/" element={<SilamKW />} />
         <Route path="/menu" element={<DashboardLayout menus={menus.filter((item) => !item.index)} />}>
           {generateRoutes(menus.filter((item) => !item.index))}
         </Route>

@@ -1,13 +1,14 @@
-import "./App.css";
+import "./../App.css";
 import React from "react";
 import { Typography, Grid, Container, Box, Paper } from "@mui/material";
 import { styled } from "@mui/material/styles";
 // import SilamBG from "./assets/img/silam-bg.JPG";
-import SilamBGTop from "./assets/img/silam-bg-top.JPG";
-import SilamHP from "./assets/img/silam-hp.png";
-import SilamWonder from "./assets/img/silam-wonder.svg";
-import Navbar from "./components/Navbar.js";
-function App() {
+import SilamBGTop from "./../assets/img/silam-bg-top.JPG";
+import SilamHP from "./../assets/img/silam-hp.png";
+import SilamWonder from "./../assets/img/silam-wonder.svg";
+import Navbar from "./../components/Navbar.js";
+
+function SilamKW() {
   const Item = styled(Paper)(({ theme }) => ({
     backgroundColor: "#fff",
     ...theme.typography.body2,
@@ -108,8 +109,12 @@ function App() {
           >
             <Grid container spacing={2}>
               <Grid item xs={8}>
-                <Item sx={{ textAlign: "left", fontSize: 20, boxShadow: "none" }}>
-                  <Typography sx={{ fontSize: 34, fontWeight: 700 }}>Tentang SILAM</Typography>
+                <Item
+                  sx={{ textAlign: "left", fontSize: 20, boxShadow: "none" }}
+                >
+                  <Typography sx={{ fontSize: 34, fontWeight: 700 }}>
+                    Tentang SILAM
+                  </Typography>
                   <Typography sx={{ fontSize: 25 }}>
                     Sistem Informasi dan Layanan Mahasiswa (SILAM) Politeknik
                     Negeri Batam tempat terkumpulnya informasi dan layanan
@@ -140,4 +145,4 @@ function App() {
   );
 }
 
-export default App;
+export default SilamKW;
