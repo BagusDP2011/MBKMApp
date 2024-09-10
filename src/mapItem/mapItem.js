@@ -4,6 +4,8 @@ import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
 import DescriptionOutlinedIcon from '@mui/icons-material/DescriptionOutlined';
 import SegmentOutlinedIcon from '@mui/icons-material/SegmentOutlined';
 import ListSubmission from "../pages/menu/Submission/ListSubmission";
+import Submission from "../pages/menu/Submission/Submission";
+
 
 export const iconsMap = {
     "<SegmentOutlinedIcon />" : <SegmentOutlinedIcon/>,
@@ -14,5 +16,6 @@ export const iconsMap = {
   };
   
   export const componentsMap = {
-    "<ListSubmission />" : ListSubmission
+    "<ListSubmission />" : ListSubmission,
+    "<Submission />" : Submission
   };

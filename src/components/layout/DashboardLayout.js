@@ -20,7 +20,7 @@ export default function DashboardLayout({ menus }) {
               mt: { xs: 8, md: 0 },
             }}
           >
-            <Breadcrumb />
+            <Breadcrumb/>
             <Outlet />
           </Stack>
         </Stack>
