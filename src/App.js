@@ -13,7 +13,7 @@ function App() {
   useEffect(() => {
     async function getMenu(){
       try {
-        const response = await fetch('http://localhost:3001/api/menu/2');
+        const response = await fetch('http://localhost:3001/api/menu/1');
         const data = await response.json();
         setMenus(data);
       } catch (error) {

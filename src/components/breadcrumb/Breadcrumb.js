@@ -4,7 +4,7 @@ import { useLocation } from "react-router-dom";
 import { Link as LinkRouter } from "@mui/material";
 import { Link } from "react-router-dom";
 
-export default function Breadcrumb() {
+export default function Breadcrumb({title}) {
   const location = useLocation();
   const pathnames = location.pathname.split("/").filter((x) => x);
   const [breadcrumbNameMap, setBreadcrumbMap] = useState({});
@@ -52,6 +52,7 @@ export default function Breadcrumb() {
           </LinkRouter>
         );
       })}
+      {title}
     </Breadcrumbs>
   );
 }
