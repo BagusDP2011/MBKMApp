@@ -1,9 +1,12 @@
 import React from "react";
-import { AppBar, Toolbar, Button, Box } from "@mui/material";
+import { AppBar, Toolbar, Button, Box, Link } from "@mui/material";
 import "../App.css";
 import PolibatamLogo from "../assets/img/polibatam-white.png";
+import { useNavigate } from "react-router-dom";
 
 function Navbar() {
+  const navigate = useNavigate();
+
   return (
     <AppBar position="static" sx={{ bgcolor: "#7e9fbb", color: "#FFFFFF80" }}>
       <Toolbar
@@ -63,18 +66,19 @@ function Navbar() {
         >
           Informasi Lainnya
         </Button>
-        <Button
-          color="inherit"
-          variant="contained"
-          sx={{
-            fontWeight: 600,
-            fontSize: 20,
-            textTransform: "none",
-            color: "#7e9fbb",
-          }}
-        >
-          Login
-        </Button>
+          <Button
+            color="inherit"
+            variant="contained"
+            sx={{
+              fontWeight: 600,
+              fontSize: 20,
+              textTransform: "none",
+              color: "#7e9fbb",
+            }}
+            onClick={() => navigate("/menu")}
+          >
+            Login
+          </Button>
       </Toolbar>
     </AppBar>
   );
