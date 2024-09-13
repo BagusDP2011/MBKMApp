@@ -4,11 +4,17 @@ import "./index.css";
 import App from "./App";
 import reportWebVitals from "./reportWebVitals";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
+import './assets/css/satoshi.css'
 
 const theme = createTheme({
   typography: {
     fontFamily: "Poppins, Arial, sans-serif",
+    // fontFamily: 'Satoshi, Arial, sans-serif',
+    // allVariants: {
+    //   fontWeight: 600,
+    // },
   },
+  
 });
 
 const root = ReactDOM.createRoot(document.getElementById("root"));

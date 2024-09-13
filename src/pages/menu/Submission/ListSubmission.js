@@ -7,9 +7,6 @@ export default function ListSubmission({ menuAccess }) {
     <React.StrictMode>
       {menuAccess.canRead ? (
         <Stack>
-          <Typography variant="h5" sx={{ mb: 2, fontWeight: 600 }}>
-            Overview
-          </Typography>
           <TableSubmission />
         </Stack>
       ) : <Typography variant="h5" sx={{fontWeight:600}}>Sorry you dont have access to view this page</Typography>}

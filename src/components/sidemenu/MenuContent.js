@@ -10,15 +10,26 @@ import {
 } from "@mui/material";
 import { ExpandLess, ExpandMore } from "@mui/icons-material";
 import { Link } from "react-router-dom";
-import SettingsSuggestOutlinedIcon from '@mui/icons-material/SettingsSuggestOutlined';
+import SettingsSuggestOutlinedIcon from "@mui/icons-material/SettingsSuggestOutlined";
 import InfoOutlined from "@mui/icons-material/InfoOutlined";
 import { HelpOutline } from "@mui/icons-material";
 import { iconsMap } from "../../mapItem/mapItem";
+import { styled } from "@mui/material/styles";
+
+const CustomListItemButton = styled(ListItemButton)(({ theme }) => ({
+  "&.Mui-selected": {
+    backgroundColor: "#EBF3FF",
+    color: "#3F8CFE",
+    "& .MuiListItemIcon-root": {
+      color: "#3F8CFE",
+    },
+  },
+}));
 
 const secondaryListItems = [
-  { text: 'Settings', icon: <SettingsSuggestOutlinedIcon /> },
-  { text: 'About', icon: <InfoOutlined /> },
-  { text: 'Feedback', icon: <HelpOutline /> },
+  { text: "Settings", icon: <SettingsSuggestOutlinedIcon /> },
+  { text: "About", icon: <InfoOutlined /> },
+  { text: "Feedback", icon: <HelpOutline /> },
 ];
 
 export default function MenuContent({ menus }) {
@@ -43,15 +54,15 @@ export default function MenuContent({ menus }) {
 
   const getIcon = (iconString) => {
     return iconsMap[iconString];
-  }
+  };
 
   return (
-    <Stack sx={{ flexGrow:1 ,justifyContent: 'space-between', mt:'60px' }}>
+    <Stack sx={{ flexGrow: 1, justifyContent: "space-between", mt: "60px" }}>
       <List disablePadding dense>
         {menus.map((item) => (
           <React.StrictMode key={item.menuId}>
             <ListItem dense>
-              <ListItemButton
+              <CustomListItemButton
                 component={Link}
                 to={
                   item.menuId === item.parentId &&
@@ -71,7 +82,7 @@ export default function MenuContent({ menus }) {
                 <ListItemIcon sx={{ minWidth: "max-content" }}>
                   {getIcon(item.icon)}
                 </ListItemIcon>
-                <ListItemText>{item.title}</ListItemText>
+                <ListItemText sx={{ fontWeight:500 }}>{item.title}</ListItemText>
                 {item.child && item.child.length > 0 ? (
                   item.menuId === openSubmenu ? (
                     <ExpandLess />
@@ -79,7 +90,7 @@ export default function MenuContent({ menus }) {
                     <ExpandMore />
                   )
                 ) : null}
-              </ListItemButton>
+              </CustomListItemButton>
             </ListItem>
 
             {item.child && item.child.length > 0 && (
@@ -95,7 +106,7 @@ export default function MenuContent({ menus }) {
                       disablePadding
                       sx={{ pl: 4 }}
                     >
-                      <ListItemButton
+                      <CustomListItemButton
                         component={Link}
                         to={subMenu.url}
                         sx={{ columnGap: 1 }}
@@ -107,8 +118,8 @@ export default function MenuContent({ menus }) {
                         <ListItemIcon sx={{ minWidth: "max-content" }}>
                           {getIcon(subMenu.icon)}
                         </ListItemIcon>
-                        <ListItemText primary={subMenu.title} />
-                      </ListItemButton>
+                        <ListItemText primary={subMenu.title} sx={{ fontWeight:500 }} />
+                      </CustomListItemButton>
                     </ListItem>
                   ))}
                 </List>
@@ -120,12 +131,13 @@ export default function MenuContent({ menus }) {
 
       <List disablePadding dense>
         {secondaryListItems.map((item, index) => (
-          <ListItem key={index} 
-           sx={{ display: 'block' }}>
-            <ListItemButton sx={{ columnGap: 1 }}>
-              <ListItemIcon sx={{ minWidth: "max-content" }}>{item.icon}</ListItemIcon>
-              <ListItemText primary={item.text} />
-            </ListItemButton>
+          <ListItem key={index} sx={{ display: "block" }}>
+            <CustomListItemButton sx={{ columnGap: 1 }}>
+              <ListItemIcon sx={{ minWidth: "max-content" }}>
+                {item.icon}
+              </ListItemIcon>
+              <ListItemText primary={item.text} sx={{ fontWeight:500 }} />
+            </CustomListItemButton>
           </ListItem>
         ))}
       </List>

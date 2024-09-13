@@ -11,7 +11,7 @@ export default function DashboardLayout({ menus }) {
       <SideMenu menus={menus} />
       <AppNavbar />
       <Box component="main" sx={{ width: "100%", mt:9 }}>
-        <Stack spacing={2} sx={{ mx: 3 }}>
+        <Stack sx={{ mx: 3 }}>
           <Stack
             spacing={2}
             sx={{
