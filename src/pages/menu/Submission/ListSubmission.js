@@ -5,7 +5,7 @@ import { Box, Stack, Typography } from "@mui/material";
 export default function ListSubmission({ menuAccess }) {
   return (
     <React.StrictMode>
-      {menuAccess.canRead ? (
+      {menuAccess.CanRead ? (
         <Stack>
           <TableSubmission />
         </Stack>
