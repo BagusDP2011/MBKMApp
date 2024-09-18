@@ -27,9 +27,9 @@ const CustomListItemButton = styled(ListItemButton)(({ theme }) => ({
 }));
 
 const secondaryListItems = [
-  { text: "Settings", icon: <SettingsSuggestOutlinedIcon /> },
-  { text: "About", icon: <InfoOutlined /> },
-  { text: "Feedback", icon: <HelpOutline /> },
+  { Text: "Settings", Icon: <SettingsSuggestOutlinedIcon /> },
+  { Text: "About", Icon: <InfoOutlined /> },
+  { Text: "Feedback", Icon: <HelpOutline /> },
 ];
 
 export default function MenuContent({ menus }) {
@@ -52,39 +52,39 @@ export default function MenuContent({ menus }) {
     setOpenSubmenu(openSubmenu === id ? null : id);
   };
 
-  const getIcon = (iconString) => {
-    return iconsMap[iconString];
+  const getIcon = (IconString) => {
+    return iconsMap[IconString];
   };
 
   return (
     <Stack sx={{ flexGrow: 1, justifyContent: "space-between", mt: "60px" }}>
       <List disablePadding dense>
         {menus.map((item) => (
-          <React.StrictMode key={item.menuId}>
+          <React.StrictMode key={item.MenuID}>
             <ListItem dense>
               <CustomListItemButton
                 component={Link}
                 to={
-                  item.menuId === item.parentId &&
+                  item.MenuID === item.ParentID &&
                   item.child &&
                   item.child.length > 0
                     ? null
                     : item.url
                 }
                 sx={{ columnGap: 1 }}
-                selected={item.menuId === selectedMenu && !isSubMenu}
+                selected={item.MenuID === selectedMenu && !isSubMenu}
                 onClick={() =>
                   item.child && item.child.length > 0
-                    ? handleOpenSubMenuClick(item.menuId)
-                    : handleMenuClick(item.menuId)
+                    ? handleOpenSubMenuClick(item.MenuID)
+                    : handleMenuClick(item.MenuID)
                 }
               >
                 <ListItemIcon sx={{ minWidth: "max-content" }}>
-                  {getIcon(item.icon)}
+                  {getIcon(item.Icon)}
                 </ListItemIcon>
-                <ListItemText sx={{ fontWeight:500 }}>{item.title}</ListItemText>
+                <ListItemText sx={{ fontWeight:500 }}>{item.Title}</ListItemText>
                 {item.child && item.child.length > 0 ? (
-                  item.menuId === openSubmenu ? (
+                  item.MenuID === openSubmenu ? (
                     <ExpandLess />
                   ) : (
                     <ExpandMore />
@@ -95,14 +95,14 @@ export default function MenuContent({ menus }) {
 
             {item.child && item.child.length > 0 && (
               <Collapse
-                in={item.menuId === openSubmenu}
+                in={item.MenuID === openSubmenu}
                 timeout="auto"
                 unmountOnExit
               >
                 <List component="div" dense>
                   {item.child.map((subMenu) => (
                     <ListItem
-                      key={subMenu.menuId}
+                      key={subMenu.MenuID}
                       disablePadding
                       sx={{ pl: 4 }}
                     >
@@ -111,14 +111,14 @@ export default function MenuContent({ menus }) {
                         to={subMenu.url}
                         sx={{ columnGap: 1 }}
                         selected={
-                          subMenu.menuId === selectedSubMenu && isSubMenu
+                          subMenu.MenuID === selectedSubMenu && isSubMenu
                         }
-                        onClick={() => handleSubMenuClick(subMenu.menuId)}
+                        onClick={() => handleSubMenuClick(subMenu.MenuID)}
                       >
                         <ListItemIcon sx={{ minWidth: "max-content" }}>
-                          {getIcon(subMenu.icon)}
+                          {getIcon(subMenu.Icon)}
                         </ListItemIcon>
-                        <ListItemText primary={subMenu.title} sx={{ fontWeight:500 }} />
+                        <ListItemText primary={subMenu.Title} sx={{ fontWeight:500 }} />
                       </CustomListItemButton>
                     </ListItem>
                   ))}
@@ -134,9 +134,9 @@ export default function MenuContent({ menus }) {
           <ListItem key={index} sx={{ display: "block" }}>
             <CustomListItemButton sx={{ columnGap: 1 }}>
               <ListItemIcon sx={{ minWidth: "max-content" }}>
-                {item.icon}
+                {item.Icon}
               </ListItemIcon>
-              <ListItemText primary={item.text} sx={{ fontWeight:500 }} />
+              <ListItemText primary={item.Text} sx={{ fontWeight:500 }} />
             </CustomListItemButton>
           </ListItem>
         ))}

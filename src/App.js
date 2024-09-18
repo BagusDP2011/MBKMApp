@@ -28,11 +28,11 @@ function App() {
 
   function generateRoutes(menuItems) {
     return menuItems.map((menu) => {
-      const ElementComponent = componentsMap[menu.element] || null;
+      const ElementComponent = componentsMap[menu.Element] || null;
       const component = ElementComponent ? <ElementComponent menuAccess={menu.menuAccess}/> : null;
 
       return (
-        <Route key={menu.menuId} path={menu.title} element={component}>
+        <Route key={menu.MenuID} path={menu.Title} element={component}>
           {menu.child && menu.child.length > 0 && generateRoutes(menu.child)}
         </Route>
       );
@@ -47,8 +47,8 @@ function App() {
     <BrowserRouter>
       <Routes>
         <Route path="/" element={<SilamKW />} />
-        <Route path="/menu" element={<DashboardLayout menus={menus.filter((item) => !item.index)} />}>
-          {generateRoutes(menus.filter((item) => !item.index))}
+        <Route path="/menu" element={<DashboardLayout menus={menus.filter((item) => !item.Index)} />}>
+          {generateRoutes(menus.filter((item) => !item.Index))}
         </Route>
         <Route path="*" element={<NotFound />} />
       </Routes>
