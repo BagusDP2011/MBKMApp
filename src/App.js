@@ -17,6 +17,7 @@ function App() {
         const response = await fetch('http://localhost:3001/api/menu/1');
         const data = await response.json();
         setMenus(data);
+        console.log(data)
       } catch (error) {
         console.error('Error fetching menu:', error);
       }finally {
