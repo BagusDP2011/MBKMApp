@@ -3,6 +3,8 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import DashboardLayout from "./components/layout/DashboardLayout";
 import { componentsMap } from "./mapItem/mapItem";
 import { useEffect, useState } from "react";
+import CircularProgress from '@mui/material/CircularProgress';
+import { Box, Stack } from '@mui/material'
 import NotFound from "./pages/NotFound";
 import SilamKW from "./pages/SilamKW";
 
@@ -40,7 +42,11 @@ function App() {
   }
 
   if (isLoading) {
-    return <div>Loading...</div>;
+    return <div>
+      <Stack xs={{width:'100vw', height:'100vh', display:'flex', justifyContent:'center', alignItems:'center', position:'fixed'}}>
+        <CircularProgress/> Loading...
+      </Stack>
+    </div>;
   }
 
   return (
