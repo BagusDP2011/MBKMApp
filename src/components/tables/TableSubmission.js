@@ -40,7 +40,7 @@ const columns = [
   { field: "ApprovalStatus", headerName: "Status", width: 180},
 ]
 
-const paginationModel = { page: 0, pageSize: 5 };
+const paginationModel = { page: 0, pageSize:10};
 
 export default function TableSubmission() {
   const [submissions, setSubmissions] = React.useState([]);
@@ -66,7 +66,7 @@ export default function TableSubmission() {
   };
 
   return (
-    <Paper sx={{ height: 400}}>
+    <Paper sx={{ maxHeight: '100vh'}}>
       <DataGrid
         rows={submissions}
         columns={columns}

@@ -14,7 +14,7 @@ function App() {
   useEffect(() => {
     async function getMenu(){
       try {
-        const response = await fetch('http://localhost:3001/api/menu/1');
+        const response = await fetch('http://localhost:3001/api/menu/2');
         const data = await response.json();
         setMenus(data);
       } catch (error) {
@@ -40,11 +40,11 @@ function App() {
   }
 
   if (isLoading) {
-    return <div>
-      <Stack xs={{width:'100vw', height:'100vh', display:'flex', justifyContent:'center', alignItems:'center', position:'fixed'}}>
-        <CircularProgress/> Loading...
-      </Stack>
-    </div>;
+    return (
+    <Stack direction="row" sx={{justifyContent:'center', alignItems:'center', height:'100vh', columnGap:1}}>
+      <CircularProgress /> Loading...
+    </Stack>
+    )
   }
 
   return (
