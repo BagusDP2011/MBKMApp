@@ -6,8 +6,6 @@ import { useEffect, useState } from "react";
 import CircularProgress from '@mui/material/CircularProgress';
 import { Box, Stack } from '@mui/material'
 import NotFound from "./pages/NotFound";
-import SilamKW from "./pages/SilamKW";
-
 
 function App() {
   const [menus, setMenus] = useState([]);
@@ -52,7 +50,6 @@ function App() {
   return (
     <BrowserRouter>
       <Routes>
-        <Route path="/" element={<SilamKW />} />
         <Route path="/menu" element={<DashboardLayout menus={menus.filter((item) => !item.Index)} />}>
           {generateRoutes(menus.filter((item) => !item.Index))}
         </Route>
