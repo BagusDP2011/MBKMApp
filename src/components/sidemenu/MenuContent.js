@@ -7,8 +7,9 @@ import {
   ListItemIcon,
   ListItemText,
   Collapse,
+  Divider,
 } from "@mui/material";
-import { ExpandLess, ExpandMore } from "@mui/icons-material";
+import { BorderColor, BorderLeft, ExpandLess, ExpandMore } from "@mui/icons-material";
 import { Link } from "react-router-dom";
 import SettingsSuggestOutlinedIcon from "@mui/icons-material/SettingsSuggestOutlined";
 import InfoOutlined from "@mui/icons-material/InfoOutlined";
@@ -17,14 +18,16 @@ import { iconsMap } from "../../mapItem/mapItem";
 import { styled } from "@mui/material/styles";
 
 const CustomListItemButton = styled(ListItemButton)(({ theme }) => ({
+  padding: '.7rem 1.4rem',
   "&.Mui-selected": {
-    backgroundColor: "#EBF3FF",
+    boxShadow: "inset 4px 0 0 0 #3F8CFE",
     color: "#3F8CFE",
     "& .MuiListItemIcon-root": {
       color: "#3F8CFE",
     },
   },
 }));
+
 
 const secondaryListItems = [
   { Text: "Settings", Icon: <SettingsSuggestOutlinedIcon /> },
@@ -58,10 +61,10 @@ export default function MenuContent({ menus }) {
 
   return (
     <Stack sx={{ flexGrow: 1, justifyContent: "space-between", mt: "60px" }}>
-      <List disablePadding dense>
+      <List disablePadding>
         {menus.map((item) => (
           <React.StrictMode key={item.MenuID}>
-            <ListItem dense>
+            <ListItem disablePadding>
               <CustomListItemButton
                 component={Link}
                 to={
@@ -82,7 +85,9 @@ export default function MenuContent({ menus }) {
                 <ListItemIcon sx={{ minWidth: "max-content" }}>
                   {getIcon(item.Icon)}
                 </ListItemIcon>
-                <ListItemText sx={{ fontWeight:500 }}>{item.Title}</ListItemText>
+                <ListItemText sx={{ fontWeight: 600 }}>
+                  {item.Title}
+                </ListItemText>
                 {item.child && item.child.length > 0 ? (
                   item.MenuID === openSubmenu ? (
                     <ExpandLess />
@@ -99,12 +104,12 @@ export default function MenuContent({ menus }) {
                 timeout="auto"
                 unmountOnExit
               >
-                <List component="div" dense>
+                <List disablePadding component="div">
                   {item.child.map((subMenu) => (
                     <ListItem
                       key={subMenu.MenuID}
                       disablePadding
-                      sx={{ pl: 4 }}
+                      sx={{ pl: 2 }}
                     >
                       <CustomListItemButton
                         component={Link}
@@ -118,7 +123,10 @@ export default function MenuContent({ menus }) {
                         <ListItemIcon sx={{ minWidth: "max-content" }}>
                           {getIcon(subMenu.Icon)}
                         </ListItemIcon>
-                        <ListItemText primary={subMenu.Title} sx={{ fontWeight:500 }} />
+                        <ListItemText
+                          primary={subMenu.Title}
+                          sx={{ fontWeight: 600 }}
+                        />
                       </CustomListItemButton>
                     </ListItem>
                   ))}
@@ -129,14 +137,14 @@ export default function MenuContent({ menus }) {
         ))}
       </List>
 
-      <List disablePadding dense>
+      <List disablePadding>
         {secondaryListItems.map((item, index) => (
-          <ListItem key={index} sx={{ display: "block" }}>
+          <ListItem disablePadding key={index} sx={{ display: "block" }}>
             <CustomListItemButton sx={{ columnGap: 1 }}>
               <ListItemIcon sx={{ minWidth: "max-content" }}>
                 {item.Icon}
               </ListItemIcon>
-              <ListItemText primary={item.Text} sx={{ fontWeight:500 }} />
+              <ListItemText primary={item.Text} sx={{ fontWeight: 600 }} />
             </CustomListItemButton>
           </ListItem>
         ))}

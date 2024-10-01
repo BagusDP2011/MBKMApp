@@ -11,13 +11,14 @@ export default function DashboardLayout({ menus }) {
       <SideMenu menus={menus} />
       <AppNavbar />
       <Box component="main" sx={{ width: "100%", mt:9 }}>
-        <Stack sx={{ mx: 3 }}>
+        <Stack sx={{ mx: 3, alignItems:'center' }}>
           <Stack
             spacing={2}
             sx={{
               mx: 3,
               pb: 10,
               mt: { xs: 8, md: 0 },
+              width: {xs:'60%', md:'80%', sm:'100%'},
             }}
           >
             <Breadcrumb/>

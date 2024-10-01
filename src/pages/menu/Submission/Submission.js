@@ -192,16 +192,6 @@ function Submission() {
                 required
               />
             </Grid>
-            {/* <LocalizationProvider dateAdapter={AdapterDayjs}>
-              <DemoContainer components={["DatePicker", "DatePicker"]}>
-                <DatePicker
-                  label="Uncontrolled picker"
-                />
-                <DatePicker
-                  label="Controlled picker"
-                />
-              </DemoContainer>
-            </LocalizationProvider> */}
             <Grid item xs={12}>
               <TextField
                 fullWidth

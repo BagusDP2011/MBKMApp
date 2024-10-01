@@ -3,7 +3,7 @@ import { styled } from "@mui/material/styles";
 import MuiDrawer, { drawerClasses } from "@mui/material/Drawer";
 import MenuContent from "./MenuContent";
 import { Stack, Avatar, Box, Typography } from "@mui/material";
-import AvatarLogo from "../../logo.svg";
+import AvatarLogo from "../../assets/img/Profile.jpg";
 
 const drawerWidth = 240;
 
