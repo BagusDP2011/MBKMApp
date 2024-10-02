@@ -5,18 +5,17 @@ import {
   GridToolbarColumnsButton,
   GridToolbarFilterButton,
   GridToolbarExport,
-  GridToolbarDensitySelector
+  GridToolbarDensitySelector,
 } from "@mui/x-data-grid";
-import Paper from "@mui/material/Paper";
-import { Box} from "@mui/material";
+import { Box } from "@mui/material";
 
 function CustomToolbar() {
   return (
-    <GridToolbarContainer>
+    <GridToolbarContainer sx={{pb:1, px:1.5}}>
       <GridToolbarColumnsButton />
       <GridToolbarFilterButton />
       <GridToolbarDensitySelector
-        slotProps={{ tooltip: { title: "Change density" } }}
+        slotProps={{ tooltip: { title: "Change density" }}}
       />
       <Box sx={{ flexGrow: 1 }} />
       <GridToolbarExport
@@ -30,7 +29,7 @@ function CustomToolbar() {
 
 const paginationModel = { page: 0, pageSize: 10 };
 
-export default function TableSubmission() {
+export default function TableSubmission({ access }) {
   const [submissions, setSubmissions] = React.useState([]);
   const [selectedRows, setSelectedRows] = React.useState([]);
   const [columnVisibilityModel, setColumnVisibilityModel] = useState();
@@ -100,35 +99,30 @@ export default function TableSubmission() {
     );
 
     const col = columns.filter((col) => col.field === params.colDef.field)[0];
-
-    
   }, 300);
 
-  const handleSelectionChange = (newSelectionModel) => {
-    console.log("Selected Rows:", newSelectionModel);
-    setSelectedRows(newSelectionModel);
+  const handleSelectionChange = (selectionModel) => {
+    const selectedIDs = new Set(selectionModel);
+    const selectedData = submissions.filter((row) => selectedIDs.has(row.id));
+    setSelectedRows(selectedData);
   };
 
   return (
-    <Paper sx={{ maxHeight: "100vh" }}>
       <DataGrid
+        sx={{p:6}}
         rows={submissions}
         columns={columns}
         initialState={{ pagination: { paginationModel } }}
         getRowId={(row) => row.SubmissionID}
         pageSizeOptions={[5, 10]}
         checkboxSelection
-        onSelectionModelChange={(newSelectionModel) =>
-          handleSelectionChange(newSelectionModel)
-        }
         selectionModel={selectedRows}
         slots={{
-          toolbar: CustomToolbar,
+          toolbar: access.CanPrint ? CustomToolbar : null,
         }}
         columnVisibilityModel={columnVisibilityModel}
         onColumnVisibilityModelChange={handleColumnVisibilityChange}
         onColumnResize={handleColumnResizeCommitted}
       />
-    </Paper>
   );
 }

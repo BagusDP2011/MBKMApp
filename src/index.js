@@ -8,7 +8,9 @@ import './assets/css/satoshi.css'
 
 const theme = createTheme({
   typography: {
-    fontFamily: "Poppins, Arial, sans-serif",
+    // fontFamily: "Poppins, Arial, sans-serif",
+    fontFamily: "Plus Jakarta Sans, sans-serif",
+    fontSize:16
     // fontFamily: 'Satoshi, Arial, sans-serif',
     // allVariants: {
     //   fontWeight: 600,
