@@ -8,6 +8,8 @@ import {
   GridToolbarDensitySelector,
 } from "@mui/x-data-grid";
 import { Box } from "@mui/material";
+import { getSubmission } from "../../service/Submission.Service";
+import { getColumn } from "../../service/Static.Service";
 
 function CustomToolbar() {
   return (
@@ -36,43 +38,24 @@ export default function TableSubmission({ access }) {
   const [columns, setColumns] = React.useState([]);
 
   const handleColumnVisibilityChange = (newModel) => {
-    console.log(
-      "Kolom yang terlihat:",
-      Object.keys(newModel).filter((key) => newModel[key])
-    );
-    console.log(
-      "Kolom yang tersembunyi:",
-      Object.keys(newModel).filter((key) => !newModel[key])
-    );
     setColumnVisibilityModel(newModel);
   };
 
   useEffect(() => {
-    async function getBreadcrumb() {
+    const fetchData = async () => {
       try {
-        const response = await fetch(
-          "http://localhost:3001/api/pending-submission/2"
-        );
-        const data = await response.json();
-        setSubmissions(data);
+        const breadcrumbData = await getSubmission(2);
+        setSubmissions(breadcrumbData);
+
+        const columnData = await getColumn('Submission',2);
+        setColumns(columnData.column);
+        setColumnVisibilityModel(columnData.visibility);
       } catch (error) {
-        console.error("Error fetching menu:", error);
+        console.error("Error fetching data:", error);
       }
-    }
-    async function getColumn() {
-      try {
-        const response = await fetch(
-          "http://localhost:3001/api/column/Submission/2"
-        );
-        const data = await response.json();
-        setColumns(data.column);
-        setColumnVisibilityModel(data.visibility);
-      } catch (error) {
-        console.error("Error fetching menu:", error);
-      }
-    }
-    getBreadcrumb();
-    getColumn();
+    };
+
+    fetchData();
   }, []);
 
   const debounce = (func, delay) => {
@@ -84,6 +67,10 @@ export default function TableSubmission({ access }) {
       }, delay);
     };
   };
+
+  const getExportColumn = () => {
+    return Object.keys(columns.visibility).filter(key => columns.visibility[key]);
+  }
 
   const handleColumnResizeCommitted = debounce((params) => {
     console.log(
@@ -120,6 +107,7 @@ export default function TableSubmission({ access }) {
         slots={{
           toolbar: access.CanPrint ? CustomToolbar : null,
         }}
+        slotProps={{ toolbar: { csvOptions: { fields: getExportColumn } } }}
         columnVisibilityModel={columnVisibilityModel}
         onColumnVisibilityModelChange={handleColumnVisibilityChange}
         onColumnResize={handleColumnResizeCommitted}

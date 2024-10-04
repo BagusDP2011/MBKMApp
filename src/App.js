@@ -4,18 +4,18 @@ import DashboardLayout from "./components/layout/DashboardLayout";
 import { componentsMap } from "./mapItem/mapItem";
 import { useEffect, useState } from "react";
 import CircularProgress from '@mui/material/CircularProgress';
-import { Box, Stack } from '@mui/material'
+import { Stack } from '@mui/material'
 import NotFound from "./pages/NotFound";
+import { getMenu } from "./service/Static.Service";
 
 function App() {
   const [menus, setMenus] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    async function getMenu(){
+    async function fetchData(){
       try {
-        const response = await fetch('http://localhost:3001/api/menu/2');
-        const data = await response.json();
+        const data = await getMenu(1);
         setMenus(data);
       } catch (error) {
         console.error('Error fetching menu:', error);
@@ -23,7 +23,7 @@ function App() {
         setIsLoading(false);
       }
     };
-    getMenu();
+    fetchData();
   }, []); 
 
   function generateRoutes(menuItems) {

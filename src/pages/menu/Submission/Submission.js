@@ -3,7 +3,7 @@ import {
   TextField,
   Button,
   Box,
-  Grid,
+  Grid2 as Grid,
   FormControl,
   FormHelperText,
   InputLabel,
@@ -13,15 +13,20 @@ import {
   StepLabel,
   Step,
   Stack,
+  Checkbox,
+  FormLabel,
+  OutlinedInput,
+  FormControlLabel,
 } from "@mui/material";
 import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
 import ChevronRightIcon from "@mui/icons-material/ChevronRight";
-// import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
-// import { DatePicker } from "@mui/x-date-pickers/DatePicker";
-// import { DemoContainer } from '@mui/x-date-pickers/internals/demo';
-// import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+import { styled } from "@mui/system";
 
 const steps = ["Data Diri", "Program MBKM", "Data Pertukaran Pelajar"];
+const FormGrid = styled(Grid)(() => ({
+  display: "flex",
+  flexDirection: "column",
+}));
 
 function Submission() {
   const [formData, setFormData] = useState({
@@ -65,65 +70,129 @@ function Submission() {
     switch (stepNum) {
       case 0:
         return (
-          <>
-            <Grid item xs={12} md={6}>
-              <TextField
-                fullWidth
-                label="Nama Lengkap"
-                name="name"
-                value={formData.name}
-                onChange={handleChange}
-                required
-              />
-            </Grid>
-            <Grid item xs={12} md={6}>
-              <TextField
-                fullWidth
-                label="NIM"
-                name="nim"
-                value={formData.nim}
-                onChange={handleChange}
-                required
-              />
-            </Grid>
-            <Grid item xs={12} md={6}>
-              <TextField
-                fullWidth
-                label="Program Studi"
-                name="programStudy"
-                value={formData.programStudy}
-                onChange={handleChange}
-                required
-              />
-            </Grid>
-            <Grid item xs={12} md={6}>
-              <FormControl fullWidth>
-                <InputLabel>Wali Dosen / Penanggung Jawab</InputLabel>
-                <Select
-                  name="supervisor"
-                  value={formData.supervisor}
-                  onChange={handleChange}
+            <>
+              <FormGrid size={{ xs: 12 }}>
+                <FormLabel htmlFor="first-name" required>
+                  First name
+                </FormLabel>
+                <OutlinedInput
+                  id="first-name"
+                  name="first-name"
+                  type="name"
+                  placeholder="John"
+                  autoComplete="first name"
                   required
-                >
-                  <MenuItem value="DosenA">Dosen A</MenuItem>
-                  <MenuItem value="DosenB">Dosen B</MenuItem>
-                  <MenuItem value="DosenC">Dosen C</MenuItem>
-                  <MenuItem value="DosenD">Dosen D</MenuItem>
-                  <MenuItem value="DosenE">Dosen E</MenuItem>
-                  <MenuItem value="DosenF">Dosen F</MenuItem>
-                </Select>
-                <FormHelperText>
-                  isikan nama dosen wali apabila tidak ada dosen pembimbing
-                  magang/TA
-                </FormHelperText>
-              </FormControl>
-            </Grid>
-          </>
+                  size="medium"
+                />
+              </FormGrid>
+              <FormGrid size={{ xs: 12 }}>
+                <FormLabel htmlFor="last-name" required>
+                  Last name
+                </FormLabel>
+                <OutlinedInput
+                  id="last-name"
+                  name="last-name"
+                  type="last-name"
+                  placeholder="Snow"
+                  autoComplete="last name"
+                  required
+                  size="medium"
+                />
+              </FormGrid>
+              <FormGrid size={{ xs: 12 }}>
+                <FormLabel htmlFor="address1" required>
+                  Address line 1
+                </FormLabel>
+                <OutlinedInput
+                  id="address1"
+                  name="address1"
+                  type="address1"
+                  placeholder="Street name and number"
+                  autoComplete="shipping address-line1"
+                  required
+                  size="medium"
+                />
+              </FormGrid>
+              <FormGrid size={{ xs: 12 }}>
+                <FormLabel htmlFor="address2">Address line 2</FormLabel>
+                <OutlinedInput
+                  id="address2"
+                  name="address2"
+                  type="address2"
+                  placeholder="Apartment, suite, unit, etc. (optional)"
+                  autoComplete="shipping address-line2"
+                  required
+                  size="medium"
+                />
+              </FormGrid>
+              <FormGrid size={{ xs: 6 }}>
+                <FormLabel htmlFor="city" required>
+                  City
+                </FormLabel>
+                <OutlinedInput
+                  id="city"
+                  name="city"
+                  type="city"
+                  placeholder="New York"
+                  autoComplete="City"
+                  required
+                  size="medium"
+                />
+              </FormGrid>
+              <FormGrid size={{ xs: 6 }}>
+                <FormLabel htmlFor="state" required>
+                  State
+                </FormLabel>
+                <OutlinedInput
+                  id="state"
+                  name="state"
+                  type="state"
+                  placeholder="NY"
+                  autoComplete="State"
+                  required
+                  size="medium"
+                />
+              </FormGrid>
+              <FormGrid size={{ xs: 6 }}>
+                <FormLabel htmlFor="zip" required>
+                  Zip / Postal code
+                </FormLabel>
+                <OutlinedInput
+                  id="zip"
+                  name="zip"
+                  type="zip"
+                  placeholder="12345"
+                  autoComplete="shipping postal-code"
+                  required
+                  size="medium"
+                />
+              </FormGrid>
+              <FormGrid size={{ xs: 6 }}>
+                <FormLabel htmlFor="country" required>
+                  Country
+                </FormLabel>
+                <OutlinedInput
+                  id="country"
+                  name="country"
+                  type="country"
+                  placeholder="United States"
+                  autoComplete="shipping country"
+                  required
+                  size="medium"
+                />
+              </FormGrid>
+              <FormGrid size={{ xs: 12 }}>
+                <FormControlLabel
+                  control={<Checkbox name="saveAddress" value="yes" />}
+                  label="Use this address for payment details"
+                />
+              </FormGrid>
+            </>
         );
       case 1:
         return (
           <>
-            <Grid item xs={12} md={12}>
+            <Grid item size={{ xs:12, md:12}}>
               <FormControl fullWidth>
                 <InputLabel>Jenis Program Merdeka</InputLabel>
                 <Select
@@ -148,7 +217,7 @@ function Submission() {
                 </FormHelperText>
               </FormControl>
             </Grid>
-            <Grid item xs={12}>
+            <Grid item size={{ xs:12}}>
               <TextField
                 fullWidth
                 label="Judul Kegiatan"
@@ -158,7 +227,7 @@ function Submission() {
                 required
               />
             </Grid>
-            <Grid item xs={12}>
+            <Grid item size={{ xs:12}}>
               <TextField
                 fullWidth
                 label="Alasan Memilih Program"
@@ -170,7 +239,7 @@ function Submission() {
                 required
               />
             </Grid>
-            <Grid item xs={12} md={6}>
+            <Grid item size={{ xs:12, md:6}}>
               <TextField
                 fullWidth
                 label="Nama Lembaga Mitra/ Perusahaan"
@@ -181,7 +250,7 @@ function Submission() {
                 required
               />
             </Grid>
-            <Grid item xs={12} md={6}>
+            <Grid item size={{ xs:12, md:6}}>
               <TextField
                 fullWidth
                 label="Posisi Di Perusahaan"
@@ -192,17 +261,7 @@ function Submission() {
                 required
               />
             </Grid>
-            {/* <LocalizationProvider dateAdapter={AdapterDayjs}>
-              <DemoContainer components={["DatePicker", "DatePicker"]}>
-                <DatePicker
-                  label="Uncontrolled picker"
-                />
-                <DatePicker
-                  label="Controlled picker"
-                />
-              </DemoContainer>
-            </LocalizationProvider> */}
-            <Grid item xs={12}>
+            <Grid item size={{ xs:12}}>
               <TextField
                 fullWidth
                 label="Rincian Kegiatan"
@@ -234,9 +293,9 @@ function Submission() {
       </Box>
 
       <form onSubmit={handleSubmit}>
-        <Grid container spacing={2}>
+        <Grid container spacing={3}>
           {renderForm(stepNum)}
-          <Grid item xs={12}>
+          <Grid item size={{xs:12}}>
             <Stack
               direction="row"
               sx={{ justifyContent: "space-between", alignItems: "center" }}
