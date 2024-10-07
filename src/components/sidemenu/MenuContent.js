@@ -65,7 +65,7 @@ export default function MenuContent({ menus }) {
       <Box>
         <Stack direction="row" sx={{gap:1, alignItems:'center', p:3}}>
           <AutoAwesomeIcon sx={{fontSize:'2.5rem', color:'#3F8CFE'}} />
-          <Typography variant="h5" fontWeight="bold">MBKM</Typography>
+          <Typography variant="h5" fontWeight="900" color="#252e4a">MBKM</Typography>
         </Stack>
         <List disablePadding dense>
           {menus.map((item) => (

@@ -71,128 +71,71 @@ function Submission() {
       case 0:
         return (
             <>
-              <FormGrid size={{ xs: 12 }}>
-                <FormLabel htmlFor="first-name" required>
-                  First name
+              <FormGrid size={{ xs: 6}}>
+                <FormLabel htmlFor="name" required>
+                  Nama
                 </FormLabel>
                 <OutlinedInput
-                  id="first-name"
-                  name="first-name"
+                  id="name"
+                  name="name"
                   type="name"
-                  placeholder="John"
-                  autoComplete="first name"
+                  placeholder="Nama lengkap"
+                  autoComplete="name"
+                  onChange={handleChange}
                   required
                   size="medium"
                 />
               </FormGrid>
-              <FormGrid size={{ xs: 12 }}>
-                <FormLabel htmlFor="last-name" required>
-                  Last name
+              <FormGrid size={{ xs: 6}}>
+                <FormLabel htmlFor="nim" required>
+                  NIM
                 </FormLabel>
                 <OutlinedInput
-                  id="last-name"
-                  name="last-name"
-                  type="last-name"
-                  placeholder="Snow"
-                  autoComplete="last name"
-                  required
-                  size="medium"
-                />
-              </FormGrid>
-              <FormGrid size={{ xs: 12 }}>
-                <FormLabel htmlFor="address1" required>
-                  Address line 1
-                </FormLabel>
-                <OutlinedInput
-                  id="address1"
-                  name="address1"
-                  type="address1"
-                  placeholder="Street name and number"
-                  autoComplete="shipping address-line1"
-                  required
-                  size="medium"
-                />
-              </FormGrid>
-              <FormGrid size={{ xs: 12 }}>
-                <FormLabel htmlFor="address2">Address line 2</FormLabel>
-                <OutlinedInput
-                  id="address2"
-                  name="address2"
-                  type="address2"
-                  placeholder="Apartment, suite, unit, etc. (optional)"
-                  autoComplete="shipping address-line2"
+                  id="nim"
+                  name="nim"
+                  type="nim"
+                  placeholder="Nomor Induk Mahasiswa"
+                  autoComplete="nim"
+                  onChange={handleChange}
                   required
                   size="medium"
                 />
               </FormGrid>
               <FormGrid size={{ xs: 6 }}>
-                <FormLabel htmlFor="city" required>
-                  City
+                <FormLabel htmlFor="programStudy" required>
+                  Program Studi
                 </FormLabel>
                 <OutlinedInput
-                  id="city"
-                  name="city"
-                  type="city"
-                  placeholder="New York"
-                  autoComplete="City"
+                  id="programStudy"
+                  name="programStudy"
+                  type="programStudy"
+                  placeholder="Program Studi"
+                  autoComplete="programStudy"
+                  onChange={handleChange}
                   required
                   size="medium"
                 />
               </FormGrid>
               <FormGrid size={{ xs: 6 }}>
-                <FormLabel htmlFor="state" required>
-                  State
-                </FormLabel>
+                <FormLabel htmlFor="supervisor" required>Wali Dosen</FormLabel>
                 <OutlinedInput
-                  id="state"
-                  name="state"
-                  type="state"
-                  placeholder="NY"
-                  autoComplete="State"
+                  id="supervisor"
+                  name="supervisor"
+                  type="supervisor"
+                  placeholder="Wali Dosen"
+                  autoComplete="supervisor"
+                  onChange={handleChange}
                   required
                   size="medium"
                 />
-              </FormGrid>
-              <FormGrid size={{ xs: 6 }}>
-                <FormLabel htmlFor="zip" required>
-                  Zip / Postal code
-                </FormLabel>
-                <OutlinedInput
-                  id="zip"
-                  name="zip"
-                  type="zip"
-                  placeholder="12345"
-                  autoComplete="shipping postal-code"
-                  required
-                  size="medium"
-                />
-              </FormGrid>
-              <FormGrid size={{ xs: 6 }}>
-                <FormLabel htmlFor="country" required>
-                  Country
-                </FormLabel>
-                <OutlinedInput
-                  id="country"
-                  name="country"
-                  type="country"
-                  placeholder="United States"
-                  autoComplete="shipping country"
-                  required
-                  size="medium"
-                />
-              </FormGrid>
-              <FormGrid size={{ xs: 12 }}>
-                <FormControlLabel
-                  control={<Checkbox name="saveAddress" value="yes" />}
-                  label="Use this address for payment details"
-                />
+                <FormHelperText>isikan nama dosen wali apabila tidak ada dosen pembimbing magang/TA</FormHelperText>
               </FormGrid>
             </>
         );
       case 1:
         return (
           <>
-            <Grid item size={{ xs:12, md:12}}>
+            <Grid item="true" size={{ xs:12, md:12}}>
               <FormControl fullWidth>
                 <InputLabel>Jenis Program Merdeka</InputLabel>
                 <Select
@@ -217,7 +160,7 @@ function Submission() {
                 </FormHelperText>
               </FormControl>
             </Grid>
-            <Grid item size={{ xs:12}}>
+            <Grid item="true" size={{ xs:12}}>
               <TextField
                 fullWidth
                 label="Judul Kegiatan"
@@ -227,7 +170,7 @@ function Submission() {
                 required
               />
             </Grid>
-            <Grid item size={{ xs:12}}>
+            <Grid item="true" size={{ xs:12}}>
               <TextField
                 fullWidth
                 label="Alasan Memilih Program"
@@ -239,7 +182,7 @@ function Submission() {
                 required
               />
             </Grid>
-            <Grid item size={{ xs:12, md:6}}>
+            <Grid item="true" size={{ xs:12, md:6}}>
               <TextField
                 fullWidth
                 label="Nama Lembaga Mitra/ Perusahaan"
@@ -250,7 +193,7 @@ function Submission() {
                 required
               />
             </Grid>
-            <Grid item size={{ xs:12, md:6}}>
+            <Grid item="true" size={{ xs:12, md:6}}>
               <TextField
                 fullWidth
                 label="Posisi Di Perusahaan"
@@ -261,7 +204,7 @@ function Submission() {
                 required
               />
             </Grid>
-            <Grid item size={{ xs:12}}>
+            <Grid item="true" size={{ xs:12}}>
               <TextField
                 fullWidth
                 label="Rincian Kegiatan"
@@ -295,7 +238,7 @@ function Submission() {
       <form onSubmit={handleSubmit}>
         <Grid container spacing={3}>
           {renderForm(stepNum)}
-          <Grid item size={{xs:12}}>
+          <Grid item="true" size={{xs:12}}>
             <Stack
               direction="row"
               sx={{ justifyContent: "space-between", alignItems: "center" }}
@@ -321,10 +264,9 @@ function Submission() {
               )}
               {stepNum === steps.length - 1 && (
                 <Button
-                  type="button"
+                  type="submit"
                   variant="contained"
                   color="primary"
-                  onClick={() => handleNext()}
                 >
                   Submit
                 </Button>
