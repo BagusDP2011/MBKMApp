@@ -16,7 +16,7 @@ function App() {
   useEffect(() => {
     async function fetchData(){
       try {
-        if(isTokenExpired()) await login();
+        if(!localStorage.getItem("token") || isTokenExpired()) await login();
 
         const data = await getMenu(2);
         setMenus(data);
