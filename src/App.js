@@ -15,7 +15,7 @@ function App() {
   useEffect(() => {
     async function fetchData(){
       try {
-        const data = await getMenu(1);
+        const data = await getMenu(2);
         setMenus(data);
       } catch (error) {
         console.error('Error fetching menu:', error);
