@@ -7,6 +7,7 @@ import CircularProgress from '@mui/material/CircularProgress';
 import { Stack } from '@mui/material'
 import NotFound from "./pages/NotFound";
 import { getMenu } from "./service/Static.Service";
+import { isTokenExpired, login } from "./service/Auth.Service";
 
 function App() {
   const [menus, setMenus] = useState([]);
@@ -15,7 +16,9 @@ function App() {
   useEffect(() => {
     async function fetchData(){
       try {
-        const data = await getMenu(1);
+        if(isTokenExpired()) await login();
+
+        const data = await getMenu(2);
         setMenus(data);
       } catch (error) {
         console.error('Error fetching menu:', error);
@@ -23,8 +26,9 @@ function App() {
         setIsLoading(false);
       }
     };
+    
     fetchData();
-  }, []); 
+  }, []);
 
   function generateRoutes(menuItems) {
     return menuItems.map((menu) => {

@@ -111,6 +111,7 @@ export default function TableSubmission({ access }) {
         columnVisibilityModel={columnVisibilityModel}
         onColumnVisibilityModelChange={handleColumnVisibilityChange}
         onColumnResize={handleColumnResizeCommitted}
+        disableRowSelectionOnClick
       />
   );
 }

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   TextField,
   Button,
@@ -13,14 +13,14 @@ import {
   StepLabel,
   Step,
   Stack,
-  Checkbox,
   FormLabel,
   OutlinedInput,
-  FormControlLabel,
 } from "@mui/material";
 import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
 import ChevronRightIcon from "@mui/icons-material/ChevronRight";
 import { styled } from "@mui/system";
+import { submit } from "../../../service/Submission.Service";
+import { decodeToken } from "../../../service/Auth.Service";
 
 const steps = ["Data Diri", "Program MBKM", "Data Pertukaran Pelajar"];
 const FormGrid = styled(Grid)(() => ({
@@ -29,6 +29,8 @@ const FormGrid = styled(Grid)(() => ({
 }));
 
 function Submission() {
+  const [user, setUser] = useState({});
+
   const [formData, setFormData] = useState({
     name: "",
     nim: "",
@@ -61,10 +63,18 @@ function Submission() {
     });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log("Form submitted:", formData);
+    await submit(formData);
   };
+
+  useEffect(() => {
+    const fetchData = () => {
+      setUser(decodeToken());
+    }
+
+    fetchData()
+  }, [])
 
   const renderForm = (stepNum) => {
     switch (stepNum) {
@@ -72,7 +82,7 @@ function Submission() {
         return (
             <>
               <FormGrid size={{ xs: 6}}>
-                <FormLabel htmlFor="name" required>
+                <FormLabel htmlFor="name">
                   Nama
                 </FormLabel>
                 <OutlinedInput
@@ -82,7 +92,8 @@ function Submission() {
                   placeholder="Nama lengkap"
                   autoComplete="name"
                   onChange={handleChange}
-                  required
+                  disabled
+                  value={user.name || ''}
                   size="medium"
                 />
               </FormGrid>
@@ -97,7 +108,8 @@ function Submission() {
                   placeholder="Nomor Induk Mahasiswa"
                   autoComplete="nim"
                   onChange={handleChange}
-                  required
+                  disabled
+                  value={user.id || ''}
                   size="medium"
                 />
               </FormGrid>
