@@ -9,7 +9,7 @@ export default function DashboardLayout({ menus }) {
   return (
     <Box sx={{ display: "flex" }}>
       <SideMenu menus={menus} />
-      <AppNavbar />
+      {/* <AppNavbar /> */}
       <Box component="main" sx={{ width: "100%", mt:9 }}>
         <Stack sx={{ mx: 3, alignItems:'center' }}>
           <Stack

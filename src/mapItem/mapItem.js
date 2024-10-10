@@ -8,11 +8,11 @@ import Submission from "../pages/menu/Submission/Submission";
 
 
 export const iconsMap = {
-    "<SegmentOutlinedIcon />" : <SegmentOutlinedIcon/>,
-    "<DashboardOutlinedIcon />" : <DashboardOutlinedIcon/>,
-    "<GroupsOutlinedIcon />" : <GroupsOutlinedIcon/>,
-    "<InfoOutlinedIcon />" : <InfoOutlinedIcon/>,
-    "<DescriptionOutlinedIcon />" : <DescriptionOutlinedIcon/>
+    "<SegmentOutlinedIcon />" : <SegmentOutlinedIcon sx={{fontSize:'1.7rem'}}/>,
+    "<DashboardOutlinedIcon />" : <DashboardOutlinedIcon sx={{fontSize:'1.7rem'}}/>,
+    "<GroupsOutlinedIcon />" : <GroupsOutlinedIcon sx={{fontSize:'1.7rem'}}/>,
+    "<InfoOutlinedIcon />" : <InfoOutlinedIcon sx={{fontSize:'1.7rem'}}/>,
+    "<DescriptionOutlinedIcon />" : <DescriptionOutlinedIcon sx={{fontSize:'1.7rem'}}/>
   };
   
   export const componentsMap = {
