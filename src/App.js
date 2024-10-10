@@ -21,6 +21,7 @@ function App() {
 
         const data = await getMenu(1);
         setMenus(data);
+        console.log(data)
       } catch (error) {
         console.error("Error fetching menu:", error);
       } finally {
