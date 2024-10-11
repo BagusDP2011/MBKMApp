@@ -7,7 +7,7 @@ export const getSubmission = async (accessId) => {
     });
 
     const response = await fetch(
-      `https://9jxf315d-3001.asse.devtunnels.ms/api/pending-submission/${accessId}`,
+      `http://localhost:3001/api/pending-submission/${accessId}`,
       { headers: subHeaders }
     );
     const data = await response.json();
@@ -25,7 +25,7 @@ export const submit = async (submission) => {
       Authorization: `Bearer ${token}`,
     });
 
-    fetch("https://9jxf315d-3001.asse.devtunnels.ms/api/submission", {
+    fetch("http://localhost:3001/api/submission", {
       method: "POST",
       headers: subHeaders,
       body: JSON.stringify(submission),

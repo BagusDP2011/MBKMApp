@@ -4,7 +4,7 @@ export const login = async (data) => {
       "Content-Type": "application/json",
     });
 
-    const response = await fetch("https://9jxf315d-3001.asse.devtunnels.ms/api/login", {
+    const response = await fetch("http://localhost:3001/api/login", {
       method: "POST",
       headers: submitHeaders,
       body: JSON.stringify(data),

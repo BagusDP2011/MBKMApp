@@ -1,7 +1,7 @@
 export const getColumn = async (type, accessId) => {
   try {
     const response = await fetch(
-      `https://9jxf315d-3001.asse.devtunnels.ms/api/column/${type}/${accessId}`
+      `http://localhost:3001/api/column/${type}/${accessId}`
     );
     const data = await response.json();
     return data;
@@ -12,7 +12,7 @@ export const getColumn = async (type, accessId) => {
 
 export const getMenu = async (accessId) => {
   try {
-    const response = await fetch(`https://9jxf315d-3001.asse.devtunnels.ms/api/menu/${accessId}`);
+    const response = await fetch(`http://localhost:3001/api/menu/${accessId}`);
     const data = await response.json();
     return data;
   } catch (error) {
