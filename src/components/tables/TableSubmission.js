@@ -31,7 +31,7 @@ function CustomToolbar() {
 
 const paginationModel = { page: 0, pageSize: 10 };
 
-export default function TableSubmission({ access }) {
+export default function TableSubmission({ access, accessId }) {
   const [submissions, setSubmissions] = React.useState([]);
   const [selectedRows, setSelectedRows] = React.useState([]);
   const [columnVisibilityModel, setColumnVisibilityModel] = useState();
@@ -44,10 +44,10 @@ export default function TableSubmission({ access }) {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const breadcrumbData = await getSubmission(2);
+        const breadcrumbData = await getSubmission(accessId);
         setSubmissions(breadcrumbData);
 
-        const columnData = await getColumn('Submission',2);
+        const columnData = await getColumn('Submission',accessId);
         setColumns(columnData.column);
         setColumnVisibilityModel(columnData.visibility);
       } catch (error) {

@@ -1,30 +1,23 @@
-export const login = async () => {
+export const login = async (data) => {
   try {
     const submitHeaders = new Headers({
       "Content-Type": "application/json",
     });
 
-    fetch("http://localhost:3001/api/login", {
+    const response = await fetch("https://9jxf315d-3001.asse.devtunnels.ms/api/login", {
       method: "POST",
       headers: submitHeaders,
-      body: JSON.stringify({
-        email: "m.fahrizalipradana@gmail.com",
-        password: "292021173",
-      }),
-    })
-      .then((response) => {
-        if (!response.ok) {
-          throw new Error("Network response was not ok");
-        }
-        return response.json();
-      })
-      .then((data) => {
-        localStorage.setItem("token", data);
-      })
-      .catch((error) => {
-        console.error("Error:", error);
-      });
+      body: JSON.stringify(data),
+    });
+
+    if (!response.ok) {
+      throw new Error("Network response was not ok");
+    }
+
+    const responseData = await response.json();
+    return responseData;
   } catch (error) {
+    console.error("Error during login:", error);
     throw error;
   }
 };
