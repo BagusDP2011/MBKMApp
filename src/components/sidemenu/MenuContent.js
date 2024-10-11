@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import { Box, Container, Stack, Typography } from "@mui/material";
 import {
   List,
@@ -16,10 +16,13 @@ import { HelpOutline } from "@mui/icons-material";
 import { iconsMap } from "../../mapItem/mapItem";
 import { styled } from "@mui/material/styles";
 import AutoAwesomeIcon from "@mui/icons-material/AutoAwesome";
+import LogoutIcon from "@mui/icons-material/Logout";
+import { useNavigate } from "react-router-dom";
+import { AuthContext } from "../../service/AuthContext";
 
 const CustomListItemButton = styled(ListItemButton)(({ theme }) => ({
-  "& .MuiTypography-root":{
-    fontWeight:500,
+  "& .MuiTypography-root": {
+    fontWeight: 500,
   },
   "&.Mui-selected": {
     backgroundColor: "#EBF3FF",
@@ -41,6 +44,13 @@ export default function MenuContent({ menus }) {
   const [selectedSubMenu, setSelectedSubMenu] = useState(null);
   const [openSubmenu, setOpenSubmenu] = useState(null);
   const [isSubMenu, setIsSubMenu] = useState(null);
+  const { logoutContext } = useContext(AuthContext);
+  const navigate = useNavigate();
+
+  const logout = () => {
+    logoutContext();
+    navigate("/");
+  };
 
   const handleMenuClick = (id) => {
     setIsSubMenu(false);
@@ -63,14 +73,16 @@ export default function MenuContent({ menus }) {
   return (
     <Stack sx={{ flexGrow: 1, justifyContent: "space-between" }}>
       <Box>
-        <Stack direction="row" sx={{gap:1, alignItems:'center', p:3}}>
-          <AutoAwesomeIcon sx={{fontSize:'2.5rem', color:'#3F8CFE'}} />
-          <Typography variant="h5" fontWeight="900" color="#252e4a">MBKM</Typography>
+        <Stack direction="row" sx={{ gap: 1, alignItems: "center", p: 3 }}>
+          <AutoAwesomeIcon sx={{ fontSize: "2.5rem", color: "#3F8CFE" }} />
+          <Typography variant="h5" fontWeight="900" color="#252e4a">
+            MBKM
+          </Typography>
         </Stack>
         <List disablePadding dense>
           {menus.map((item) => (
             <React.StrictMode key={item.MenuID}>
-              <ListItem sx={{ color:'#A6A6A6', fontWeight:500 }} dense>
+              <ListItem sx={{ color: "#A6A6A6", fontWeight: 500 }} dense>
                 <CustomListItemButton
                   component={Link}
                   to={
@@ -88,12 +100,12 @@ export default function MenuContent({ menus }) {
                       : handleMenuClick(item.MenuID)
                   }
                 >
-                  <ListItemIcon sx={{ minWidth: "max-content", color:'#A6A6A6' }}>
+                  <ListItemIcon
+                    sx={{ minWidth: "max-content", color: "#A6A6A6" }}
+                  >
                     {getIcon(item.Icon)}
                   </ListItemIcon>
-                  <ListItemText>
-                    {item.Title}
-                  </ListItemText>
+                  <ListItemText>{item.Title}</ListItemText>
                   {item.child && item.child.length > 0 ? (
                     item.MenuID === openSubmenu ? (
                       <ExpandLess />
@@ -110,7 +122,11 @@ export default function MenuContent({ menus }) {
                   timeout="auto"
                   unmountOnExit
                 >
-                  <List component="div" dense sx={{ color:'#A6A6A6', fontWeight:500 }}>
+                  <List
+                    component="div"
+                    dense
+                    sx={{ color: "#A6A6A6", fontWeight: 500 }}
+                  >
                     {item.child.map((subMenu) => (
                       <ListItem
                         key={subMenu.MenuID}
@@ -143,17 +159,28 @@ export default function MenuContent({ menus }) {
           ))}
         </List>
       </Box>
-      <List disablePadding dense>
+      {/* <List disablePadding dense>
         {secondaryListItems.map((item, index) => (
-          <ListItem key={index} sx={{ color:'#A6A6A6', fontWeight:500 }}>
+          <ListItem key={index} sx={{ color: "#A6A6A6", fontWeight: 500 }}>
             <CustomListItemButton sx={{ columnGap: 1 }}>
-              <ListItemIcon sx={{ minWidth: "max-content", color:'#A6A6A6' }}>
+              <ListItemIcon sx={{ minWidth: "max-content", color: "#A6A6A6" }}>
                 {item.Icon}
               </ListItemIcon>
-              <ListItemText primary={item.Text}/>
+              <ListItemText primary={item.Text} />
             </CustomListItemButton>
           </ListItem>
         ))}
+      </List> */}
+
+      <List disablePadding dense>
+        <ListItem>
+          <CustomListItemButton sx={{ columnGap: 1 }} onClick={() => logout()}>
+            <ListItemIcon sx={{ minWidth: "max-content", color: "#A6A6A6" }}>
+              <LogoutIcon />
+            </ListItemIcon>
+            <ListItemText primary="Logout" />
+          </CustomListItemButton>
+        </ListItem>
       </List>
     </Stack>
   );

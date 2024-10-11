@@ -1,13 +1,14 @@
-const token = localStorage.getItem('token');
-const subHeaders = new Headers({
-  'Content-Type': 'application/json',
-  'Authorization': `Bearer ${token}`
-});
-
 export const getSubmission = async (accessId) => {
   try {
+    const token = localStorage.getItem("token");
+    const subHeaders = new Headers({
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    });
+
     const response = await fetch(
-      `http://localhost:3001/api/pending-submission/${accessId}`, {headers: subHeaders}
+      `http://localhost:3001/api/pending-submission/${accessId}`,
+      { headers: subHeaders }
     );
     const data = await response.json();
     return data;
@@ -18,6 +19,12 @@ export const getSubmission = async (accessId) => {
 
 export const submit = async (submission) => {
   try {
+    const token = localStorage.getItem("token");
+    const subHeaders = new Headers({
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    });
+
     fetch("http://localhost:3001/api/submission", {
       method: "POST",
       headers: subHeaders,
