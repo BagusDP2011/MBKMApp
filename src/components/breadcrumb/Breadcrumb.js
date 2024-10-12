@@ -37,7 +37,7 @@ export default function Breadcrumb() {
 
   return (
     <Stack direction="row" sx={{justifyContent:'space-between', alignItems:'center'}}>
-      <Typography variant="h5" sx={{fontWeight:500}}>
+      <Typography variant="h5" sx={{fontWeight:600}}>
         {title}
       </Typography>
       <Breadcrumbs aria-label="breadcrumb">
@@ -46,7 +46,7 @@ export default function Breadcrumb() {
           const to = `/${pathnames.slice(0, index + 1).join("/")}`;
 
           return last ? (
-            <Typography key={to} sx={{ color: "#3F8CFE", fontWeight: 500 }}>
+            <Typography key={to} sx={{ color: "#3F8CFE", fontWeight: 600 }}>
               {breadcrumbNameMap[to]}
             </Typography>
           ) : (
