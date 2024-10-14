@@ -7,17 +7,17 @@ import {
   GridToolbarExport,
   GridToolbarDensitySelector,
 } from "@mui/x-data-grid";
-import { Box } from "@mui/material";
+import { Box, List, ListItem, ListItemText } from "@mui/material";
 import { getSubmission } from "../../service/Submission.Service";
 import { getColumn } from "../../service/Static.Service";
 
 function CustomToolbar() {
   return (
-    <GridToolbarContainer sx={{pb:1, px:1.5}}>
+    <GridToolbarContainer sx={{ pb: 1, px: 1.5 }}>
       <GridToolbarColumnsButton />
       <GridToolbarFilterButton />
       <GridToolbarDensitySelector
-        slotProps={{ tooltip: { title: "Change density" }}}
+        slotProps={{ tooltip: { title: "Change density" } }}
       />
       <Box sx={{ flexGrow: 1 }} />
       <GridToolbarExport
@@ -47,7 +47,7 @@ export default function TableSubmission({ access, accessId }) {
         const breadcrumbData = await getSubmission(accessId);
         setSubmissions(breadcrumbData);
 
-        const columnData = await getColumn('Submission',accessId);
+        const columnData = await getColumn("Submission", accessId);
         setColumns(columnData.column);
         setColumnVisibilityModel(columnData.visibility);
       } catch (error) {
@@ -69,8 +69,10 @@ export default function TableSubmission({ access, accessId }) {
   };
 
   const getExportColumn = () => {
-    return Object.keys(columns.visibility).filter(key => columns.visibility[key]);
-  }
+    return Object.keys(columns.visibility).filter(
+      (key) => columns.visibility[key]
+    );
+  };
 
   const handleColumnResizeCommitted = debounce((params) => {
     console.log(
@@ -94,24 +96,55 @@ export default function TableSubmission({ access, accessId }) {
     setSelectedRows(selectedData);
   };
 
+  const processColumns = () => {
+    return columns.map((col) => {
+      if (col.field === "ApprovalStatus") {
+        return {
+          ...col,
+          renderCell: (params) => (
+            <List dense>
+              {params.value.map((approval) => (
+                <ListItem disablePadding key={approval.ApprovalID}>
+                  <ListItemText>
+                    {approval.AccDescription}: {approval.ApprovalStatus}
+                  </ListItemText>
+                </ListItem>
+              ))}
+            </List>
+          ),
+        };
+      }
+      return col;
+    });
+  };
+
+  const getRowHeight = (params) => {
+    console.log(params)
+    const approvalList = params.model.ApprovalStatus || [];
+    console.log(approvalList)
+    console.log(52 + approvalList.length * 20)
+    return 52 + approvalList.length * 20;
+  };
+
   return (
-      <DataGrid
-        sx={{p:6}}
-        rows={submissions}
-        columns={columns}
-        initialState={{ pagination: { paginationModel } }}
-        getRowId={(row) => row.SubmissionID}
-        pageSizeOptions={[5, 10]}
-        checkboxSelection
-        selectionModel={selectedRows}
-        slots={{
-          toolbar: access.CanPrint ? CustomToolbar : null,
-        }}
-        slotProps={{ toolbar: { csvOptions: { fields: getExportColumn } } }}
-        columnVisibilityModel={columnVisibilityModel}
-        onColumnVisibilityModelChange={handleColumnVisibilityChange}
-        onColumnResize={handleColumnResizeCommitted}
-        disableRowSelectionOnClick
-      />
+    <DataGrid
+      sx={{ p: 6 }}
+      rows={submissions}
+      columns={processColumns()}
+      initialState={{ pagination: { paginationModel } }}
+      getRowId={(row) => row.SubmissionID}
+      pageSizeOptions={[5, 10]}
+      checkboxSelection
+      selectionModel={selectedRows}
+      slots={{
+        toolbar: access.CanPrint ? CustomToolbar : null,
+      }}
+      slotProps={{ toolbar: { csvOptions: { fields: getExportColumn } } }}
+      columnVisibilityModel={columnVisibilityModel}
+      onColumnVisibilityModelChange={handleColumnVisibilityChange}
+      onColumnResize={handleColumnResizeCommitted}
+      disableRowSelectionOnClick
+      getRowHeight={getRowHeight}
+    />
   );
 }
