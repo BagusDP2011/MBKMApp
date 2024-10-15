@@ -7,9 +7,16 @@ import {
   GridToolbarExport,
   GridToolbarDensitySelector,
 } from "@mui/x-data-grid";
-import { Box, List, ListItem, ListItemText } from "@mui/material";
+import {
+  Box,
+  Avatar,
+  Stack,
+  Button,
+} from "@mui/material";
 import { getSubmission } from "../../service/Submission.Service";
 import { getColumn } from "../../service/Static.Service";
+import VisibilityOutlinedIcon from "@mui/icons-material/VisibilityOutlined";
+import DeleteOutlineOutlinedIcon from "@mui/icons-material/DeleteOutlineOutlined";
 
 function CustomToolbar() {
   return (
@@ -98,19 +105,66 @@ export default function TableSubmission({ access, accessId }) {
 
   const processColumns = () => {
     return columns.map((col) => {
-      if (col.field === "ApprovalStatus") {
+      // if (col.field === "ApprovalStatus") {
+      //   return {
+      //     ...col,
+      //     renderCell: (params) => (
+      //       <List dense>
+      //         {params.value.map((approval) => (
+      //           <ListItem disablePadding key={approval.ApprovalID}>
+      //             <ListItemText>
+      //               {approval.AccDescription}:
+      //               <Chip
+      //                 className="capitalize"
+      //                 variant="tonal"
+      //                 color={
+      //                   approval.ApprovalStatus === "Pending"
+      //                     ? "warning"
+      //                     : approval.ApprovalStatus === "inactive"
+      //                     ? "secondary"
+      //                     : "success"
+      //                 }
+      //                 label={approval.ApprovalStatus}
+      //                 size="small"
+      //               />
+      //             </ListItemText>
+      //           </ListItem>
+      //         ))}
+      //       </List>
+      //     ),
+      //   };
+      // }
+
+      if (col.field === "Actions") {
         return {
           ...col,
           renderCell: (params) => (
-            <List dense>
-              {params.value.map((approval) => (
-                <ListItem disablePadding key={approval.ApprovalID}>
-                  <ListItemText>
-                    {approval.AccDescription}: {approval.ApprovalStatus}
-                  </ListItemText>
-                </ListItem>
-              ))}
-            </List>
+            <Stack
+              sx={{
+                height: "100%",
+                alignItems: "center",
+              }}
+              direction="row"
+            >
+              <Button
+                sx={{
+                  maxWidth: "max-content",
+                  minWidth: "max-content",
+                  padding: 0,
+                }}
+              >
+                <Avatar variant="rounded" sx={{ backgroundColor: "#3F8CFE" }}>
+                  <VisibilityOutlinedIcon />
+                </Avatar>
+              </Button>
+              {access.CanDelete && (
+                <Button>
+                  <Avatar variant="rounded" sx={{ backgroundColor: "#FF4C51" }}>
+                    <DeleteOutlineOutlinedIcon />
+                  </Avatar>
+                </Button>
+              )}
+            </Stack>
           ),
         };
       }
@@ -119,10 +173,7 @@ export default function TableSubmission({ access, accessId }) {
   };
 
   const getRowHeight = (params) => {
-    console.log(params)
     const approvalList = params.model.ApprovalStatus || [];
-    console.log(approvalList)
-    console.log(52 + approvalList.length * 20)
     return 52 + approvalList.length * 20;
   };
 
@@ -131,20 +182,24 @@ export default function TableSubmission({ access, accessId }) {
       sx={{ p: 6 }}
       rows={submissions}
       columns={processColumns()}
-      initialState={{ pagination: { paginationModel } }}
+      initialState={{
+        pagination: { paginationModel },
+        density: "comfortable"
+      }}
       getRowId={(row) => row.SubmissionID}
       pageSizeOptions={[5, 10]}
-      checkboxSelection
       selectionModel={selectedRows}
       slots={{
         toolbar: access.CanPrint ? CustomToolbar : null,
       }}
-      slotProps={{ toolbar: { csvOptions: { fields: getExportColumn } } }}
+      slotProps={{
+        toolbar: { csvOptions: { fields: getExportColumn } },
+      }}
       columnVisibilityModel={columnVisibilityModel}
       onColumnVisibilityModelChange={handleColumnVisibilityChange}
       onColumnResize={handleColumnResizeCommitted}
       disableRowSelectionOnClick
-      getRowHeight={getRowHeight}
+      // getRowHeight={getRowHeight}
     />
   );
 }
