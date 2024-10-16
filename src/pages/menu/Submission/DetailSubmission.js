@@ -1,4 +1,4 @@
-import * as React from "react";
+import React, { useEffect } from "react";
 import {
   Box,
   Avatar,
@@ -10,15 +10,8 @@ import {
   Stack,
   Tab,
   Tabs,
-  TextField,
-  LinearProgress,
   Grid2 as Grid,
 } from "@mui/material";
-import CheckCircleIcon from "@mui/icons-material/CheckCircle";
-import StarIcon from "@mui/icons-material/Star";
-import EditIcon from "@mui/icons-material/Edit";
-import BlockIcon from "@mui/icons-material/Block";
-import CheckOutlinedIcon from "@mui/icons-material/CheckOutlined";
 import {
   Timeline,
   TimelineItem,
@@ -27,45 +20,54 @@ import {
   TimelineContent,
   TimelineDot,
 } from "@mui/lab";
+import Swal from "sweetalert2";
+import { getSubmissionByID } from "../../../service/Submission.Service";
+import { useParams } from 'react-router-dom';
 
-export default function UserProfileWithTabsAndTimeline() {
+
+export default function DetailSubmission() {
   const [tabValue, setTabValue] = React.useState(0);
+  const [submission, setSubmission] = React.useState({});
+  const [student, setStudent] = React.useState({});
+  const [submissionApproval, setSubmissionApproval] = React.useState([]);
+  const [submissionAttachment, setSubmissionAttachment] = React.useState([]);
+  const { id } = useParams();
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const submission = await getSubmissionByID(id);
+        setSubmission(submission.submission);
+        setStudent(submission.student);
+        let submitTimeline = {
+          AccDescription: submission.student.Name,
+          Level: 0,
+          ApprovalID: 0,
+          SubmissionID: submission.submission.SubmissionID,
+          ApproverID: 0,
+          ApprovalStatus: "Submit",
+          ApprovalDate: submission.submission.SubmissionDate,
+        };
+
+        console.log(submitTimeline)
+
+        const updatedSubmissionApproval = [submitTimeline, ...submission.submissionApproval];
+        setSubmissionApproval(updatedSubmissionApproval);
+        setSubmissionAttachment(submission.submissionAttachment);
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      }
+    };
+
+    fetchData();
+  }, []);
 
   const handleChange = (event, newValue) => {
     setTabValue(newValue);
   };
 
-  const approvalData = [
-    {
-      AccDescription: "Tata Usaha",
-      Level: 1,
-      ApprovalID: 4,
-      SubmissionID: "c5bdf4fc-0994-4140-a02e-eb4adab05792",
-      ApproverID: 1,
-      ApprovalStatus: "Approved",
-      ApprovalDate: "2024-10-13T17:00:00.000Z",
-    },
-    {
-      AccDescription: "KPS",
-      Level: 2,
-      ApprovalID: 5,
-      SubmissionID: "c5bdf4fc-0994-4140-a02e-eb4adab05792",
-      ApproverID: 2,
-      ApprovalStatus: "Approved",
-      ApprovalDate: "2024-10-15T17:00:00.000Z",
-    },
-    {
-      AccDescription: "Dosbing",
-      Level: 3,
-      ApprovalID: 6,
-      SubmissionID: "c5bdf4fc-0994-4140-a02e-eb4adab05792",
-      ApproverID: 2,
-      ApprovalStatus: "Approved",
-      ApprovalDate: "2024-10-15T17:00:00.000Z",
-    },
-  ];
-
   const formatDate = (dateString) => {
+    console.log(dateString)
     const date = new Date(dateString);
 
     const optionsDate = {
@@ -88,19 +90,55 @@ export default function UserProfileWithTabsAndTimeline() {
     return `${formattedDate}, ${formattedTime}`;
   };
 
+  const showAlert = () => {
+    Swal.fire({
+      title: "Hello!",
+      text: "This is a SweetAlert in React",
+      icon: "success",
+      confirmButtonText: "Cool",
+    });
+  };
+
   return (
-    <Grid container spacing={4}>
+    <Grid container spacing={3}>
       <Grid item size={4}>
-        <Card sx={{ boxShadow: 3 }}>
-          <Box display="flex" flexDirection="column" alignItems="center" marginTop='1rem'>
+        <Card
+          sx={{ boxShadow: "none", border: "1px solid rgba(224, 224, 224, 1)" }}
+        >
+          <Box
+            display="flex"
+            flexDirection="column"
+            alignItems="center"
+            marginTop="2rem"
+            px="1rem"
+          >
             <Avatar
               alt="Seth Hallam"
-              src="" // tambahkan src gambar jika ada
+              src=""
               sx={{ width: 80, height: 80, mb: 2 }}
             />
-            <Typography variant="h6">Muhammad Fahrizal Ali Pradana</Typography>
-            <Typography variant="subtitle2" color="primary">
-              3312311045
+            <Typography variant="h6">{student.Name}</Typography>
+            {/* <Box
+              sx={{
+                backgroundColor: "rgb(22 177 255 / 0.16)",
+                px: "8px",
+                height: "22.875px",
+                borderRadius: "1rem",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+              }}
+            >
+              <Typography
+                variant="subtitle2"
+                sx={{ color: "#16B1FF", fontSize: "0.9rem" }}
+                fontWeight="bold"
+              >
+                3312311045
+              </Typography>
+            </Box> */}
+            <Typography variant="subtitle2" color="primary" fontWeight="medium">
+              {student.NIM}
             </Typography>
           </Box>
 
@@ -119,52 +157,108 @@ export default function UserProfileWithTabsAndTimeline() {
 
           <Divider sx={{ my: 2 }} />
 
-          <CardContent>
+          <CardContent sx={{ py: 0 }}>
             <Stack spacing={1}>
-              <Typography variant="subtitle1" fontWeight="bold">
+              <Typography variant="subtitle1" fontWeight="medium">
                 Details
               </Typography>
-              <Typography variant="body2">Username: Fahrizal</Typography>
-              <Typography variant="body2">Email: shallamb@gmail.com</Typography>
-              <Typography variant="body2">Prodi: Teknik Informatika</Typography>
-              {/* <Typography variant="body2">Role: Subscriber</Typography> */}
-              {/* <Typography variant="body2">Tax ID: Tax-8894</Typography> */}
-              <Typography variant="body2">Contact: +6289677124</Typography>
-              <Typography variant="body2">
-                Place, Date of Birth: Batam, 30 May 1986
-              </Typography>
+              <Box sx={{ display: "flex", gap: 1 }}>
+                <Typography variant="body2" fontWeight="medium">
+                  Username:
+                </Typography>
+                <Typography variant="body2">Fahrizal</Typography>
+              </Box>
+              <Box sx={{ display: "flex", gap: 1 }}>
+                <Typography variant="body2" fontWeight="medium">
+                  Email:
+                </Typography>
+                <Typography variant="body2">{student.Email}</Typography>
+              </Box>
+              <Box sx={{ display: "flex", gap: 1 }}>
+                <Typography variant="body2" fontWeight="medium">
+                  Prodi:
+                </Typography>
+                {/* <Box
+                  sx={{
+                    backgroundColor: "rgb(86 202 0 / 0.16)",
+                    px: "8px",
+                    height: "22.875px",
+                    borderRadius: "1rem",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                  }}
+                >
+                  <Typography
+                    variant="subtitle2"
+                    sx={{ color: "#56CA00", fontSize: "0.9rem" }}
+                    fontWeight="bold"
+                  >
+                    Teknik Informatika
+                  </Typography>
+                </Box> */}
+                <Typography variant="body2">{student.ProdiName}</Typography>
+              </Box>
+              <Box sx={{ display: "flex", gap: 1 }}>
+                <Typography variant="body2" fontWeight="medium">
+                  Contact:
+                </Typography>
+                <Typography variant="body2">+62879912314</Typography>
+              </Box>
+              <Box sx={{ display: "flex", gap: 1 }}>
+                <Typography variant="body2" fontWeight="medium">
+                  Place, Date of Birth:
+                </Typography>
+                <Typography variant="body2">Batam, 30 May 1986</Typography>
+              </Box>
             </Stack>
           </CardContent>
 
-          <Box display="flex" justifyContent="center" gap={2} p={2}>
+          <Box display="flex" gap={2} px="1rem" pt="1rem" pb="2rem">
             <Button
+              sx={{ width: "100%", textTransform: "none" }}
+              variant="outlined"
+              color="error"
+            >
+              Reject
+            </Button>
+            <Button
+              sx={{ width: "100%", textTransform: "none" }}
               variant="contained"
               color="primary"
-              startIcon={<CheckOutlinedIcon />}
+              onClick={() => showAlert()}
             >
               Approve
-            </Button>
-            <Button variant="outlined" color="error" startIcon={<BlockIcon />}>
-              Reject
             </Button>
           </Box>
         </Card>
 
-        <Card sx={{ marginTop: "32px", boxShadow: 3 }}>
+        <Card
+          sx={{
+            marginTop: "1.5rem",
+            boxShadow: "none",
+            border: "1px solid rgba(224, 224, 224, 1)",
+          }}
+        >
+          <Typography variant="h6" sx={{ margin: "1rem" }}>
+            Approval Timeline
+          </Typography>
+          <Divider />
           <CardContent>
-            <Typography variant="h6">Approval Timeline</Typography>
-            <Timeline position="alternate">
-              {approvalData.map((item, index) => (
+            <Timeline position="alternate" sx={{ padding: 0, margin: 0 }}>
+              {submissionApproval.map((item, index) => (
                 <TimelineItem key={index}>
                   <TimelineSeparator>
                     <TimelineDot
                       color={
-                        item.ApprovalStatus === "Approved"
+                        item.ApprovalStatus === "Approved" || item.ApprovalStatus === "Submit"
                           ? "primary"
-                          : "success"
+                          : "warning"
                       }
                     />
-                    {index < approvalData.length - 1 && <TimelineConnector />}
+                    {index < submissionApproval.length - 1 && (
+                      <TimelineConnector />
+                    )}
                   </TimelineSeparator>
                   <TimelineContent>
                     <Typography variant="body1">
@@ -191,107 +285,8 @@ export default function UserProfileWithTabsAndTimeline() {
           <Tab label="Document" />
         </Tabs>
 
-        {/* Tab Content - Project List */}
-        {tabValue === 0 && (
-          <Card sx={{boxShadow: 3}}>
-            <CardContent>
-              <Typography variant="h6">Project List</Typography>
-              <Divider sx={{ mb: 2 }} />
-
-              {/* Example of a project row */}
-              {projects.map((project) => (
-                <Box key={project.id} mb={2}>
-                  <Box
-                    display="flex"
-                    justifyContent="space-between"
-                    alignItems="center"
-                  >
-                    <Typography variant="body1" fontWeight="bold">
-                      {project.name} ({project.type})
-                    </Typography>
-                    <Typography variant="body2">{project.hours} hrs</Typography>
-                  </Box>
-                  <Box
-                    display="flex"
-                    justifyContent="space-between"
-                    alignItems="center"
-                  >
-                    <Typography variant="body2">{project.taskCount}</Typography>
-                    <Box sx={{ width: "70%" }}>
-                      <LinearProgress
-                        variant="determinate"
-                        value={project.progress}
-                      />
-                    </Box>
-                    <Typography variant="body2">{project.progress}%</Typography>
-                  </Box>
-                  <Divider sx={{ mt: 1 }} />
-                </Box>
-              ))}
-            </CardContent>
-          </Card>
-        )}
+        {tabValue === 0 && <Card></Card>}
       </Grid>
     </Grid>
   );
 }
-
-// Dummy Project Data
-const projects = [
-  {
-    id: 1,
-    name: "BGC eCommerce App",
-    type: "React Project",
-    taskCount: "122/240",
-    progress: 78,
-    hours: "18:42",
-  },
-  {
-    id: 2,
-    name: "Falcon Logo Design",
-    type: "Figma Project",
-    taskCount: "9/56",
-    progress: 18,
-    hours: "20:42",
-  },
-  {
-    id: 3,
-    name: "Dashboard Design",
-    type: "VueJS Project",
-    taskCount: "290/320",
-    progress: 62,
-    hours: "120:87",
-  },
-  {
-    id: 4,
-    name: "Foodstira Mobile App",
-    type: "Xamarin Project",
-    taskCount: "7/63",
-    progress: 8,
-    hours: "89:19",
-  },
-  {
-    id: 5,
-    name: "Dojo React Project",
-    type: "Python Project",
-    taskCount: "120/186",
-    progress: 49,
-    hours: "230:10",
-  },
-  {
-    id: 6,
-    name: "Blockchain Website",
-    type: "Sketch Project",
-    taskCount: "99/109",
-    progress: 92,
-    hours: "342:41",
-  },
-  {
-    id: 7,
-    name: "Hoffman Website",
-    type: "HTML Project",
-    taskCount: "98/110",
-    progress: 88,
-    hours: "12:45",
-  },
-];

@@ -7,25 +7,22 @@ import {
   GridToolbarExport,
   GridToolbarDensitySelector,
 } from "@mui/x-data-grid";
-import {
-  Box,
-  Avatar,
-  Stack,
-  Button,
-} from "@mui/material";
-import { getSubmission } from "../../service/Submission.Service";
+import { Box, Avatar, Stack, Button } from "@mui/material";
+import { getSubmission, deleteSubmission } from "../../service/Submission.Service";
 import { getColumn } from "../../service/Static.Service";
 import VisibilityOutlinedIcon from "@mui/icons-material/VisibilityOutlined";
 import DeleteOutlineOutlinedIcon from "@mui/icons-material/DeleteOutlineOutlined";
+import Swal from "sweetalert2";
+import { useNavigate } from 'react-router-dom';
 
 function CustomToolbar() {
   return (
     <GridToolbarContainer sx={{ pb: 1, px: 1.5 }}>
       <GridToolbarColumnsButton />
       <GridToolbarFilterButton />
-      <GridToolbarDensitySelector
+      {/* <GridToolbarDensitySelector
         slotProps={{ tooltip: { title: "Change density" } }}
-      />
+      /> */}
       <Box sx={{ flexGrow: 1 }} />
       <GridToolbarExport
         slotProps={{
@@ -43,6 +40,7 @@ export default function TableSubmission({ access, accessId }) {
   const [selectedRows, setSelectedRows] = React.useState([]);
   const [columnVisibilityModel, setColumnVisibilityModel] = useState();
   const [columns, setColumns] = React.useState([]);
+  const navigate = useNavigate();
 
   const handleColumnVisibilityChange = (newModel) => {
     setColumnVisibilityModel(newModel);
@@ -105,36 +103,6 @@ export default function TableSubmission({ access, accessId }) {
 
   const processColumns = () => {
     return columns.map((col) => {
-      // if (col.field === "ApprovalStatus") {
-      //   return {
-      //     ...col,
-      //     renderCell: (params) => (
-      //       <List dense>
-      //         {params.value.map((approval) => (
-      //           <ListItem disablePadding key={approval.ApprovalID}>
-      //             <ListItemText>
-      //               {approval.AccDescription}:
-      //               <Chip
-      //                 className="capitalize"
-      //                 variant="tonal"
-      //                 color={
-      //                   approval.ApprovalStatus === "Pending"
-      //                     ? "warning"
-      //                     : approval.ApprovalStatus === "inactive"
-      //                     ? "secondary"
-      //                     : "success"
-      //                 }
-      //                 label={approval.ApprovalStatus}
-      //                 size="small"
-      //               />
-      //             </ListItemText>
-      //           </ListItem>
-      //         ))}
-      //       </List>
-      //     ),
-      //   };
-      // }
-
       if (col.field === "Actions") {
         return {
           ...col,
@@ -158,7 +126,7 @@ export default function TableSubmission({ access, accessId }) {
                 </Avatar>
               </Button>
               {access.CanDelete && (
-                <Button>
+                <Button onClick={() => handleDelete(params.id)}>
                   <Avatar variant="rounded" sx={{ backgroundColor: "#FF4C51" }}>
                     <DeleteOutlineOutlinedIcon />
                   </Avatar>
@@ -172,6 +140,27 @@ export default function TableSubmission({ access, accessId }) {
     });
   };
 
+  const getParams = (params) => {
+    console.log(params);
+  };
+
+  const handleDelete = async (submissionId) => {
+    Swal.fire({
+      title: "Delete Submission",
+      text: "Are you sure want to delete this submission?",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonText: 'Delete',
+      cancelButtonText: 'Cancel',
+      confirmButtonColor: '#FF4C51',
+      cancelButtonColor: '#3F8CFE',
+    }).then(async (result) => {
+      if (result.isConfirmed) {
+        await deleteSubmission(submissionId).then(navigate(0))
+      }
+    });
+  };
+
   const getRowHeight = (params) => {
     const approvalList = params.model.ApprovalStatus || [];
     return 52 + approvalList.length * 20;
@@ -179,12 +168,12 @@ export default function TableSubmission({ access, accessId }) {
 
   return (
     <DataGrid
-      sx={{ p: 6 }}
+      sx={{ px: "1rem", py: "2rem" }}
       rows={submissions}
       columns={processColumns()}
       initialState={{
         pagination: { paginationModel },
-        density: "comfortable"
+        density: "comfortable",
       }}
       getRowId={(row) => row.SubmissionID}
       pageSizeOptions={[5, 10]}
@@ -199,7 +188,6 @@ export default function TableSubmission({ access, accessId }) {
       onColumnVisibilityModelChange={handleColumnVisibilityChange}
       onColumnResize={handleColumnResizeCommitted}
       disableRowSelectionOnClick
-      // getRowHeight={getRowHeight}
     />
   );
 }
