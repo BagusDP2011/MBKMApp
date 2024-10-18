@@ -1,3 +1,5 @@
+import config from "../config";
+
 export const getSubmission = async (accessId) => {
   try {
     const token = localStorage.getItem("token");
@@ -7,7 +9,7 @@ export const getSubmission = async (accessId) => {
     });
 
     const response = await fetch(
-      `http://localhost:3001/api/pending-submission/${accessId}`,
+      `${config.baseURL}/pending-submission/${accessId}`,
       { headers: subHeaders }
     );
     const data = await response.json();
@@ -25,7 +27,7 @@ export const submit = async (submission) => {
       Authorization: `Bearer ${token}`,
     });
 
-    fetch("http://localhost:3001/api/submission", {
+    fetch(`${config.baseURL}/submission`, {
       method: "POST",
       headers: subHeaders,
       body: JSON.stringify(submission),
