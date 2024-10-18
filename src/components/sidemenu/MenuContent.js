@@ -49,7 +49,7 @@ export default function MenuContent({ menus }) {
 
   const logout = () => {
     logoutContext();
-    navigate("/");
+    navigate("/signin");
   };
 
   const handleMenuClick = (id) => {

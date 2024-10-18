@@ -1,6 +1,6 @@
 import React from "react";
 import TableSubmission from "../../../components/tables/TableSubmission";
-import { Box, Stack, Typography } from "@mui/material";
+import { Stack, Typography } from "@mui/material";
 
 export default function ListSubmission({ menuAccess, accessId }) {
   return (
