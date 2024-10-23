@@ -49,7 +49,7 @@ export default function MenuContent({ menus }) {
 
   const logout = () => {
     logoutContext();
-    navigate("/");
+    navigate("/signin");
   };
 
   const handleMenuClick = (id) => {
@@ -127,7 +127,7 @@ export default function MenuContent({ menus }) {
                     dense
                     sx={{ color: "#A6A6A6", fontWeight: 500 }}
                   >
-                    {item.child.map((subMenu) => (
+                    {item.child.filter((item) => !item.HideMenu).map((subMenu) => (
                       <ListItem
                         key={subMenu.MenuID}
                         disablePadding

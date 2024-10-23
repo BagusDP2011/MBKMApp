@@ -17,6 +17,63 @@ export const getSubmission = async (accessId) => {
   }
 };
 
+export const approveSubmission = async (submissionId, accessId) => {
+  try {
+    const token = localStorage.getItem("token");
+    const subHeaders = new Headers({
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    });
+
+    const response = await fetch(
+      `http://localhost:3001/api/submission/approve/${submissionId}/${accessId}`,
+      { method:"POST",headers: subHeaders }
+    );
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    throw error;
+  }
+};
+
+export const getSubmissionByID = async (submissionId) => {
+  try {
+    const token = localStorage.getItem("token");
+    const subHeaders = new Headers({
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    });
+
+    const response = await fetch(
+      `http://localhost:3001/api/submission/${submissionId}`,
+      { headers: subHeaders }
+    );
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    throw error;
+  }
+};
+
+export const deleteSubmission = async (submissionId) => {
+  try {
+    const token = localStorage.getItem("token");
+    const subHeaders = new Headers({
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    });
+
+    const response = await fetch(
+      `http://localhost:3001/api/submission/${submissionId}`,
+      { method:"DELETE",headers: subHeaders }
+    );
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    throw error;
+  }
+};
+
 export const submit = async (submission) => {
   try {
     const token = localStorage.getItem("token");

@@ -18,7 +18,7 @@ const Drawer = styled(MuiDrawer)({
 
 export default function SideMenu({ menus }) {
   return (
-    <Drawer variant="permanent">
+    <Drawer variant="permanent" sx={{zIndex:1000}}>
       <MenuContent menus={menus} />
 
       <Stack

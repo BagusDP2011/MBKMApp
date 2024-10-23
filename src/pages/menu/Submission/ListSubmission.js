@@ -1,20 +1,6 @@
 import React, { useState } from "react";
 import TableSubmission from "../../../components/tables/TableSubmission";
-import { Box, Stack, Typography, Button, Modal, TextField } from "@mui/material";
-
-const modalStyle = {
-  position: 'absolute',
-  top: '50%',
-  left: '50%',
-  transform: 'translate(-50%, -50%)',
-  width: 1000,
-  bgcolor: 'background.paper',
-  border: '2px solid #000',
-  boxShadow: 24,
-  p: 4,
-  overflowY: 'auto', 
-  maxHeight: '80vh', 
-};
+import { Box, Stack, Typography } from "@mui/material";
 
 export default function ListSubmission({ menuAccess, accessId }) {
   const [open, setOpen] = useState(false);  // State untuk modal

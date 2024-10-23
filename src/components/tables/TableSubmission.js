@@ -7,18 +7,22 @@ import {
   GridToolbarExport,
   GridToolbarDensitySelector,
 } from "@mui/x-data-grid";
-import { Box } from "@mui/material";
-import { getSubmission } from "../../service/Submission.Service";
+import { Box, Avatar, Stack, Button } from "@mui/material";
+import { getSubmission, deleteSubmission } from "../../service/Submission.Service";
 import { getColumn } from "../../service/Static.Service";
+import VisibilityOutlinedIcon from "@mui/icons-material/VisibilityOutlined";
+import DeleteOutlineOutlinedIcon from "@mui/icons-material/DeleteOutlineOutlined";
+import Swal from "sweetalert2";
+import { useNavigate } from 'react-router-dom';
 
 function CustomToolbar() {
   return (
-    <GridToolbarContainer sx={{pb:1, px:1.5}}>
+    <GridToolbarContainer sx={{ pb: 1, px: 1.5 }}>
       <GridToolbarColumnsButton />
       <GridToolbarFilterButton />
-      <GridToolbarDensitySelector
-        slotProps={{ tooltip: { title: "Change density" }}}
-      />
+      {/* <GridToolbarDensitySelector
+        slotProps={{ tooltip: { title: "Change density" } }}
+      /> */}
       <Box sx={{ flexGrow: 1 }} />
       <GridToolbarExport
         slotProps={{
@@ -36,6 +40,7 @@ export default function TableSubmission({ access, accessId }) {
   const [selectedRows, setSelectedRows] = React.useState([]);
   const [columnVisibilityModel, setColumnVisibilityModel] = useState();
   const [columns, setColumns] = React.useState([]);
+  const navigate = useNavigate();
 
   const handleColumnVisibilityChange = (newModel) => {
     setColumnVisibilityModel(newModel);
@@ -47,7 +52,7 @@ export default function TableSubmission({ access, accessId }) {
         const breadcrumbData = await getSubmission(accessId);
         setSubmissions(breadcrumbData);
 
-        const columnData = await getColumn('Submission',accessId);
+        const columnData = await getColumn("Submission", accessId);
         setColumns(columnData.column);
         setColumnVisibilityModel(columnData.visibility);
       } catch (error) {
@@ -69,8 +74,10 @@ export default function TableSubmission({ access, accessId }) {
   };
 
   const getExportColumn = () => {
-    return Object.keys(columns.visibility).filter(key => columns.visibility[key]);
-  }
+    return Object.keys(columns.visibility).filter(
+      (key) => columns.visibility[key]
+    );
+  };
 
   const handleColumnResizeCommitted = debounce((params) => {
     console.log(
@@ -94,24 +101,94 @@ export default function TableSubmission({ access, accessId }) {
     setSelectedRows(selectedData);
   };
 
+  const processColumns = () => {
+    return columns.map((col) => {
+      if (col.field === "Actions") {
+        return {
+          ...col,
+          renderCell: (params) => (
+            <Stack
+              sx={{
+                height: "100%",
+                alignItems: "center",
+              }}
+              direction="row"
+            >
+              <Button
+                sx={{
+                  maxWidth: "max-content",
+                  minWidth: "max-content",
+                  padding: 0,
+                }}
+                onClick={() => navigate(`/menu/mbkm/detail/${params.id}`)}
+              >
+                <Avatar variant="rounded" sx={{ backgroundColor: "#3F8CFE" }}>
+                  <VisibilityOutlinedIcon />
+                </Avatar>
+              </Button>
+              {access.CanDelete && (
+                <Button onClick={() => handleDelete(params.id)}>
+                  <Avatar variant="rounded" sx={{ backgroundColor: "#FF4C51" }}>
+                    <DeleteOutlineOutlinedIcon />
+                  </Avatar>
+                </Button>
+              )}
+            </Stack>
+          ),
+        };
+      }
+      return col;
+    });
+  };
+
+  const getParams = (params) => {
+    console.log(params);
+  };
+
+  const handleDelete = async (submissionId) => {
+    Swal.fire({
+      title: "Delete Submission",
+      text: "Are you sure want to delete this submission?",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonText: 'Delete',
+      cancelButtonText: 'Cancel',
+      confirmButtonColor: '#FF4C51',
+      cancelButtonColor: '#3F8CFE',
+    }).then(async (result) => {
+      if (result.isConfirmed) {
+        await deleteSubmission(submissionId).then(navigate(0))
+      }
+    });
+  };
+
+  const getRowHeight = (params) => {
+    const approvalList = params.model.ApprovalStatus || [];
+    return 52 + approvalList.length * 20;
+  };
+
   return (
-      <DataGrid
-        sx={{p:6}}
-        rows={submissions}
-        columns={columns}
-        initialState={{ pagination: { paginationModel } }}
-        getRowId={(row) => row.SubmissionID}
-        pageSizeOptions={[5, 10]}
-        checkboxSelection
-        selectionModel={selectedRows}
-        slots={{
-          toolbar: access.CanPrint ? CustomToolbar : null,
-        }}
-        slotProps={{ toolbar: { csvOptions: { fields: getExportColumn } } }}
-        columnVisibilityModel={columnVisibilityModel}
-        onColumnVisibilityModelChange={handleColumnVisibilityChange}
-        onColumnResize={handleColumnResizeCommitted}
-        disableRowSelectionOnClick
-      />
+    <DataGrid
+      sx={{ px: "1rem", py: "2rem" }}
+      rows={submissions}
+      columns={processColumns()}
+      initialState={{
+        pagination: { paginationModel },
+        density: "comfortable",
+      }}
+      getRowId={(row) => row.SubmissionID}
+      pageSizeOptions={[5, 10]}
+      selectionModel={selectedRows}
+      slots={{
+        toolbar: access.CanPrint ? CustomToolbar : null,
+      }}
+      slotProps={{
+        toolbar: { csvOptions: { fields: getExportColumn } },
+      }}
+      columnVisibilityModel={columnVisibilityModel}
+      onColumnVisibilityModelChange={handleColumnVisibilityChange}
+      onColumnResize={handleColumnResizeCommitted}
+      disableRowSelectionOnClick
+    />
   );
 }
