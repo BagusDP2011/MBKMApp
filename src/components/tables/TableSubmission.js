@@ -120,6 +120,7 @@ export default function TableSubmission({ access, accessId }) {
                   minWidth: "max-content",
                   padding: 0,
                 }}
+                onClick={() => navigate(`/menu/mbkm/detail/${params.id}`)}
               >
                 <Avatar variant="rounded" sx={{ backgroundColor: "#3F8CFE" }}>
                   <VisibilityOutlinedIcon />

@@ -21,11 +21,10 @@ import {
   TimelineDot,
 } from "@mui/lab";
 import Swal from "sweetalert2";
-import { getSubmissionByID } from "../../../service/Submission.Service";
-import { useParams } from 'react-router-dom';
+import { getSubmissionByID, approveSubmission } from "../../../service/Submission.Service";
+import { useParams } from "react-router-dom";
 
-
-export default function DetailSubmission() {
+export default function DetailSubmission({ menuAccess, accessId }) {
   const [tabValue, setTabValue] = React.useState(0);
   const [submission, setSubmission] = React.useState({});
   const [student, setStudent] = React.useState({});
@@ -49,9 +48,12 @@ export default function DetailSubmission() {
           ApprovalDate: submission.submission.SubmissionDate,
         };
 
-        console.log(submitTimeline)
+        console.log(submitTimeline);
 
-        const updatedSubmissionApproval = [submitTimeline, ...submission.submissionApproval];
+        const updatedSubmissionApproval = [
+          submitTimeline,
+          ...submission.submissionApproval,
+        ];
         setSubmissionApproval(updatedSubmissionApproval);
         setSubmissionAttachment(submission.submissionAttachment);
       } catch (error) {
@@ -67,7 +69,7 @@ export default function DetailSubmission() {
   };
 
   const formatDate = (dateString) => {
-    console.log(dateString)
+    console.log(dateString);
     const date = new Date(dateString);
 
     const optionsDate = {
@@ -96,6 +98,23 @@ export default function DetailSubmission() {
       text: "This is a SweetAlert in React",
       icon: "success",
       confirmButtonText: "Cool",
+    });
+  };
+
+  const handleApprove = async (submissionId) => {
+    Swal.fire({
+      title: "Approve Submission",
+      text: "Are you sure want to approve this submission?",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonText: 'Approve',
+      cancelButtonText: 'Cancel',
+      cancelButtonColor: '#FF4C51',
+      confirmButtonColor: '#3F8CFE',
+    }).then(async (result) => {
+      if (result.isConfirmed) {
+        await approveSubmission(submissionId, accessId)
+      }
     });
   };
 
@@ -214,23 +233,25 @@ export default function DetailSubmission() {
             </Stack>
           </CardContent>
 
-          <Box display="flex" gap={2} px="1rem" pt="1rem" pb="2rem">
-            <Button
-              sx={{ width: "100%", textTransform: "none" }}
-              variant="outlined"
-              color="error"
-            >
-              Reject
-            </Button>
-            <Button
-              sx={{ width: "100%", textTransform: "none" }}
-              variant="contained"
-              color="primary"
-              onClick={() => showAlert()}
-            >
-              Approve
-            </Button>
-          </Box>
+          {accessId !== 1 && (
+            <Box display="flex" gap={2} px="1rem" pt="1rem" pb="2rem">
+              <Button
+                sx={{ width: "100%", textTransform: "none" }}
+                variant="outlined"
+                color="error"
+              >
+                Reject
+              </Button>
+              <Button
+                sx={{ width: "100%", textTransform: "none" }}
+                variant="contained"
+                color="primary"
+                onClick={() => handleApprove(submission.SubmissionID)}
+              >
+                Approve
+              </Button>
+            </Box>
+          )}
         </Card>
 
         <Card
@@ -251,7 +272,8 @@ export default function DetailSubmission() {
                   <TimelineSeparator>
                     <TimelineDot
                       color={
-                        item.ApprovalStatus === "Approved" || item.ApprovalStatus === "Submit"
+                        item.ApprovalStatus === "Approved" ||
+                        item.ApprovalStatus === "Submit"
                           ? "primary"
                           : "warning"
                       }
