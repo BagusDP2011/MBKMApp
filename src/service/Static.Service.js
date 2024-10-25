@@ -1,7 +1,9 @@
+import config from "../config";
+
 export const getColumn = async (type, accessId) => {
   try {
     const response = await fetch(
-      `http://localhost:3001/api/column/${type}/${accessId}`
+      `${config.baseURL}/column/${type}/${accessId}`
     );
     const data = await response.json();
     return data;
@@ -12,7 +14,7 @@ export const getColumn = async (type, accessId) => {
 
 export const getMenu = async (accessId) => {
   try {
-    const response = await fetch(`http://localhost:3001/api/menu/${accessId}`);
+    const response = await fetch(`${config.baseURL}/menu/${accessId}`);
     const data = await response.json();
     return data;
   } catch (error) {

@@ -7,8 +7,9 @@ import {
   ListItemIcon,
   ListItemText,
   Collapse,
+  Divider,
 } from "@mui/material";
-import { ExpandLess, ExpandMore } from "@mui/icons-material";
+import { BorderColor, BorderLeft, ExpandLess, ExpandMore } from "@mui/icons-material";
 import { Link } from "react-router-dom";
 import SettingsSuggestOutlinedIcon from "@mui/icons-material/SettingsSuggestOutlined";
 import InfoOutlined from "@mui/icons-material/InfoOutlined";
@@ -25,13 +26,14 @@ const CustomListItemButton = styled(ListItemButton)(({ theme }) => ({
     fontWeight: 500,
   },
   "&.Mui-selected": {
-    backgroundColor: "#EBF3FF",
+    boxShadow: "inset 4px 0 0 0 #3F8CFE",
     color: "#3F8CFE",
     "& .MuiListItemIcon-root": {
       color: "#3F8CFE",
     },
   },
 }));
+
 
 const secondaryListItems = [
   { Text: "Settings", Icon: <SettingsSuggestOutlinedIcon /> },
