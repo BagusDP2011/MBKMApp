@@ -4,13 +4,20 @@ import SideMenu from "../sidemenu/SideMenu";
 import AppNavbar from "../appbar/AppNavbar";
 import { Outlet } from "react-router-dom";
 import Breadcrumb from "../breadcrumb/Breadcrumb";
+import { Navigate } from "react-router-dom";
 
 export default function DashboardLayout({ menus }) {
+  const token = localStorage.getItem("token");
+
+  if (!token) {
+    return <Navigate to="/signin" />;
+  }
+
   return (
     <Box sx={{ display: "flex" }}>
       <SideMenu menus={menus} />
-      <AppNavbar />
-      <Box component="main" sx={{ width: "100%", mt:9 }}>
+      {/* <AppNavbar /> */}
+      <Box component="main" sx={{ width: "100%", mt: 3 }}>
         <Stack sx={{ mx: 3 }}>
           <Stack
             spacing={2}
@@ -20,7 +27,7 @@ export default function DashboardLayout({ menus }) {
               mt: { xs: 8, md: 0 },
             }}
           >
-            <Breadcrumb/>
+            <Breadcrumb />
             <Outlet />
           </Stack>
         </Stack>

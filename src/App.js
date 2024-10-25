@@ -2,35 +2,41 @@ import "./App.css";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import DashboardLayout from "./components/layout/DashboardLayout";
 import { componentsMap } from "./mapItem/mapItem";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useContext, Stack } from "react";
 import NotFound from "./pages/NotFound";
-import SilamKW from "./pages/SilamKW";
-
+import { getMenu } from "./service/Static.Service";
+import { decodeToken } from "./service/Auth.Service";
+import SignIn from "./pages/auth/SignIn";
+import { AuthContext } from "./service/AuthContext";
 
 function App() {
+  const { isLoggedIn } = useContext(AuthContext);
   const [menus, setMenus] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    async function getMenu(){
+    async function fetchData() {
       try {
-        const response = await fetch('http://localhost:3001/api/menu/1');
-        const data = await response.json();
-        setMenus(data);
-        console.log(data)
+        if (isLoggedIn) {
+          const data = await getMenu(decodeToken().accessId);
+          setMenus(data);
+        }
       } catch (error) {
         console.error('Error fetching menu:', error);
-      }finally {
+      } finally {
         setIsLoading(false);
       }
-    };
-    getMenu();
-  }, []); 
+    }
+
+    if (isLoggedIn) {
+      fetchData();
+    }
+  }, [isLoggedIn]);
 
   function generateRoutes(menuItems) {
     return menuItems.map((menu) => {
       const ElementComponent = componentsMap[menu.Element] || null;
-      const component = ElementComponent ? <ElementComponent menuAccess={menu.menuAccess}/> : null;
+      const component = ElementComponent ? <ElementComponent menuAccess={menu.menuAccess} accessId={isLoggedIn ? decodeToken().accessId : null}/> : null;
 
       return (
         <Route key={menu.MenuID} path={menu.Title} element={component}>
@@ -40,14 +46,18 @@ function App() {
     });
   }
 
-  if (isLoading) {
-    return <div>Loading...</div>;
-  }
+  // if (isLoading) {
+  //   return (
+  //   <Stack direction="row" sx={{justifyContent:'center', alignItems:'center', height:'100vh', columnGap:1}}>
+  //     <CircularProgress /> Loading...
+  //   </Stack>
+  //   )
+  // }
 
   return (
     <BrowserRouter>
       <Routes>
-        <Route path="/" element={<SilamKW />} />
+        <Route path="/signin" element={<SignIn/>}/>
         <Route path="/menu" element={<DashboardLayout menus={menus.filter((item) => !item.Index)} />}>
           {generateRoutes(menus.filter((item) => !item.Index))}
         </Route>
