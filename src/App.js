@@ -8,6 +8,7 @@ import { getMenu } from "./service/Static.Service";
 import { decodeToken } from "./service/Auth.Service";
 import SignIn from "./pages/auth/SignIn";
 import { AuthContext } from "./service/AuthContext";
+import SilamKW from "./pages/SilamKW"
 
 function App() {
   const { isLoggedIn } = useContext(AuthContext);
@@ -36,7 +37,7 @@ function App() {
   function generateRoutes(menuItems) {
     return menuItems.map((menu) => {
       const ElementComponent = componentsMap[menu.Element] || null;
-      const component = ElementComponent ? <ElementComponent menuAccess={menu.menuAccess} accessId={isLoggedIn ? decodeToken().accessId : null}/> : null;
+      const component = ElementComponent ? <ElementComponent menuAccess={menu.menuAccess} accessId={isLoggedIn ? decodeToken().accessId : 7}/> : null;
 
       return (
         <Route key={menu.MenuID} path={menu.Title} element={component}>
@@ -57,7 +58,8 @@ function App() {
   return (
     <BrowserRouter>
       <Routes>
-        <Route path="/signin" element={<SignIn/>}/>
+        <Route path="/" element={<SilamKW />} />
+        <Route path="/signin" element={<SignIn />}/>
         <Route path="/menu" element={<DashboardLayout menus={menus.filter((item) => !item.Index)} />}>
           {generateRoutes(menus.filter((item) => !item.Index))}
         </Route>
