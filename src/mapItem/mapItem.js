@@ -11,6 +11,12 @@ import DetailSubmission from "../pages/menu/Submission/DetailSubmission";
 import AttachFileIcon from '@mui/icons-material/AttachFile';
 import AttachmentSubmission from "../pages/menu/Submission/AttachmentSubmission";
 import SubmissionInformation from "../pages/menu/Submission/SubmissionInformation";
+import Profile from "../pages/menu/Profile/Profile";
+import ProfileBank from "../pages/menu/Profile/ProfileBank";
+import ProfileEditContact from "../pages/menu/Profile/ProfileEditContact";
+import ProfileEditPrivate from "../pages/menu/Profile/ProfileEditPrivate";
+import ProfileEmergency from "../pages/menu/Profile/ProfileEmergency";
+import ProfileSocialMedia from "../pages/menu/Profile/ProfileSocialMedia";
 
 export const iconsMap = {
     "<SegmentOutlinedIcon />" : <SegmentOutlinedIcon sx={{fontSize:'1.7rem'}}/>,
@@ -29,4 +35,10 @@ export const iconsMap = {
     "<DetailSubmission />" : DetailSubmission,
     "<AttachmentSubmission />" : AttachmentSubmission,
     "<SubmissionInformation />" : SubmissionInformation,
+    "<Profile />" : Profile,
+    "<ProfileEditPrivate />" : ProfileEditPrivate,
+    "<ProfileEditContact />" : ProfileEditContact,
+    "<ProfileEmergency />" : ProfileEmergency,
+    "<ProfileSocialMedia />" : ProfileSocialMedia,
+    "<ProfileBank />" : ProfileBank,
   };
