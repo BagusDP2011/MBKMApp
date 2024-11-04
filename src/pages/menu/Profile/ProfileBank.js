@@ -1,5 +1,6 @@
 import React from "react";
 import { Box, Grid, TextField, Typography } from "@mui/material";
+import { Outlet } from "react-router-dom";
 
 export default function ProfileBank() {
   return (
@@ -45,6 +46,8 @@ export default function ProfileBank() {
           />
         </Grid>
       </Grid>
+      <Outlet />
     </Box>
+
   );
 }

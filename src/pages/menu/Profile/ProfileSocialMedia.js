@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
 import { TextField, Button, Box, Typography } from '@mui/material';
+import { Outlet } from "react-router-dom";
+
 
 export default function ProfileSocialMedia () {
   const [socialMedia, setSocialMedia] = useState({
@@ -90,6 +92,7 @@ export default function ProfileSocialMedia () {
       >
         Simpan Perubahan
       </Button>
+      <Outlet />
     </Box>
   );
 };

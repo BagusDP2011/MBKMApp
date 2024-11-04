@@ -9,6 +9,8 @@ import {
   Typography,
   Box,
 } from "@mui/material";
+import { Outlet } from "react-router-dom";
+
 
 export default function ProfileEditPrivate() {
   return (
@@ -119,6 +121,8 @@ export default function ProfileEditPrivate() {
           </Grid>
         </Grid>
       </Box>
+      <Outlet />
+
     </Container>
   );
 }

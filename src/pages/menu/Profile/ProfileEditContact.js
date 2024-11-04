@@ -10,6 +10,8 @@ import {
   Switch,
   FormControlLabel,
 } from "@mui/material";
+import { Outlet } from "react-router-dom";
+
 
 export default function ProfileEditContact() {
   const [alamatSama, setAlamatSama] = useState(false);
@@ -179,6 +181,7 @@ export default function ProfileEditContact() {
           </Grid>
         </Grid>
       </Box>
+      <Outlet />
     </Container>
   );
 }

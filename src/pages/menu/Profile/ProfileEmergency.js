@@ -8,6 +8,8 @@ import {
   Typography,
   Box,
 } from "@mui/material";
+import { Outlet } from "react-router-dom";
+
 
 export default function ProfileEmergency() {
   return (
@@ -48,6 +50,7 @@ export default function ProfileEmergency() {
           </Grid>
         </Grid>
       </Box>
+      <Outlet />
     </Container>
   );
 }
