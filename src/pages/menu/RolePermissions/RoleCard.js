@@ -12,7 +12,88 @@ import {
   Button,
 } from "@mui/material";
 import { getListRoleDetail } from "../../../service/Static.Service";
-import EditRoleModal from "./EditRoleModal";
+import EditMenuAccessModal from "./EditMenuAccessModal";
+
+const permissionsData = [
+  {
+    "Title": "Menu",
+    "MenuAccessID": 1,
+    "MenuID": 1,
+    "AccessID": 1,
+    "CanRead": true,
+    "CanAdd": false,
+    "CanEdit": false,
+    "CanDelete": false,
+    "CanPrint": false
+  },
+  {
+    "Title": "MBKM",
+    "MenuAccessID": 2,
+    "MenuID": 3,
+    "AccessID": 1,
+    "CanRead": true,
+    "CanAdd": false,
+    "CanEdit": false,
+    "CanDelete": false,
+    "CanPrint": false
+  },
+  {
+    "Title": "Informasi",
+    "MenuAccessID": 3,
+    "MenuID": 4,
+    "AccessID": 1,
+    "CanRead": true,
+    "CanAdd": false,
+    "CanEdit": false,
+    "CanDelete": false,
+    "CanPrint": false
+  },
+  {
+    "Title": "Pengajuan",
+    "MenuAccessID": 4,
+    "MenuID": 5,
+    "AccessID": 1,
+    "CanRead": true,
+    "CanAdd": true,
+    "CanEdit": true,
+    "CanDelete": true,
+    "CanPrint": true
+  },
+  {
+    "Title": "Daftar Pengajuan",
+    "MenuAccessID": 13,
+    "MenuID": 6,
+    "AccessID": 1,
+    "CanRead": true,
+    "CanAdd": true,
+    "CanEdit": true,
+    "CanDelete": true,
+    "CanPrint": false
+  },
+  {
+    "Title": "Detail/:id",
+    "MenuAccessID": 14,
+    "MenuID": 7,
+    "AccessID": 1,
+    "CanRead": true,
+    "CanAdd": true,
+    "CanEdit": true,
+    "CanDelete": true,
+    "CanPrint": true
+  },
+  {
+    "Title": "Lampiran",
+    "MenuAccessID": 17,
+    "MenuID": 8,
+    "AccessID": 1,
+    "CanRead": true,
+    "CanAdd": true,
+    "CanEdit": true,
+    "CanDelete": true,
+    "CanPrint": true
+  }
+];
+
 
 const RoleCard = () => {
   const [listRoleDetail, setListRoleDetail] = useState([]);
@@ -64,12 +145,10 @@ const RoleCard = () => {
           </Typography>
   
           <Button
-            href="#"
-            underline="hover"
-            sx={{ fontSize: "0.875rem", color: "#3f51b5" }}
+            sx={{ fontSize: "0.875rem", padding:0 }}
             onClick={handleOpen}
           >
-            Edit Role
+            Edit Menu Access
           </Button>
         </CardContent>
       </Card>
@@ -102,7 +181,7 @@ const RoleCard = () => {
           </Grid>
         ))}
       </Grid>
-      <EditRoleModal open={open} handleClose={handleClose} />
+      <EditMenuAccessModal open={open} handleClose={handleClose} permissionsData={permissionsData} />
     </Box>
 
   );
