@@ -3,7 +3,6 @@ import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
 import Checkbox from "@mui/material/Checkbox";
 import FormControlLabel from "@mui/material/FormControlLabel";
-import Divider from "@mui/material/Divider";
 import FormLabel from "@mui/material/FormLabel";
 import FormControl from "@mui/material/FormControl";
 import Link from "@mui/material/Link";
@@ -13,12 +12,14 @@ import Stack from "@mui/material/Stack";
 import MuiCard from "@mui/material/Card";
 import { styled } from "@mui/material/styles";
 import ForgotPassword from "./ForgotPassword";
-import { GoogleIcon, FacebookIcon, SitemarkIcon } from "./CustomIcons";
+import { GoogleIcon } from "./CustomIcons"; 
 import { login } from "../../service/Auth.Service";
 import { AuthContext } from "../../service/AuthContext";
 import { useNavigate } from "react-router-dom";
-// import AppTheme from '../shared-theme/AppTheme';
-// import ColorModeSelect from '../shared-theme/ColorModeSelect';
+
+import LogoImage from "../../assets/img/informatika.png"; 
+import BackgroundImage from "../../assets/img/backround.png";
+
 
 const Card = styled(MuiCard)(({ theme }) => ({
   display: "flex",
@@ -28,38 +29,25 @@ const Card = styled(MuiCard)(({ theme }) => ({
   padding: theme.spacing(4),
   gap: theme.spacing(2),
   margin: "auto",
-  [theme.breakpoints.up("sm")]: {
-    maxWidth: "450px",
-  },
-  boxShadow:
-    "hsla(220, 30%, 5%, 0.05) 0px 5px 15px 0px, hsla(220, 25%, 10%, 0.05) 0px 15px 35px -5px",
-  ...theme.applyStyles("dark", {
-    boxShadow:
-      "hsla(220, 30%, 5%, 0.5) 0px 5px 15px 0px, hsla(220, 25%, 10%, 0.08) 0px 15px 35px -5px",
-  }),
+  maxWidth: "450px",
+  borderRadius: theme.shape.borderRadius * 2,
+  backgroundColor: "#0D47A1",
+  boxShadow: "0px 10px 30px rgba(0, 0, 0, 0.3)",
+  color: "white",
+  marginRight: theme.spacing(4), 
 }));
 
+
 const SignInContainer = styled(Stack)(({ theme }) => ({
-  minHeight: "100%",
+  minHeight: "100vh",
   padding: theme.spacing(2),
-  [theme.breakpoints.up("sm")]: {
-    padding: theme.spacing(4),
-  },
-  "&::before": {
-    content: '""',
-    display: "block",
-    position: "absolute",
-    zIndex: -1,
-    inset: 0,
-    backgroundImage:
-      "radial-gradient(ellipse at 50% 50%, hsl(210, 100%, 97%), hsl(0, 0%, 100%))",
-    backgroundRepeat: "no-repeat",
-    ...theme.applyStyles("dark", {
-      backgroundImage:
-        "radial-gradient(at 50% 50%, hsla(210, 100%, 16%, 0.5), hsl(220, 30%, 5%))",
-    }),
-  },
+  justifyContent: "center",
+  alignItems: "flex-end",
+  backgroundImage: `url(${BackgroundImage})`, 
+  backgroundSize: "cover", 
+  backgroundPosition: "center", 
 }));
+
 
 export default function SignIn(props) {
   const [emailError, setEmailError] = React.useState(false);
@@ -80,19 +68,15 @@ export default function SignIn(props) {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-  
     if (emailError || passwordError) {
       return;
     }
-  
     const data = new FormData(event.currentTarget);
-  
     try {
       const token = await login({
         email: data.get("email"),
         password: data.get("password"),
       });
-        
       if (token) {
         loginContext(token);
         navigate("/menu");
@@ -103,7 +87,6 @@ export default function SignIn(props) {
       console.error("Error during login:", error);
     }
   };
-  
 
   const validateInputs = () => {
     const email = document.getElementById("email");
@@ -133,16 +116,15 @@ export default function SignIn(props) {
   };
 
   return (
-    <SignInContainer direction="column" justifyContent="space-between">
+    <SignInContainer>
       <Card variant="outlined">
-        {/* <SitemarkIcon /> */}
-        <Typography
-          component="h1"
-          variant="h4"
-          sx={{ width: "100%", fontSize: "clamp(2rem, 10vw, 2.15rem)" }}
-        >
-          Sign in
-        </Typography>
+        <Box sx={{ display: "flex", justifyContent: "center", mb: 2 }}>
+  <img 
+    src={LogoImage} 
+    alt="Logo" 
+    style={{ width: "300px", height: "240px" }} 
+  />
+</Box>
         <Box
           component="form"
           onSubmit={handleSubmit}
@@ -155,7 +137,7 @@ export default function SignIn(props) {
           }}
         >
           <FormControl>
-            <FormLabel htmlFor="email">Email</FormLabel>
+            <FormLabel htmlFor="email" sx={{ color: "white" }}>Email</FormLabel>
             <TextField
               error={emailError}
               helperText={emailErrorMessage}
@@ -169,18 +151,25 @@ export default function SignIn(props) {
               fullWidth
               variant="outlined"
               color={emailError ? "error" : "primary"}
-              sx={{ ariaLabel: "email" }}
+              InputProps={{ style: { color: "white" } }}
+              sx={{
+                "& .MuiOutlinedInput-root": {
+                  "& fieldset": { borderColor: "white" },
+                  "&:hover fieldset": { borderColor: "#BBDEFB" },
+                  "&.Mui-focused fieldset": { borderColor: "white" },
+                },
+              }}
             />
           </FormControl>
           <FormControl>
             <Box sx={{ display: "flex", justifyContent: "space-between" }}>
-              <FormLabel htmlFor="password">Password</FormLabel>
+              <FormLabel htmlFor="password" sx={{ color: "white" }}>Password</FormLabel>
               <Link
                 component="button"
                 type="button"
                 onClick={handleClickOpen}
                 variant="body2"
-                sx={{ alignSelf: "baseline" }}
+                sx={{ alignSelf: "baseline", color: "#BBDEFB" }}
               >
                 Forgot your password?
               </Link>
@@ -193,16 +182,24 @@ export default function SignIn(props) {
               type="password"
               id="password"
               autoComplete="current-password"
-              autoFocus
               required
               fullWidth
               variant="outlined"
               color={passwordError ? "error" : "primary"}
+              InputProps={{ style: { color: "white" } }}
+              sx={{
+                "& .MuiOutlinedInput-root": {
+                  "& fieldset": { borderColor: "white" },
+                  "&:hover fieldset": { borderColor: "#BBDEFB" },
+                  "&.Mui-focused fieldset": { borderColor: "white" },
+                },
+              }}
             />
           </FormControl>
           <FormControlLabel
-            control={<Checkbox value="remember" color="primary" />}
+            control={<Checkbox value="remember" sx={{ color: "white" }} />}
             label="Remember me"
+            sx={{ color: "white" }}
           />
           <ForgotPassword open={open} handleClose={handleClose} />
           <Button
@@ -210,40 +207,33 @@ export default function SignIn(props) {
             fullWidth
             variant="contained"
             onClick={validateInputs}
+            sx={{ bgcolor: "#1E88E5", "&:hover": { bgcolor: "#1565C0" } }}
           >
             Sign in
           </Button>
-          <Typography sx={{ textAlign: "center" }}>
+          <Typography sx={{ textAlign: "center", color: "white" }}>
             Don&apos;t have an account?{" "}
             <span>
-              <Link
-                href="/material-ui/getting-started/templates/sign-in/"
-                variant="body2"
-                sx={{ alignSelf: "center" }}
-              >
+              <Link href="/signup" variant="body2" sx={{ alignSelf: "center", color: "#BBDEFB" }}>
                 Sign up
               </Link>
             </span>
           </Typography>
         </Box>
-        <Divider>or</Divider>
         <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
           <Button
             fullWidth
             variant="outlined"
             onClick={() => alert("Sign in with Google")}
             startIcon={<GoogleIcon />}
+            sx={{
+              color: "white",
+              borderColor: "white",
+              "&:hover": { borderColor: "#BBDEFB", backgroundColor: "rgba(255, 255, 255, 0.1)" },
+            }}
           >
             Sign in with Google
           </Button>
-          {/* <Button
-            fullWidth
-            variant="outlined"
-            onClick={() => alert("Sign in with Facebook")}
-            startIcon={<FacebookIcon />}
-          >
-            Sign in with Facebook
-          </Button> */}
         </Box>
       </Card>
     </SignInContainer>
