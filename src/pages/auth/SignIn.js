@@ -89,6 +89,7 @@ export default function SignIn(props) {
   
     try {
       const token = await login({
+        user: data.get("user"),
         email: data.get("email"),
         password: data.get("password"),
       });
@@ -106,12 +107,14 @@ export default function SignIn(props) {
   
 
   const validateInputs = () => {
+    const user = document.getElementById("user");
     const email = document.getElementById("email");
     const password = document.getElementById("password");
+    console.log (user.value, password.value);
 
     let isValid = true;
 
-    if (!email.value || !/\S+@\S+\.\S+/.test(email.value)) {
+    if (!user.value || !/\S+@\S+\.\S+/.test(user.value)) {
       setEmailError(true);
       setEmailErrorMessage("Please enter a valid email address.");
       isValid = false;
@@ -119,6 +122,14 @@ export default function SignIn(props) {
       setEmailError(false);
       setEmailErrorMessage("");
     }
+    // if (!email.value || !/\S+@\S+\.\S+/.test(email.value)) {
+    //   setEmailError(true);
+    //   setEmailErrorMessage("Please enter a valid email address.");
+    //   isValid = false;
+    // } else {
+    //   setEmailError(false);
+    //   setEmailErrorMessage("");
+    // }
 
     if (!password.value || password.value.length < 6) {
       setPasswordError(true);
@@ -154,7 +165,7 @@ export default function SignIn(props) {
             gap: 2,
           }}
         >
-          <FormControl>
+          {/* <FormControl>
             <FormLabel htmlFor="email">Email</FormLabel>
             <TextField
               error={emailError}
@@ -162,6 +173,24 @@ export default function SignIn(props) {
               id="email"
               type="email"
               name="email"
+              placeholder="your@email.com"
+              autoComplete="email"
+              autoFocus
+              required
+              fullWidth
+              variant="outlined"
+              color={emailError ? "error" : "primary"}
+              sx={{ ariaLabel: "email" }}
+            />
+          </FormControl> */}
+          <FormControl>
+            <FormLabel htmlFor="user">User</FormLabel>
+            <TextField
+              error={emailError}
+              helperText={emailErrorMessage}
+              id="user"
+              type="user"
+              name="user"
               placeholder="your@email.com"
               autoComplete="email"
               autoFocus
