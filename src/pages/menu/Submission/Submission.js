@@ -85,8 +85,12 @@ function Submission() {
   };
 
   const [checked, setChecked] = React.useState([]);
-  const [left, setLeft] = React.useState(["001-Statistika-4", "009-Dasar Pemrograman-3", "007-Jaringan Komputer-4",]);
-  const [right, setRight] = React.useState([ ]);
+  const [left, setLeft] = React.useState([
+    "001-Statistika-4",
+    "009-Dasar Pemrograman-3",
+    "007-Jaringan Komputer-4",
+  ]);
+  const [right, setRight] = React.useState([]);
 
   const leftChecked = intersection(checked, left);
   const rightChecked = intersection(checked, right);
@@ -127,7 +131,7 @@ function Submission() {
   };
 
   const customList = (items) => (
-    <Paper sx={{ width: 200, height: 230, overflow: 'auto' }}>
+    <Paper sx={{ width: 200, height: 230, overflow: "auto" }}>
       <List dense component="div" role="list">
         {items.map((value) => {
           const labelId = `transfer-list-item-${value}-label`;
@@ -144,11 +148,11 @@ function Submission() {
                   tabIndex={-1}
                   disableRipple
                   inputProps={{
-                    'aria-labelledby': labelId,
+                    "aria-labelledby": labelId,
                   }}
                 />
               </ListItemIcon>
-              <ListItemText id={labelId} primary={` ${value }`} />
+              <ListItemText id={labelId} primary={` ${value}`} />
             </ListItemButton>
           );
         })}
@@ -159,10 +163,10 @@ function Submission() {
   useEffect(() => {
     const fetchData = () => {
       setUser(decodeToken());
-    }
+    };
 
-    fetchData()
-  }, [])
+    fetchData();
+  }, []);
 
   const renderForm = (stepNum) => {
     switch (stepNum) {
@@ -170,9 +174,7 @@ function Submission() {
         return (
           <>
             <FormGrid size={{ xs: 6 }}>
-              <FormLabel htmlFor="name">
-                Nama
-              </FormLabel>
+              <FormLabel htmlFor="name">Nama</FormLabel>
               <OutlinedInput
                 id="name"
                 name="name"
@@ -181,7 +183,7 @@ function Submission() {
                 autoComplete="name"
                 onChange={handleChange}
                 disabled
-                value={user.name || ''}
+                value={user.name || ""}
                 size="medium"
               />
             </FormGrid>
@@ -197,7 +199,7 @@ function Submission() {
                 autoComplete="nim"
                 onChange={handleChange}
                 disabled
-                value={user.id || ''}
+                value={user.id || ""}
                 size="medium"
               />
             </FormGrid>
@@ -217,7 +219,9 @@ function Submission() {
               />
             </FormGrid>
             <FormGrid size={{ xs: 6 }}>
-              <FormLabel htmlFor="supervisor" required>Wali Dosen</FormLabel>
+              <FormLabel htmlFor="supervisor" required>
+                Wali Dosen
+              </FormLabel>
               <OutlinedInput
                 id="supervisor"
                 name="supervisor"
@@ -228,7 +232,10 @@ function Submission() {
                 required
                 size="medium"
               />
-              <FormHelperText>isikan nama dosen wali apabila tidak ada dosen pembimbing magang/TA</FormHelperText>
+              <FormHelperText>
+                isikan nama dosen wali apabila tidak ada dosen pembimbing
+                magang/TA
+              </FormHelperText>
             </FormGrid>
           </>
         );
@@ -237,9 +244,11 @@ function Submission() {
           <>
             <Grid item="true" size={{ xs: 12, md: 12 }}>
               <FormControl fullWidth>
-                <InputLabel>Jenis Program Merdeka</InputLabel>
+                <InputLabel id="program-type-label">Jenis Program Merdeka</InputLabel>
                 <Select
-                  name="freedomProgramType"
+                  labelId="program-type-label"
+                  id="program-type"
+                  label="program-type-merkd"
                   value={formData.freedomProgramType}
                   onChange={handleChange}
                   required
@@ -321,7 +330,7 @@ function Submission() {
       case 2:
         return (
           <>
-            <Grid item size={{ xs: 12 }} >
+            <Grid item size={{ xs: 12 }}>
               <FormControl fullWidth>
                 <InputLabel>Jenis Pertukaran Pelajar</InputLabel>
                 <Select
@@ -330,9 +339,15 @@ function Submission() {
                   onChange={handleChange}
                   required
                 >
-                  <MenuItem value="AntarProdiPoltek">Antar Prodi dii Politeknik Negeri Batam</MenuItem>
-                  <MenuItem value="AntarProdiNoPoltek">Antar Prodi pada Perguruan Tinggi yang berbeda</MenuItem>
-                  <MenuItem value="ProdiSamaNoPoltek">Prodi sama pada Perguruan Tinggi yang berbeda</MenuItem>
+                  <MenuItem value="AntarProdiPoltek">
+                    Antar Prodi dii Politeknik Negeri Batam
+                  </MenuItem>
+                  <MenuItem value="AntarProdiNoPoltek">
+                    Antar Prodi pada Perguruan Tinggi yang berbeda
+                  </MenuItem>
+                  <MenuItem value="ProdiSamaNoPoltek">
+                    Prodi sama pada Perguruan Tinggi yang berbeda
+                  </MenuItem>
                 </Select>
               </FormControl>
             </Grid>
@@ -349,11 +364,15 @@ function Submission() {
             <Grid
               container
               spacing={2}
-              sx={{ justifyContent: 'center', alignItems: 'center', }}
+              sx={{ justifyContent: "center", alignItems: "center" }}
             >
               <Grid item>{customList(left)}</Grid>
               <Grid item>
-                <Grid container direction="column" sx={{ alignItems: 'center' }}>
+                <Grid
+                  container
+                  direction="column"
+                  sx={{ alignItems: "center" }}
+                >
                   <Button
                     sx={{ my: 0.5 }}
                     variant="outlined"
@@ -399,13 +418,11 @@ function Submission() {
               <Grid item>{customList(right)}</Grid>
             </Grid>
           </>
-        )
+        );
       default:
         return null;
     }
   };
-
-
 
   return (
     <Box>
@@ -447,11 +464,7 @@ function Submission() {
                 </Button>
               )}
               {stepNum === steps.length - 1 && (
-                <Button
-                  type="submit"
-                  variant="contained"
-                  color="primary"
-                >
+                <Button type="submit" variant="contained" color="primary">
                   Submit
                 </Button>
               )}
