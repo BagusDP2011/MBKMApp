@@ -23,6 +23,7 @@ import {
 import Swal from "sweetalert2";
 import { getSubmissionByID, approveSubmission } from "../../../service/Submission.Service";
 import { useParams } from "react-router-dom";
+import { useNavigate } from 'react-router-dom';
 
 export default function DetailSubmission({ menuAccess, accessId }) {
   const [tabValue, setTabValue] = React.useState(0);
@@ -31,6 +32,7 @@ export default function DetailSubmission({ menuAccess, accessId }) {
   const [submissionApproval, setSubmissionApproval] = React.useState([]);
   const [submissionAttachment, setSubmissionAttachment] = React.useState([]);
   const { id } = useParams();
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchData = async () => {
@@ -114,6 +116,7 @@ export default function DetailSubmission({ menuAccess, accessId }) {
     }).then(async (result) => {
       if (result.isConfirmed) {
         await approveSubmission(submissionId, accessId)
+        navigate(`/menu/mbkm/daftar%20pengajuan`)
       }
     });
   };
