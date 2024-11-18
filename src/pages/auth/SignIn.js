@@ -147,7 +147,7 @@ export default function SignIn(props) {
             gap: 2,
           }}
         >
-          <FormControl>
+          {/* <FormControl>
             <FormLabel htmlFor="email">Email</FormLabel>
             <TextField
               error={emailError}
@@ -173,7 +173,7 @@ export default function SignIn(props) {
             />
           </FormControl> */}
           <FormControl>
-            <FormLabel htmlFor="user">User</FormLabel>
+            <FormLabel htmlFor="user" sx={{ color: "white" }}>User</FormLabel>
             <TextField
               error={emailError}
               helperText={emailErrorMessage}
@@ -243,7 +243,7 @@ export default function SignIn(props) {
           <Typography sx={{ textAlign: "center", color: "white" }}>
             Don&apos;t have an account?{" "}
             <span>
-              <Link href="/signup" variant="body2" sx={{ alignSelf: "center", color: "#BBDEFB" }}>
+              <Link href="/register" variant="body2" sx={{ alignSelf: "center", color: "#BBDEFB" }}>
                 Sign up
               </Link>
             </span>

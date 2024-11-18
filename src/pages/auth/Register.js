@@ -48,7 +48,7 @@ const RegistrationForm = React.memo(() => {
     name: "",
     password: "",
     accountType: "personal",
-    prodiID: "1",
+    prodiId: "1",
   });
 
   const navigate = useNavigate();
@@ -139,17 +139,17 @@ const RegistrationForm = React.memo(() => {
         />
 
         <FormControl component="fieldset" sx={{ marginTop: "10px" }}>
-          <FormLabel component="legend">prodiID</FormLabel>
+          <FormLabel component="legend">Prodi</FormLabel>
           <RadioGroup
             row
-            name="prodiID"
-            value={formData.prodiID}
+            name="prodiId"
+            value={formData.prodiId}
             onChange={handleChange}
           >
-            <FormControlLabel value="1" control={<Radio />} label="IF" />
-            <FormControlLabel value="2" control={<Radio />} label="Meka" />
-            <FormControlLabel value="3" control={<Radio />} label="Elektro" />
-            <FormControlLabel value="4" control={<Radio />} label="Welding" />
+            <FormControlLabel value="1" control={<Radio />} label="Informatika" />
+            <FormControlLabel value="2" control={<Radio />} label="Multimedia" />
+            <FormControlLabel value="3" control={<Radio />} label="Geomatika" />
+            {/* <FormControlLabel value="4" control={<Radio />} label="RPL" /> */}
           </RadioGroup>
         </FormControl>
 
