@@ -21,8 +21,12 @@ import {
   TimelineDot,
 } from "@mui/lab";
 import Swal from "sweetalert2";
-import { getSubmissionByID, approveSubmission } from "../../../service/Submission.Service";
+import {
+  getSubmissionByID,
+  approveSubmission,
+} from "../../../service/Submission.Service";
 import { useParams } from "react-router-dom";
+import { useNavigate } from 'react-router-dom';
 
 export default function DetailSubmission({ menuAccess, accessId }) {
   const [tabValue, setTabValue] = React.useState(0);
@@ -31,6 +35,7 @@ export default function DetailSubmission({ menuAccess, accessId }) {
   const [submissionApproval, setSubmissionApproval] = React.useState([]);
   const [submissionAttachment, setSubmissionAttachment] = React.useState([]);
   const { id } = useParams();
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchData = async () => {
@@ -107,13 +112,14 @@ export default function DetailSubmission({ menuAccess, accessId }) {
       text: "Are you sure want to approve this submission?",
       icon: "warning",
       showCancelButton: true,
-      confirmButtonText: 'Approve',
-      cancelButtonText: 'Cancel',
-      cancelButtonColor: '#FF4C51',
-      confirmButtonColor: '#3F8CFE',
+      confirmButtonText: "Approve",
+      cancelButtonText: "Cancel",
+      cancelButtonColor: "#FF4C51",
+      confirmButtonColor: "#3F8CFE",
     }).then(async (result) => {
       if (result.isConfirmed) {
         await approveSubmission(submissionId, accessId)
+        navigate(`/menu/mbkm/daftar%20pengajuan`)
       }
     });
   };
@@ -133,7 +139,7 @@ export default function DetailSubmission({ menuAccess, accessId }) {
           >
             <Avatar
               alt="Seth Hallam"
-              src=""
+              src={`data:image/jpeg;base64,${student.UserPhoto}`}
               sx={{ width: 80, height: 80, mb: 2 }}
             />
             <Typography variant="h6">{student.Name}</Typography>
@@ -307,7 +313,82 @@ export default function DetailSubmission({ menuAccess, accessId }) {
           <Tab label="Document" />
         </Tabs>
 
-        {tabValue === 0 && <Card></Card>}
+        {tabValue === 0 && (
+          <Card
+            sx={{
+              marginTop: "1.5rem",
+              boxShadow: "none",
+              border: "1px solid rgba(224, 224, 224, 1)",
+            }}
+          >
+            <CardContent>
+              <Box
+                sx={{
+                  display: "flex",
+                  flexDirection: "column",
+                  // rowGap: "1rem",
+                  rowGap: 1
+                }}
+              >
+                <Typography variant="subtitle1" fontWeight="medium">
+                  Informasi Kegiatan
+                </Typography>
+                <Box>
+                  <Typography variant="body2" fontWeight="medium">
+                    Jenis Kegiatan
+                  </Typography>
+                  <Typography variant="body2">
+                    {submission.ProgramType}
+                  </Typography>
+                </Box>
+                <Box>
+                  <Typography variant="body2" fontWeight="medium">
+                    Tanggal Kegiatan
+                  </Typography>
+                  <Typography variant="body2">
+                    {formatDate(submission.StartDate)} -{" "}
+                    {formatDate(submission.EndDate)}
+                  </Typography>
+                </Box>
+                <Box>
+                  <Typography variant="body2" fontWeight="medium">
+                    Nama Perusahaan
+                  </Typography>
+                  <Typography variant="body2">
+                    {submission.InstitutionName}
+                  </Typography>
+                </Box>
+                <Box>
+                  <Typography variant="body2" fontWeight="medium">
+                    Posisi
+                  </Typography>
+                  <Typography variant="body2">{submission.Position}</Typography>
+                </Box>
+                <Typography variant="subtitle1" fontWeight="medium">
+                  Detail Kegiatan
+                </Typography>
+                <Box>
+                  <Typography variant="body2" fontWeight="medium">
+                    Alasan Memilih Program
+                  </Typography>
+                  <Typography variant="body2">{submission.Reason}</Typography>
+                </Box>
+                <Box>
+                  <Typography variant="body2" fontWeight="medium">
+                    Judul Program
+                  </Typography>
+                  <Typography variant="body2">{submission.Title}</Typography>
+                </Box>
+                <Box>
+                  <Typography variant="body2" fontWeight="medium">
+                    Rincian Kegiatan
+                  </Typography>
+                  <Typography variant="body2">{submission.ActivityDetails}</Typography>
+                </Box>
+              </Box>
+            </CardContent>
+          </Card>
+        )}
       </Grid>
     </Grid>
   );

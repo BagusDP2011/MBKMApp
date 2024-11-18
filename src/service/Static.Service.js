@@ -21,3 +21,13 @@ export const getMenu = async (accessId) => {
     throw error;
   }
 };
+
+export const getListRoleDetail = async () => {
+  try {
+    const response = await fetch(`http://localhost:3001/api/role-detail`);
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    throw error;
+  }
+};
