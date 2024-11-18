@@ -263,7 +263,7 @@ function Submission() {
                   </MenuItem>
                   <MenuItem value="Program C">Pertukaran Pelajar</MenuItem>
                 </Select>
-                <FormHelperText>
+                <FormHelperText sx={{color:"red"}}>
                   wajib memilih salah satu, untuk lomba pilih Studi/Proyek
                   Independen
                 </FormHelperText>
@@ -298,7 +298,7 @@ function Submission() {
                 name="partnerInstitution"
                 value={formData.partnerInstitution}
                 onChange={handleChange}
-                helperText="untuk lomba, isikan dengan nama lomba"
+                helperText ="untuk lomba, isikan dengan nama lomba"
                 required
               />
             </Grid>
