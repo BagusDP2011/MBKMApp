@@ -89,7 +89,7 @@ export default function SignIn(props) {
   
     try {
       const token = await login({
-        email: data.get("email"),
+        user: data.get("email"),
         password: data.get("password"),
       });
         
