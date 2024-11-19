@@ -25,8 +25,12 @@ import {
   getSubmissionByID,
   approveSubmission,
 } from "../../../service/Submission.Service";
+import pdfIcon from "../../../assets/img/icons8-pdf-48.png";
 import { useParams } from "react-router-dom";
-import { useNavigate } from 'react-router-dom';
+import { useNavigate } from "react-router-dom";
+import { PDFViewer } from "@react-pdf/renderer";
+import SubmissionPDF from "./SubmissionPDF";
+import FileViewerComponent from "./FileViewerComponent";
 
 export default function DetailSubmission({ menuAccess, accessId }) {
   const [tabValue, setTabValue] = React.useState(0);
@@ -118,8 +122,8 @@ export default function DetailSubmission({ menuAccess, accessId }) {
       confirmButtonColor: "#3F8CFE",
     }).then(async (result) => {
       if (result.isConfirmed) {
-        await approveSubmission(submissionId, accessId)
-        navigate(`/menu/mbkm/daftar%20pengajuan`)
+        await approveSubmission(submissionId, accessId);
+        navigate(`/menu/mbkm/daftar%20pengajuan`);
       }
     });
   };
@@ -191,13 +195,17 @@ export default function DetailSubmission({ menuAccess, accessId }) {
                 <Typography variant="body2" fontWeight="medium">
                   Username:
                 </Typography>
-                <Typography variant="body2">Fahrizal</Typography>
+                <Typography variant="body2" color="#2E263DB2">
+                  Fahrizal
+                </Typography>
               </Box>
               <Box sx={{ display: "flex", gap: 1 }}>
                 <Typography variant="body2" fontWeight="medium">
                   Email:
                 </Typography>
-                <Typography variant="body2">{student.Email}</Typography>
+                <Typography variant="body2" color="#2E263DB2">
+                  {student.Email}
+                </Typography>
               </Box>
               <Box sx={{ display: "flex", gap: 1 }}>
                 <Typography variant="body2" fontWeight="medium">
@@ -222,19 +230,25 @@ export default function DetailSubmission({ menuAccess, accessId }) {
                     Teknik Informatika
                   </Typography>
                 </Box> */}
-                <Typography variant="body2">{student.ProdiName}</Typography>
+                <Typography variant="body2" color="#2E263DB2">
+                  {student.ProdiName}
+                </Typography>
               </Box>
               <Box sx={{ display: "flex", gap: 1 }}>
                 <Typography variant="body2" fontWeight="medium">
                   Contact:
                 </Typography>
-                <Typography variant="body2">+62879912314</Typography>
+                <Typography variant="body2" color="#2E263DB2">
+                  +62879912314
+                </Typography>
               </Box>
               <Box sx={{ display: "flex", gap: 1 }}>
                 <Typography variant="body2" fontWeight="medium">
                   Place, Date of Birth:
                 </Typography>
-                <Typography variant="body2">Batam, 30 May 1986</Typography>
+                <Typography variant="body2" color="#2E263DB2">
+                  Batam, 30 May 1986
+                </Typography>
               </Box>
             </Stack>
           </CardContent>
@@ -327,7 +341,7 @@ export default function DetailSubmission({ menuAccess, accessId }) {
                   display: "flex",
                   flexDirection: "column",
                   // rowGap: "1rem",
-                  rowGap: 1
+                  rowGap: 1,
                 }}
               >
                 <Typography variant="subtitle1" fontWeight="medium">
@@ -337,7 +351,7 @@ export default function DetailSubmission({ menuAccess, accessId }) {
                   <Typography variant="body2" fontWeight="medium">
                     Jenis Kegiatan
                   </Typography>
-                  <Typography variant="body2">
+                  <Typography variant="body2" color="#2E263DB2">
                     {submission.ProgramType}
                   </Typography>
                 </Box>
@@ -345,7 +359,7 @@ export default function DetailSubmission({ menuAccess, accessId }) {
                   <Typography variant="body2" fontWeight="medium">
                     Tanggal Kegiatan
                   </Typography>
-                  <Typography variant="body2">
+                  <Typography variant="body2" color="#2E263DB2">
                     {formatDate(submission.StartDate)} -{" "}
                     {formatDate(submission.EndDate)}
                   </Typography>
@@ -354,7 +368,7 @@ export default function DetailSubmission({ menuAccess, accessId }) {
                   <Typography variant="body2" fontWeight="medium">
                     Nama Perusahaan
                   </Typography>
-                  <Typography variant="body2">
+                  <Typography variant="body2" color="#2E263DB2">
                     {submission.InstitutionName}
                   </Typography>
                 </Box>
@@ -362,8 +376,11 @@ export default function DetailSubmission({ menuAccess, accessId }) {
                   <Typography variant="body2" fontWeight="medium">
                     Posisi
                   </Typography>
-                  <Typography variant="body2">{submission.Position}</Typography>
+                  <Typography variant="body2" color="#2E263DB2">
+                    {submission.Position}
+                  </Typography>
                 </Box>
+                <Divider />
                 <Typography variant="subtitle1" fontWeight="medium">
                   Detail Kegiatan
                 </Typography>
@@ -371,23 +388,79 @@ export default function DetailSubmission({ menuAccess, accessId }) {
                   <Typography variant="body2" fontWeight="medium">
                     Alasan Memilih Program
                   </Typography>
-                  <Typography variant="body2">{submission.Reason}</Typography>
+                  <Typography variant="body2" color="#2E263DB2">
+                    {submission.Reason}
+                  </Typography>
                 </Box>
                 <Box>
                   <Typography variant="body2" fontWeight="medium">
                     Judul Program
                   </Typography>
-                  <Typography variant="body2">{submission.Title}</Typography>
+                  <Typography variant="body2" color="#2E263DB2">
+                    {submission.Title}
+                  </Typography>
                 </Box>
                 <Box>
                   <Typography variant="body2" fontWeight="medium">
                     Rincian Kegiatan
                   </Typography>
-                  <Typography variant="body2">{submission.ActivityDetails}</Typography>
+                  <Typography variant="body2" color="#2E263DB2">
+                    {submission.ActivityDetails}
+                  </Typography>
                 </Box>
               </Box>
             </CardContent>
           </Card>
+        )}
+
+        {tabValue === 1 && (
+          <Card
+            sx={{
+              marginTop: "1.5rem",
+              boxShadow: "none",
+              border: "1px solid rgba(224, 224, 224, 1)",
+            }}
+          >
+            <CardContent>
+              <Box
+                sx={{
+                  display: "flex",
+                  flexDirection: "column",
+                  // rowGap: "1rem",
+                  rowGap: 1,
+                }}
+              >
+                <Typography variant="subtitle1" fontWeight="medium">
+                  Dokumen Kegiatan
+                </Typography>
+                {submissionAttachment.map((attch) => (
+                  <Box
+                    sx={{
+                      display: "flex",
+                      alignItems: "center",
+                      cursor: "pointer",
+                    }}
+                    key={attch.AttachmentID}
+                  >
+                    <img alt="pdf" src={pdfIcon} width={30} />
+                    <Typography variant="body2" color="#2E263DB2">
+                      {attch.AttachName}
+                    </Typography>
+                    <FileViewerComponent
+                      base64File={`data:application/${attch.AttachType};base64,${attch.Base64}`}
+                      fileType={attch.AttachType}
+                    />
+                  </Box>
+                ))}
+              </Box>
+            </CardContent>
+          </Card>
+        )}
+
+        {tabValue === 2 && (
+          <PDFViewer style={{ width: "100%", height: "100vh" }}>
+            <SubmissionPDF />
+          </PDFViewer>
         )}
       </Grid>
     </Grid>
