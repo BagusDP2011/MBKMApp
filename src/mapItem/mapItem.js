@@ -11,13 +11,17 @@ import AddIcCallOutlinedIcon from '@mui/icons-material/AddIcCallOutlined';
 import EmergencyOutlinedIcon from '@mui/icons-material/EmergencyOutlined';
 import ConnectWithoutContactOutlinedIcon from '@mui/icons-material/ConnectWithoutContactOutlined';
 import AccountBoxOutlinedIcon from '@mui/icons-material/AccountBoxOutlined';
+import AttachFileIcon from '@mui/icons-material/AttachFile';
+
+// Page general
+import Dashboard from "../pages/Dashboard";
+
 
 // Page submissions
 import ListSubmission from "../pages/menu/Submission/ListSubmission";
 import Submission from "../pages/menu/Submission/Submission";
 import PengajuanMHS from "../pages/menu/PengajuanMHS";
 import DetailSubmission from "../pages/menu/Submission/DetailSubmission";
-import AttachFileIcon from '@mui/icons-material/AttachFile';
 import AttachmentSubmission from "../pages/menu/Submission/AttachmentSubmission";
 import SubmissionInformation from "../pages/menu/Submission/SubmissionInformation";
 
@@ -60,4 +64,5 @@ export const iconsMap = {
     "<ProfileEmergency />" : ProfileEmergency,
     "<ProfileSocialMedia />" : ProfileSocialMedia,
     "<ProfileBank />" : ProfileBank,
+    "<Dashboard />" : Dashboard,
   };

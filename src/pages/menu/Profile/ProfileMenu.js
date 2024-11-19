@@ -13,6 +13,7 @@ import {
   ListItem,
   ListItemIcon,
   ListItemText,
+  Paper
 } from "@mui/material";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import HomeIcon from "@mui/icons-material/Home";
@@ -28,6 +29,17 @@ import { Outlet } from "react-router-dom";
 export default function ProfileMenu() {
   const handleClick = (section) => {
     console.log(`Navigating to ${section}`);
+  };
+  const studentData = {
+    NIM: '3312311132',
+    Name: 'Bagus Dwi Putra',
+    Phone: '081278732817',
+    Email: 'bagusdp2011@gmail.com',
+    Address: 'Perum Muka Kuning Indah 1 Blk Z no 24',
+    Program: 'D3 - Teknik Informatika',
+    Status: 'Aktif',
+    Class: 'Malam - C',
+    Advisor: 'Amirul Mu`minin, S.Ds., M.Ds.',
   };
 
   return (
@@ -67,146 +79,29 @@ export default function ProfileMenu() {
             </CardContent>
           </Card>
 
-          {/* Profile Menu */}
-
-          <Box flex="2">
-            <Card>
-              <CardContent>
-                <List component="nav">
-                  <ListItem
-                    button
-                    onClick={() => handleClick("profil")}
-                    sx={{ py: 2 }}
-                  >
-                    <ListItemIcon>
-                      <AccountCircleIcon />
-                    </ListItemIcon>
-                    <ListItemText primary="Profil" />
-                  </ListItem>
-                  <Divider light />
-
-                  <ListItem
-                    button
-                    onClick={() => handleClick("lengkapi-dokumen")}
-                    sx={{ py: 2 }}
-                  >
-                    <ListItemIcon>
-                      <DocIcon />
-                    </ListItemIcon>
-                    <ListItemText primary="Lengkapi Dokumen" />
-                  </ListItem>
-                  <Divider light />
-
-                  <ListItem
-                    button
-                    onClick={() => handleClick("item-tersimpan")}
-                    sx={{ py: 2 }}
-                  >
-                    <ListItemIcon>
-                      <SaveIcon />
-                    </ListItemIcon>
-                    <ListItemText primary="Item Tersimpan" />
-                  </ListItem>
-                  <Divider light />
-
-                  <ListItem
-                    button
-                    onClick={() => handleClick("ganti-kata-sandi")}
-                    sx={{ py: 2 }}
-                  >
-                    <ListItemIcon>
-                      <EditIcon />
-                    </ListItemIcon>
-                    <ListItemText primary="Ganti Kata Sandi" />
-                  </ListItem>
-                  <Divider light />
-
-                  <ListItem
-                    button
-                    onClick={() => handleClick("keluar")}
-                    sx={{ py: 2 }}
-                  >
-                    <ListItemIcon>
-                      <KeluarIcon />
-                    </ListItemIcon>
-                    <ListItemText primary="Keluar" />
-                  </ListItem>
-                </List>
-              </CardContent>
-            </Card>
-          </Box>
         </Box>
-        <Box flex="2">
+        <Box flex="1">
           {/* Notification */}
           <Alert severity="info" sx={{ mb: 3, py: 2 }}>
             Fitur "Rekening Bank" ini hanya berlaku untuk program MSIB dan
             Kampus Mengajar. Apabila Anda mengikuti program PMM, silakan
             menghubungi Pusat Bantuan.
           </Alert>
-          <Card>
-            <CardContent>
-              <List component="nav">
-                <ListItem
-                  button
-                  onClick={() => handleClick("data-pribadi")}
-                  sx={{ py: 2 }}
-                >
-                  <ListItemIcon>
-                    <AccountCircleIcon />
-                  </ListItemIcon>
-                  <ListItemText primary="Data Pribadi" />
-                </ListItem>
-                <Divider light />
-
-                <ListItem
-                  button
-                  onClick={() => handleClick("kontak-pribadi")}
-                  sx={{ py: 2 }}
-                >
-                  <ListItemIcon>
-                    <HomeIcon />
-                  </ListItemIcon>
-                  <ListItemText primary="Kontak Pribadi" />
-                </ListItem>
-                <Divider light />
-
-                <ListItem
-                  button
-                  onClick={() => handleClick("kontak-darurat")}
-                  sx={{ py: 2 }}
-                >
-                  <ListItemIcon>
-                    <EmergencyIcon />
-                  </ListItemIcon>
-                  <ListItemText primary="Kontak Darurat" />
-                </ListItem>
-                <Divider light />
-
-                <ListItem
-                  button
-                  onClick={() => handleClick("akun-media-sosial")}
-                  sx={{ py: 2 }}
-                >
-                  <ListItemIcon>
-                    <PeopleIcon />
-                  </ListItemIcon>
-                  <ListItemText primary="Akun Media Sosial" />
-                </ListItem>
-                <Divider light />
-
-                <ListItem
-                  button
-                  onClick={() => handleClick("rekening-bank")}
-                  sx={{ py: 2 }}
-                >
-                  <ListItemIcon>
-                    <AccountBalanceIcon />
-                  </ListItemIcon>
-                  <ListItemText primary="Detail Rekening Bank" />
-                </ListItem>
-              </List>
-            </CardContent>
-          </Card>
+          <Paper elevation={3} sx={{ padding: 2 }}>
+            <Typography variant="h6" gutterBottom>
+              DATA DIRI MAHASISWA
+            </Typography>
+            {Object.entries(studentData).map(([key, value]) => (
+              <Typography key={key} variant="body1">
+                <strong>{key}:</strong> {value}
+              </Typography>
+            ))}
+            <Box mt={2}>
+              <Button variant="contained" color="primary">
+                Update Data
+              </Button>
+            </Box>
+          </Paper>
         </Box>
       </Box>
       <Outlet />
