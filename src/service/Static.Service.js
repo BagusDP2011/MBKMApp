@@ -31,3 +31,13 @@ export const getListRoleDetail = async () => {
     throw error;
   }
 };
+
+export const getUserByAccessID = async (accessId) => {
+  try {
+    const response = await fetch(`${config.baseURL}/user/${accessId}`);
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    throw error;
+  }
+};

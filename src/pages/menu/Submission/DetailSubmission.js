@@ -31,6 +31,7 @@ import { useNavigate } from "react-router-dom";
 import { PDFViewer } from "@react-pdf/renderer";
 import SubmissionPDF from "./SubmissionPDF";
 import FileViewerComponent from "./FileViewerComponent";
+import ExchangeProgram from "./ExchangeProgram";
 
 export default function DetailSubmission({ menuAccess, accessId }) {
   const [base64pdf, setBase64pdf] = React.useState("");
