@@ -33,6 +33,7 @@ import SubmissionPDF from "./SubmissionPDF";
 import FileViewerComponent from "./FileViewerComponent";
 
 export default function DetailSubmission({ menuAccess, accessId }) {
+  const [base64pdf, setBase64pdf] = React.useState("");
   const [tabValue, setTabValue] = React.useState(0);
   const [submission, setSubmission] = React.useState({});
   const [student, setStudent] = React.useState({});
@@ -57,8 +58,6 @@ export default function DetailSubmission({ menuAccess, accessId }) {
           ApprovalDate: submission.submission.SubmissionDate,
         };
 
-        console.log(submitTimeline);
-
         const updatedSubmissionApproval = [
           submitTimeline,
           ...submission.submissionApproval,
@@ -78,7 +77,6 @@ export default function DetailSubmission({ menuAccess, accessId }) {
   };
 
   const formatDate = (dateString) => {
-    console.log(dateString);
     const date = new Date(dateString);
 
     const optionsDate = {
@@ -109,6 +107,11 @@ export default function DetailSubmission({ menuAccess, accessId }) {
       confirmButtonText: "Cool",
     });
   };
+
+  const showPdf = (base64) => {
+    setBase64pdf(base64)
+    setTabValue(2)
+  }
 
   const handleApprove = async (submissionId) => {
     Swal.fire({
@@ -325,6 +328,7 @@ export default function DetailSubmission({ menuAccess, accessId }) {
         >
           <Tab label="Overview" />
           <Tab label="Document" />
+          <Tab label="Preview Document" disabled="true" />
         </Tabs>
 
         {tabValue === 0 && (
@@ -434,23 +438,24 @@ export default function DetailSubmission({ menuAccess, accessId }) {
                   Dokumen Kegiatan
                 </Typography>
                 {submissionAttachment.map((attch) => (
-                  <Box
-                    sx={{
-                      display: "flex",
-                      alignItems: "center",
-                      cursor: "pointer",
-                    }}
-                    key={attch.AttachmentID}
+                  <Button
+                  key={attch.AttachID}
+                  sx={{ justifyContent:"left", textTransform:"none", padding:0 }}
+                  onClick={() => showPdf(attch.Base64)}
                   >
-                    <img alt="pdf" src={pdfIcon} width={30} />
-                    <Typography variant="body2" color="#2E263DB2">
-                      {attch.AttachName}
-                    </Typography>
-                    <FileViewerComponent
-                      base64File={`data:application/${attch.AttachType};base64,${attch.Base64}`}
-                      fileType={attch.AttachType}
-                    />
-                  </Box>
+                    <Box
+                      sx={{
+                        display: "flex",
+                        alignItems: "center",
+                        cursor: "pointer",
+                      }}
+                    >
+                      <img alt="pdf" src={pdfIcon} width={30} />
+                      <Typography variant="body2" color="#2E263DB2">
+                        {attch.AttachName}
+                      </Typography>
+                    </Box>
+                  </Button>
                 ))}
               </Box>
             </CardContent>
@@ -458,9 +463,10 @@ export default function DetailSubmission({ menuAccess, accessId }) {
         )}
 
         {tabValue === 2 && (
-          <PDFViewer style={{ width: "100%", height: "100vh" }}>
-            <SubmissionPDF />
-          </PDFViewer>
+          // <PDFViewer style={{ width: "100%", height: "100vh" }}>
+          //   <SubmissionPDF />
+          // </PDFViewer>
+          <FileViewerComponent base64File={base64pdf} />
         )}
       </Grid>
     </Grid>
