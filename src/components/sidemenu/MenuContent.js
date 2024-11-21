@@ -133,7 +133,7 @@ export default function MenuContent({ menus }) {
                       <ListItem
                         key={subMenu.MenuID}
                         disablePadding
-                        sx={{ pl: 4 }}
+                        sx={{ pl: 2.5 }}
                       >
                         <CustomListItemButton
                           component={Link}

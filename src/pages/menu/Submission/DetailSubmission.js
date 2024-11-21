@@ -11,6 +11,7 @@ import {
   Tab,
   Tabs,
   Grid2 as Grid,
+  Tooltip,
 } from "@mui/material";
 import {
   Timeline,
@@ -21,20 +22,33 @@ import {
   TimelineDot,
 } from "@mui/lab";
 import Swal from "sweetalert2";
-import { getSubmissionByID, approveSubmission } from "../../../service/Submission.Service";
+import {
+  getSubmissionByID,
+  approveSubmission,
+} from "../../../service/Submission.Service";
+import pdfIcon from "../../../assets/img/icons8-pdf-48.png";
 import { useParams } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
+import { PDFViewer } from "@react-pdf/renderer";
+import SubmissionPDF from "./SubmissionPDF";
+import PDFViewerComponent from "./PDFViewerComponent";
+import CircularProgress from "@mui/material/CircularProgress";
 
 export default function DetailSubmission({ menuAccess, accessId }) {
+  const [isLoading, setIsLoading] = React.useState(false);
+  const [base64pdf, setBase64pdf] = React.useState("");
   const [tabValue, setTabValue] = React.useState(0);
   const [submission, setSubmission] = React.useState({});
   const [student, setStudent] = React.useState({});
   const [submissionApproval, setSubmissionApproval] = React.useState([]);
   const [submissionAttachment, setSubmissionAttachment] = React.useState([]);
   const { id } = useParams();
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchData = async () => {
       try {
+        setIsLoading(true);
         const submission = await getSubmissionByID(id);
         setSubmission(submission.submission);
         setStudent(submission.student);
@@ -48,14 +62,13 @@ export default function DetailSubmission({ menuAccess, accessId }) {
           ApprovalDate: submission.submission.SubmissionDate,
         };
 
-        console.log(submitTimeline);
-
         const updatedSubmissionApproval = [
           submitTimeline,
           ...submission.submissionApproval,
         ];
         setSubmissionApproval(updatedSubmissionApproval);
         setSubmissionAttachment(submission.submissionAttachment);
+        setIsLoading(false);
       } catch (error) {
         console.error("Error fetching data:", error);
       }
@@ -69,7 +82,6 @@ export default function DetailSubmission({ menuAccess, accessId }) {
   };
 
   const formatDate = (dateString) => {
-    console.log(dateString);
     const date = new Date(dateString);
 
     const optionsDate = {
@@ -101,22 +113,61 @@ export default function DetailSubmission({ menuAccess, accessId }) {
     });
   };
 
+  const showPdf = (base64) => {
+    setBase64pdf(base64);
+    setTabValue(2);
+  };
+
   const handleApprove = async (submissionId) => {
     Swal.fire({
       title: "Approve Submission",
       text: "Are you sure want to approve this submission?",
       icon: "warning",
       showCancelButton: true,
-      confirmButtonText: 'Approve',
-      cancelButtonText: 'Cancel',
-      cancelButtonColor: '#FF4C51',
-      confirmButtonColor: '#3F8CFE',
+      confirmButtonText: "Approve",
+      cancelButtonText: "Cancel",
+      cancelButtonColor: "#FF4C51",
+      confirmButtonColor: "#3F8CFE",
     }).then(async (result) => {
       if (result.isConfirmed) {
-        await approveSubmission(submissionId, accessId)
+        await approveSubmission(submissionId, accessId);
+        navigate(`/menu/mbkm/daftar%20pengajuan`);
       }
     });
   };
+
+  function getBase64FileSize(base64String) {
+    const stringLength = base64String.length;
+    const padding = base64String.endsWith("==")
+      ? 2
+      : base64String.endsWith("=")
+      ? 1
+      : 0;
+    const sizeInBytes = (stringLength * 3) / 4 - padding;
+    return sizeInBytes;
+  }
+
+  function formatFileSize(bytes) {
+    if (bytes < 1024) return `${bytes} B`;
+    if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(2)} KB`;
+    return `${(bytes / (1024 * 1024)).toFixed(2)} MB`;
+  }
+
+  if (isLoading) {
+    return (
+      <Stack
+        direction="row"
+        sx={{
+          justifyContent: "center",
+          alignItems: "center",
+          height: "100vh",
+          columnGap: 1,
+        }}
+      >
+        <CircularProgress /> Loading...
+      </Stack>
+    );
+  }
 
   return (
     <Grid container spacing={3}>
@@ -131,11 +182,13 @@ export default function DetailSubmission({ menuAccess, accessId }) {
             marginTop="2rem"
             px="1rem"
           >
-            <Avatar
-              alt="Seth Hallam"
-              src=""
-              sx={{ width: 80, height: 80, mb: 2 }}
-            />
+            {student.UserPhoto && (
+              <Avatar
+                alt="Seth Hallam"
+                src={`data:image/jpeg;base64,${student.UserPhoto}`}
+                sx={{ width: 80, height: 80, mb: 2 }}
+              />
+            )}
             <Typography variant="h6">{student.Name}</Typography>
             {/* <Box
               sx={{
@@ -185,13 +238,17 @@ export default function DetailSubmission({ menuAccess, accessId }) {
                 <Typography variant="body2" fontWeight="medium">
                   Username:
                 </Typography>
-                <Typography variant="body2">Fahrizal</Typography>
+                <Typography variant="body2" color="#2E263DB2">
+                  Fahrizal
+                </Typography>
               </Box>
               <Box sx={{ display: "flex", gap: 1 }}>
                 <Typography variant="body2" fontWeight="medium">
                   Email:
                 </Typography>
-                <Typography variant="body2">{student.Email}</Typography>
+                <Typography variant="body2" color="#2E263DB2">
+                  {student.Email}
+                </Typography>
               </Box>
               <Box sx={{ display: "flex", gap: 1 }}>
                 <Typography variant="body2" fontWeight="medium">
@@ -216,19 +273,25 @@ export default function DetailSubmission({ menuAccess, accessId }) {
                     Teknik Informatika
                   </Typography>
                 </Box> */}
-                <Typography variant="body2">{student.ProdiName}</Typography>
+                <Typography variant="body2" color="#2E263DB2">
+                  {student.ProdiName}
+                </Typography>
               </Box>
               <Box sx={{ display: "flex", gap: 1 }}>
                 <Typography variant="body2" fontWeight="medium">
                   Contact:
                 </Typography>
-                <Typography variant="body2">+62879912314</Typography>
+                <Typography variant="body2" color="#2E263DB2">
+                  +62879912314
+                </Typography>
               </Box>
               <Box sx={{ display: "flex", gap: 1 }}>
                 <Typography variant="body2" fontWeight="medium">
                   Place, Date of Birth:
                 </Typography>
-                <Typography variant="body2">Batam, 30 May 1986</Typography>
+                <Typography variant="body2" color="#2E263DB2">
+                  Batam, 30 May 1986
+                </Typography>
               </Box>
             </Stack>
           </CardContent>
@@ -305,9 +368,157 @@ export default function DetailSubmission({ menuAccess, accessId }) {
         >
           <Tab label="Overview" />
           <Tab label="Document" />
+          <Tab label="Preview Document" disabled="true" />
         </Tabs>
 
-        {tabValue === 0 && <Card></Card>}
+        {tabValue === 0 && (
+          <Card
+            sx={{
+              marginTop: "1.5rem",
+              boxShadow: "none",
+              border: "1px solid rgba(224, 224, 224, 1)",
+            }}
+          >
+            <CardContent>
+              <Box
+                sx={{
+                  display: "flex",
+                  flexDirection: "column",
+                  // rowGap: "1rem",
+                  rowGap: 1,
+                }}
+              >
+                <Typography variant="subtitle1" fontWeight="medium">
+                  Informasi Kegiatan
+                </Typography>
+                <Box>
+                  <Typography variant="body2" fontWeight="medium">
+                    Jenis Kegiatan
+                  </Typography>
+                  <Typography variant="body2" color="#2E263DB2">
+                    {submission.ProgramType}
+                  </Typography>
+                </Box>
+                <Box>
+                  <Typography variant="body2" fontWeight="medium">
+                    Tanggal Kegiatan
+                  </Typography>
+                  <Typography variant="body2" color="#2E263DB2">
+                    {formatDate(submission.StartDate)} -{" "}
+                    {formatDate(submission.EndDate)}
+                  </Typography>
+                </Box>
+                <Box>
+                  <Typography variant="body2" fontWeight="medium">
+                    Nama Perusahaan
+                  </Typography>
+                  <Typography variant="body2" color="#2E263DB2">
+                    {submission.InstitutionName}
+                  </Typography>
+                </Box>
+                <Box>
+                  <Typography variant="body2" fontWeight="medium">
+                    Posisi
+                  </Typography>
+                  <Typography variant="body2" color="#2E263DB2">
+                    {submission.Position}
+                  </Typography>
+                </Box>
+                <Divider />
+                <Typography variant="subtitle1" fontWeight="medium">
+                  Detail Kegiatan
+                </Typography>
+                <Box>
+                  <Typography variant="body2" fontWeight="medium">
+                    Alasan Memilih Program
+                  </Typography>
+                  <Typography variant="body2" color="#2E263DB2">
+                    {submission.Reason}
+                  </Typography>
+                </Box>
+                <Box>
+                  <Typography variant="body2" fontWeight="medium">
+                    Judul Program
+                  </Typography>
+                  <Typography variant="body2" color="#2E263DB2">
+                    {submission.Title}
+                  </Typography>
+                </Box>
+                <Box>
+                  <Typography variant="body2" fontWeight="medium">
+                    Rincian Kegiatan
+                  </Typography>
+                  <Typography variant="body2" color="#2E263DB2">
+                    {submission.ActivityDetails}
+                  </Typography>
+                </Box>
+              </Box>
+            </CardContent>
+          </Card>
+        )}
+
+        {tabValue === 1 && (
+          <Card
+            sx={{
+              marginTop: "1.5rem",
+              boxShadow: "none",
+              border: "1px solid rgba(224, 224, 224, 1)",
+            }}
+          >
+            <CardContent>
+              <Box
+                sx={{
+                  display: "flex",
+                  flexDirection: "column",
+                  // rowGap: "1rem",
+                  rowGap: 1,
+                }}
+              >
+                <Typography variant="subtitle1" fontWeight="medium">
+                  Dokumen Kegiatan
+                </Typography>
+                {submissionAttachment.map((attch) => (
+                  <Button
+                    key={attch.AttachID}
+                    sx={{
+                      justifyContent: "space-between",
+                      textTransform: "none",
+                      alignItems:"center",
+                      padding: 0,
+                    }}
+                    onClick={() => showPdf(attch.Base64)}
+                  >
+                    <Box
+                      sx={{
+                        display: "flex",
+                        alignItems: "center",
+                        cursor: "pointer",
+                      }}
+                    >
+                      <img alt="pdf" src={pdfIcon} width={30} />
+                      <Tooltip title="Preview" placement="right">
+                        <Typography variant="body2" color="#2E263DB2">
+                          {attch.AttachName}
+                        </Typography>
+                      </Tooltip>
+                    </Box>
+                    <Typography variant="body2" color="#2E263DB2">
+                      {formatFileSize(getBase64FileSize(attch.Base64))}
+                    </Typography>
+                  </Button>
+                ))}
+              </Box>
+            </CardContent>
+          </Card>
+        )}
+
+        {tabValue === 2 && (
+          // <PDFViewer style={{ width: "100%", height: "100vh" }}>
+          //   <SubmissionPDF />
+          // </PDFViewer>
+          <PDFViewerComponent base64File={base64pdf} />
+        )}
+
       </Grid>
     </Grid>
   );

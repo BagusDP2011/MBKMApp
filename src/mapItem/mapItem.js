@@ -11,6 +11,9 @@ import DetailSubmission from "../pages/menu/Submission/DetailSubmission";
 import AttachFileIcon from '@mui/icons-material/AttachFile';
 import AttachmentSubmission from "../pages/menu/Submission/AttachmentSubmission";
 import SubmissionInformation from "../pages/menu/Submission/SubmissionInformation";
+import FiberManualRecordOutlinedIcon from '@mui/icons-material/FiberManualRecordOutlined';
+import HttpsOutlinedIcon from '@mui/icons-material/HttpsOutlined';
+import RolePermissions from "../pages/menu/RolePermissions/RolePermissions";
 
 export const iconsMap = {
     "<SegmentOutlinedIcon />" : <SegmentOutlinedIcon sx={{fontSize:'1.7rem'}}/>,
@@ -20,6 +23,8 @@ export const iconsMap = {
     "<DescriptionOutlinedIcon />" : <DescriptionOutlinedIcon sx={{fontSize:'1.7rem'}}/>,
     "<LocalLibraryIcon />" : <LocalLibraryIcon sx={{fontSize:'1.7rem'}}/>,
     "<AttachFileIcon />" : <AttachFileIcon sx={{fontSize:'1.7rem'}}/>,
+    "<HttpsOutlinedIcon />" : <HttpsOutlinedIcon sx={{fontSize:'1.7rem'}}/>,
+    "<FiberManualRecordOutlinedIcon />" : <FiberManualRecordOutlinedIcon sx={{fontSize:'1.2rem'}}/>,
   };
   
   export const componentsMap = {
@@ -29,4 +34,5 @@ export const iconsMap = {
     "<DetailSubmission />" : DetailSubmission,
     "<AttachmentSubmission />" : AttachmentSubmission,
     "<SubmissionInformation />" : SubmissionInformation,
+    "<RolePermissions />" : RolePermissions,
   };

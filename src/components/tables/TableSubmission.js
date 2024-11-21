@@ -5,15 +5,17 @@ import {
   GridToolbarColumnsButton,
   GridToolbarFilterButton,
   GridToolbarExport,
-  GridToolbarDensitySelector,
 } from "@mui/x-data-grid";
-import { Box, Avatar, Stack, Button } from "@mui/material";
-import { getSubmission, deleteSubmission } from "../../service/Submission.Service";
+import { Box, Avatar, Stack, Button, Tooltip } from "@mui/material";
+import {
+  getSubmission,
+  deleteSubmission,
+} from "../../service/Submission.Service";
 import { getColumn } from "../../service/Static.Service";
 import VisibilityOutlinedIcon from "@mui/icons-material/VisibilityOutlined";
 import DeleteOutlineOutlinedIcon from "@mui/icons-material/DeleteOutlineOutlined";
 import Swal from "sweetalert2";
-import { useNavigate } from 'react-router-dom';
+import { useNavigate } from "react-router-dom";
 
 function CustomToolbar() {
   return (
@@ -114,24 +116,31 @@ export default function TableSubmission({ access, accessId }) {
               }}
               direction="row"
             >
-              <Button
-                sx={{
-                  maxWidth: "max-content",
-                  minWidth: "max-content",
-                  padding: 0,
-                }}
-                onClick={() => navigate(`/menu/mbkm/detail/${params.id}`)}
-              >
-                <Avatar variant="rounded" sx={{ backgroundColor: "#3F8CFE" }}>
-                  <VisibilityOutlinedIcon />
-                </Avatar>
-              </Button>
-              {access.CanDelete && (
-                <Button onClick={() => handleDelete(params.id)}>
-                  <Avatar variant="rounded" sx={{ backgroundColor: "#FF4C51" }}>
-                    <DeleteOutlineOutlinedIcon />
+              <Tooltip title="Detail" placement="top">
+                <Button
+                  sx={{
+                    maxWidth: "max-content",
+                    minWidth: "max-content",
+                    padding: 0,
+                  }}
+                  onClick={() => navigate(`/menu/mbkm/detail/${params.id}`)}
+                >
+                  <Avatar variant="rounded" sx={{ backgroundColor: "#3F8CFE" }}>
+                    <VisibilityOutlinedIcon />
                   </Avatar>
                 </Button>
+              </Tooltip>
+              {access.CanDelete && (
+                <Tooltip title="Delete" placement="top">
+                  <Button onClick={() => handleDelete(params.id)}>
+                    <Avatar
+                      variant="rounded"
+                      sx={{ backgroundColor: "#FF4C51" }}
+                    >
+                      <DeleteOutlineOutlinedIcon />
+                    </Avatar>
+                  </Button>
+                </Tooltip>
               )}
             </Stack>
           ),
@@ -151,13 +160,13 @@ export default function TableSubmission({ access, accessId }) {
       text: "Are you sure want to delete this submission?",
       icon: "warning",
       showCancelButton: true,
-      confirmButtonText: 'Delete',
-      cancelButtonText: 'Cancel',
-      confirmButtonColor: '#FF4C51',
-      cancelButtonColor: '#3F8CFE',
+      confirmButtonText: "Delete",
+      cancelButtonText: "Cancel",
+      confirmButtonColor: "#FF4C51",
+      cancelButtonColor: "#3F8CFE",
     }).then(async (result) => {
       if (result.isConfirmed) {
-        await deleteSubmission(submissionId).then(navigate(0))
+        await deleteSubmission(submissionId).then(navigate(0));
       }
     });
   };

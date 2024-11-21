@@ -1,10 +1,12 @@
+import config from "../config";
+
 export const login = async (data) => {
   try {
     const submitHeaders = new Headers({
       "Content-Type": "application/json",
     });
 
-    const response = await fetch("http://localhost:3001/api/login", {
+    const response = await fetch(`${config.baseURL}/login`, {
       method: "POST",
       headers: submitHeaders,
       body: JSON.stringify(data),
