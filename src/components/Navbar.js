@@ -74,8 +74,8 @@ function Navbar() {
               fontSize: 20,
               textTransform: "none",
               color: "#7e9fbb",
-            }}
-            onClick={() => navigate("/menu")}
+            }}s
+            onClick={() => navigate("/signin")}
           >
             Login
           </Button>
