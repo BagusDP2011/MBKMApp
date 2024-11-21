@@ -31,7 +31,7 @@ import { useParams } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 import { PDFViewer } from "@react-pdf/renderer";
 import SubmissionPDF from "./SubmissionPDF";
-import FileViewerComponent from "./FileViewerComponent";
+import PDFViewerComponent from "./PDFViewerComponent";
 import CircularProgress from "@mui/material/CircularProgress";
 
 export default function DetailSubmission({ menuAccess, accessId }) {
@@ -516,8 +516,9 @@ export default function DetailSubmission({ menuAccess, accessId }) {
           // <PDFViewer style={{ width: "100%", height: "100vh" }}>
           //   <SubmissionPDF />
           // </PDFViewer>
-          <FileViewerComponent base64File={base64pdf} />
+          <PDFViewerComponent base64File={base64pdf} />
         )}
+
       </Grid>
     </Grid>
   );
