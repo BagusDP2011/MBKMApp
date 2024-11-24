@@ -1,148 +1,192 @@
-import "./../App.css";
 import React from "react";
-import { Typography, Grid, Container, Box, Paper } from "@mui/material";
-import { styled } from "@mui/material/styles";
-// import SilamBG from "./assets/img/silam-bg.JPG";
-import SilamBGTop from "./../assets/img/silam-bg-top.JPG";
-import SilamHP from "./../assets/img/silam-hp.png";
-import SilamWonder from "./../assets/img/silam-wonder.svg";
-import Navbar from "./../components/Navbar.js";
+import {
+  Typography,
+  Box,
+  Container,
+  List,
+  ListItem,
+  ListItemText,
+  Button,
+  Divider,
+  Link,
+} from "@mui/material";
+import Navbar from "./../components/Navbar";
+import PoltekImage from "./../assets/img/bersama.jpg"; // Import gambar
+import "slick-carousel/slick/slick.css";
+import "slick-carousel/slick/slick-theme.css";
 
-function SilamKW() {
-  const Item = styled(Paper)(({ theme }) => ({
-    backgroundColor: "#fff",
-    ...theme.typography.body2,
-    padding: theme.spacing(1),
-    textAlign: "center",
-    color: theme.palette.text.secondary,
-    ...theme.applyStyles("dark", {
-      backgroundColor: "#1A2027",
-    }),
-  }));
+
+const announcements = [
+  {
+    date: "19 November 2024",
+    content: "Pendaftaran untuk program beasiswa tahun 2024 telah dibuka.",
+  },
+  {
+    date: "20 November 2024",
+    content: "Pengumuman terkait jadwal wisuda akan segera dirilis.",
+  },
+  {
+    date: "21 November 2024",
+    content: "Info terbaru mengenai program MBKM semester depan.",
+  },
+];
+
+function ProgramList() {
   return (
     <div className="App">
       <Navbar />
-      <body>
-        <Container maxWidth="xl" sx={{ mt: 8, mb: 4 }}>
-          <Typography variant="h3" align="center" gutterBottom>
-            SILAM
+      {/* Gambar penuh dengan teks */}
+      <Box
+        sx={{
+          position: "relative",
+          width: "100%",
+          height: "800px",
+          backgroundImage: `url(${PoltekImage})`,
+          backgroundSize: "cover",
+          backgroundPosition: "center",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+        }}
+      >
+        <Box
+          sx={{
+            backgroundColor: "rgba(0, 0, 0, 0.5)",
+            padding: 3,
+            borderRadius: 2,
+            textAlign: "center",
+          }}
+        >
+          <Typography
+            variant="h3"
+            sx={{ color: "#fff", fontWeight: "bold", mb: 1 }}
+          >
+            Merdeka Belajar Kampus Merdeka
           </Typography>
-          <Typography variant="h6" align="center" gutterBottom>
-            Sistem Informasi & Layanan Mahasiswa
+          <Typography
+            variant="h4"
+            sx={{ color: "#fff", fontWeight: "medium" }}
+          >
+            Teknik Informatika
           </Typography>
-          <Typography variant="h6" align="center" gutterBottom>
-            Politeknik Negeri Batam
+        </Box>
+      </Box>
+
+      {/* Card Pengumuman */}
+      <Container sx={{ mt: 4 }}>
+        <Box
+          sx={{
+            boxShadow: 3,
+            borderRadius: 2,
+            padding: 2,
+            backgroundColor: "#e3f2fd", // Warna biru muda
+          }}
+        >
+          <Typography variant="h5" sx={{ fontWeight: "bold", mb: 2 }}>
+            Pengumuman Terbaru
           </Typography>
-
-          <img
-            src={SilamBGTop}
-            alt="Silam Background"
-            height="100%"
-            width="100%"
-            sx={{ marginTop: "-100px", zIndex: -1 }}
-          />
-          {/* style={{ objectFit: "cover" }} */}
-
-          <Box>Tabel kotak disini</Box>
-
-          <Box
+          <List>
+            {announcements.map((announcement, index) => (
+              <ListItem
+                key={index}
+                sx={{
+                  borderBottom: "1px solid #ddd",
+                  paddingBottom: 2,
+                  marginBottom: 2,
+                }}
+              >
+                <ListItemText
+                  primary={announcement.content}
+                  secondary={`Tanggal: ${announcement.date}`}
+                />
+              </ListItem>
+            ))}
+          </List>
+          <Button
+            variant="contained"
+            color="primary"
             sx={{
-              marginTop: 50,
-              marginLeft: 10,
-              marginRight: 10,
-              marginBottom: 10,
+              mt: 2,
+              textTransform: "none",
+              fontWeight: "bold",
             }}
           >
-            <Grid container spacing={2}>
-              <Grid item xs={4}>
-                <Item sx={{ boxShadow: "none" }}>
-                  <img
-                    src={SilamHP}
-                    alt="Silam Gambar HP"
-                    height="100%"
-                    width="100%"
-                    sx={{ marginTop: "-100px", zIndex: -1 }}
-                  />
-                </Item>
-              </Grid>
-              <Grid item xs={8}>
-                <Item
-                  sx={{ textAlign: "left", fontSize: 20, boxShadow: "none" }}
-                >
-                  <Typography sx={{ fontSize: 34, fontWeight: 700 }}>
-                    Apa saja jenis layanan yang tersedia?
-                  </Typography>
-                  <Typography sx={{ fontSize: 25 }}>
-                    SILAM menyediakan pelayanan mahasiswa dan memberikan
-                    informasi terkini.
-                  </Typography>
-                  <br />
-                  <Typography sx={{ fontSize: 25 }}>
-                    Selain sebagai pusat pelayanan, SILAM merupakan pusat
-                    informasi bagi:
-                  </Typography>
-                  <Typography sx={{ fontSize: 25 }}>
-                    <li>Mahasiswa aktif polibatam</li>
-                    <li>Alumni polibatam</li>
-                    <li>Masyarakat umum dan lainnya</li>
-                  </Typography>
-                  <br />
-                  <Typography sx={{ fontSize: 25 }}>
-                    Kami akan berusaha memberikan pelayanan dan informasi yang
-                    tepat sesuai dengan permintaan dan kebutuhan. Hal-hal lain
-                    yang tidak dapat diselesaikan langsung akan kami arahkan ke
-                    unit terkait yang ada di kami.
-                  </Typography>
-                </Item>
-              </Grid>
-            </Grid>
-          </Box>
+            Lihat Semua Pengumuman
+          </Button>
+        </Box>
+      </Container>
 
-          <hr />
+      {/* Panduan MBKM */}
+      <Container sx={{ mt: 4 }}>
+        <Typography variant="h5" sx={{ fontWeight: "bold", mb: 2 }}>
+          Panduan MBKM
+        </Typography>
+        <Divider sx={{ mb: 2 }} />
+        <Typography variant="body1" sx={{ mb: 2 }}>
+          Program MBKM (Merdeka Belajar Kampus Merdeka) adalah inisiatif dari
+          Kementerian Pendidikan untuk memberikan kebebasan kepada mahasiswa
+          dalam memilih jalur belajar. Berikut adalah panduan singkat untuk
+          program ini:
+        </Typography>
+        <List>
+          <ListItem>
+            <ListItemText
+              primary="1. Pilihan Program"
+              secondary="Pilih program seperti magang, pertukaran mahasiswa, atau riset sesuai minat."
+            />
+          </ListItem>
+          <ListItem>
+            <ListItemText
+              primary="2. Pendaftaran"
+              secondary="Daftar melalui portal MBKM resmi atau hubungi koordinator kampus."
+            />
+          </ListItem>
+          <ListItem>
+            <ListItemText
+              primary="3. Proses Seleksi"
+              secondary="Ikuti seleksi sesuai ketentuan program yang dipilih."
+            />
+          </ListItem>
+          <ListItem>
+            <ListItemText
+              primary="4. Pelaksanaan Program"
+              secondary="Mulai program dengan bimbingan dosen dan supervisor terkait."
+            />
+          </ListItem>
+        </List>
+      </Container>
+
+      {/* Footer - Informasi Kontak */}
+      <Box sx={{ bgcolor: "#2452A8", color: "#fff", py: 2, mt: 4 }}>
+        <Container>
+          <Typography variant="h6" sx={{ textAlign: "center", mb: 1 }}>
+            Informasi Kontak
+          </Typography>
           <Box
             sx={{
-              marginTop: 10,
-              marginLeft: 10,
-              marginRight: 10,
-              marginBottom: 50,
+              display: "flex",
+              justifyContent: "center",
+              gap: 4,
+              flexWrap: "wrap",
             }}
           >
-            <Grid container spacing={2}>
-              <Grid item xs={8}>
-                <Item
-                  sx={{ textAlign: "left", fontSize: 20, boxShadow: "none" }}
-                >
-                  <Typography sx={{ fontSize: 34, fontWeight: 700 }}>
-                    Tentang SILAM
-                  </Typography>
-                  <Typography sx={{ fontSize: 25 }}>
-                    Sistem Informasi dan Layanan Mahasiswa (SILAM) Politeknik
-                    Negeri Batam tempat terkumpulnya informasi dan layanan
-                    mahasiswa yang diperlukan mahasiswa. Informasi terkait
-                    Wisuda , Konseling dan Pelayanan UKT juga terdapat pada
-                    SILAM. Mahasiswa tidak perlu merasa kesulitan lagi untuk
-                    mencari informasi yang diperlukan , cukup mengakses SILAM
-                    dan cari yang diperlukan.
-                  </Typography>
-                </Item>
-              </Grid>
-              <Grid item xs={4}>
-                <Item sx={{ boxShadow: "none" }}>
-                  <img
-                    src={SilamWonder}
-                    alt="Silam Gambar Orang"
-                    height="100%"
-                    width="100%"
-                    sx={{ marginTop: "-100px", zIndex: -1 }}
-                  />{" "}
-                </Item>
-              </Grid>
-            </Grid>
+            <Typography variant="body1">
+            Jl. Ahmad Yani Batam Kota. Kota Batam. kepulauan Riau. Indonesia
+            </Typography>
+            <Typography variant="body1">
+              Email:{" "}
+              <Link href="mailto:info@polibatam.ac.id" sx={{ color: "#fff" }}>
+                info@polibatam.ac.id
+              </Link>
+            </Typography>
+            <Typography variant="body1">
+              Fax: +62 778 123456
+            </Typography>
           </Box>
         </Container>
-      </body>
+      </Box>
     </div>
   );
 }
 
-export default SilamKW;
+export default ProgramList;
