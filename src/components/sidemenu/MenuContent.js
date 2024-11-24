@@ -25,7 +25,7 @@ const CustomListItemButton = styled(ListItemButton)(({ theme }) => ({
     fontWeight: 500,
   },
   "&.Mui-selected": {
-    backgroundColor: "#EBF3FF",
+    backgroundColor: "rgb(22 177 255 / 0.16)",
     color: "#3F8CFE",
     "& .MuiListItemIcon-root": {
       color: "#3F8CFE",

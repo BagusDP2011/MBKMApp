@@ -61,7 +61,9 @@ function App() {
         <Route path="/menu" element={<DashboardLayout menus={menus.filter((item) => !item.Index)} />}>
           {generateRoutes(menus.filter((item) => !item.Index))}
         </Route>
-        <Route path="*" element={<NotFound />} />
+        {menus && (
+          <Route path="*" element={<NotFound />} />
+        )}
       </Routes>
     </BrowserRouter>
   );
