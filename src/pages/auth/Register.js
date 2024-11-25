@@ -8,72 +8,71 @@ import {
   FormLabel,
   Button,
   Typography,
+  Stack,
+  Card as MuiCard
 } from "@mui/material";
-import axios from 'axios';
+import axios from "axios";
 import { styled } from "@mui/material/styles";
-import Stack from "@mui/material/Stack";
-import MuiCard from "@mui/material/Card";
+import { useNavigate } from "react-router-dom";
 
-// Separate input component
-const MyInput = ({ label, name, value, onChange, type = "text", ...props }) => (
-  <TextField
-    label={label}
-    name={name}
-    type={type}
-    variant="outlined"
-    fullWidth
-    margin="normal"
-    value={value}
-    onChange={onChange}
-    {...props}
-  />
-);
 
-const RegistrationForm = () => {
+
+// Styled components moved outside the functional component to avoid re-creation
+const Card = styled(MuiCard)(({ theme }) => ({
+  display: "flex",
+  flexDirection: "column",
+  alignSelf: "center",
+  width: "100%",
+  padding: theme.spacing(4),
+  gap: theme.spacing(2),
+  margin: "auto",
+  [theme.breakpoints.up("sm")]: {
+    maxWidth: "450px",
+  },
+}));
+
+const RegisterContainer = styled(Stack)(({ theme }) => ({
+  minHeight: "100%",
+  maxWidth: "sm",
+  padding: theme.spacing(2),
+  [theme.breakpoints.up("sm")]: {
+    padding: theme.spacing(4),
+  },
+}));
+
+// Main registration form component
+const RegistrationForm = React.memo(() => {
   const [formData, setFormData] = useState({
-    userID: "",
+    userId: "",
     email: "",
     name: "",
     password: "",
     accountType: "personal",
-    ProdiID: "1",
+    prodiId: "1",
   });
 
+  const navigate = useNavigate();
+
+  // Handle input change
   const handleChange = (event) => {
     const { name, value } = event.target;
     setFormData((prevData) => ({ ...prevData, [name]: value }));
   };
 
+  // Handle form submission
   const handleSubmit = async () => {
     try {
-      const response = await axios.post("/register", formData);
-      alert("Registration successful: " + JSON.stringify(response.data));
+      console.log('trial');
+      console.log(formData);
+      const response = await axios.post("http://localhost:3001/api/register", formData);
+      console.log('sukses');
+      alert("Registration successful! Redirecting to login page.");
+      navigate("/signin");
     } catch (error) {
+      console.log(error);
       alert("Registration failed: " + error.message);
     }
   };
-
-  const Card = styled(MuiCard)(({ theme }) => ({
-    display: "flex",
-    flexDirection: "column",
-    alignSelf: "center",
-    width: "100%",
-    padding: theme.spacing(4),
-    gap: theme.spacing(2),
-    margin: "auto",
-    [theme.breakpoints.up("sm")]: {
-      maxWidth: "450px",
-    },
-  }));
-
-  const RegisterContainer = styled(Stack)(({ theme }) => ({
-    minHeight: "100%",
-    maxWidth: 'sm',
-    padding: theme.spacing(2),
-    [theme.breakpoints.up("sm")]: {
-      padding: theme.spacing(4),
-    },
-  }));
 
   return (
     <RegisterContainer direction="column" justifyContent="space-between">
@@ -100,46 +99,57 @@ const RegistrationForm = () => {
           </FormControl>
         </center>
 
-        {/* Use MyInput component for each TextField */}
-        <MyInput
+        <TextField
           label="UserID / NIM"
-          name="userID"
+          name="userId"
           type="number"
-          value={formData.userID}
+          variant="outlined"
+          fullWidth
+          margin="normal"
+          value={formData.userId}
           onChange={handleChange}
         />
-        <MyInput
+        <TextField
           label="Name"
           name="name"
+          variant="outlined"
+          fullWidth
+          margin="normal"
           value={formData.name}
           onChange={handleChange}
         />
-        <MyInput
+        <TextField
           label="Email"
           name="email"
+          variant="outlined"
+          fullWidth
+          margin="normal"
           value={formData.email}
           onChange={handleChange}
         />
-        <MyInput
+        <TextField
           label="Password"
           name="password"
           type="password"
+          variant="outlined"
+          fullWidth
+          margin="normal"
           value={formData.password}
           onChange={handleChange}
         />
 
         <FormControl component="fieldset" sx={{ marginTop: "10px" }}>
-          <FormLabel component="legend">ProdiID</FormLabel>
+          <FormLabel component="legend">Prodi</FormLabel>
           <RadioGroup
             row
-            name="ProdiID"
-            value={formData.ProdiID}
+            name="prodiId"
+            value={formData.prodiId}
             onChange={handleChange}
           >
-            <FormControlLabel value="IF" control={<Radio />} label="IF" />
-            <FormControlLabel value="Meka" control={<Radio />} label="Meka" />
-            <FormControlLabel value="Elektro" control={<Radio />} label="Elektro" />
-            <FormControlLabel value="Welding" control={<Radio />} label="Welding" />
+            <FormControlLabel value="1" control={<Radio />} label="Informatika" />
+            <FormControlLabel value="2" control={<Radio />} label="Multimedia" />
+            <FormControlLabel value="3" control={<Radio />} label="Geomatika" />
+            {/* <FormControlLabel value="4" control={<Radio />} label="RPL" /> */}
           </RadioGroup>
         </FormControl>
 
@@ -161,6 +171,6 @@ const RegistrationForm = () => {
       </Card>
     </RegisterContainer>
   );
-};
+});
 
 export default RegistrationForm;

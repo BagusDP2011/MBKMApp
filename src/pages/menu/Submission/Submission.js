@@ -21,14 +21,18 @@ import {
   ListItemText,
   Checkbox,
   Paper,
+  Card,
+  CardContent,
 } from "@mui/material";
 import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
 import ChevronRightIcon from "@mui/icons-material/ChevronRight";
 import { styled } from "@mui/system";
 import { submit } from "../../../service/Submission.Service";
+import { getUserByAccessID } from "../../../service/Static.Service";
 import { decodeToken } from "../../../service/Auth.Service";
+import ExchangeProgram from "./ExchangeProgram";
 
-const steps = ["Data Diri", "Program MBKM", "Data Pertukaran Pelajar"];
+let steps = ["Data Diri", "Program MBKM"];
 const FormGrid = styled(Grid)(() => ({
   display: "flex",
   flexDirection: "column",
@@ -36,6 +40,7 @@ const FormGrid = styled(Grid)(() => ({
 
 function Submission() {
   const [user, setUser] = useState({});
+  const [supervisor, setSupervisor] = useState([]);
 
   function not(a, b) {
     return a.filter((value) => !b.includes(value));
@@ -45,20 +50,19 @@ function Submission() {
     return a.filter((value) => b.includes(value));
   }
 
-  const [formData, setFormData] = useState({
-    name: "",
-    nim: "",
-    programStudy: "",
-    supervisor: "",
-    freedomProgramType: "",
-    reasonForChoosing: "",
-    activityTitle: "",
-    partnerInstitution: "",
-    position: "",
-    activityDuration: "",
-    activityDetails: "",
-    exchangeStudy: "",
-    destinationprodi: "",
+  const [formSubmission, setFormSubmission] = useState({
+    StudentID: "",
+    SupervisorID: "",
+    ProdiID: 0,
+    ProgramType: "",
+    Reason: "",
+    Title: "",
+    InstitutionName: "",
+    StartDate: "",
+    EndDate: "",
+    Position: "",
+    ActivityDetails: "",
+    ExchangeProgram: []
   });
 
   const [stepNum, setStepNum] = useState(0);
@@ -73,20 +77,33 @@ function Submission() {
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData({
-      ...formData,
+
+    if (name === "ProgramType" && value === "Pertukaran Pelajar") {
+      steps.push("Data Pertukaran Pelajar");
+    } else if (name === "ProgramType") {
+      steps = steps.filter((i) => {
+        return i !== "Data Pertukaran Pelajar";
+      });
+    }
+
+    setFormSubmission({
+      ...formSubmission,
       [name]: value,
     });
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    await submit(formData);
+    await submit(formSubmission);
   };
 
   const [checked, setChecked] = React.useState([]);
-  const [left, setLeft] = React.useState(["001-Statistika-4", "009-Dasar Pemrograman-3", "007-Jaringan Komputer-4",]);
-  const [right, setRight] = React.useState([ ]);
+  const [left, setLeft] = React.useState([
+    "001-Statistika-4",
+    "009-Dasar Pemrograman-3",
+    "007-Jaringan Komputer-4",
+  ]);
+  const [right, setRight] = React.useState([]);
 
   const leftChecked = intersection(checked, left);
   const rightChecked = intersection(checked, right);
@@ -102,6 +119,13 @@ function Submission() {
     }
 
     setChecked(newChecked);
+  };
+
+  const handleExchangeProgramChange = (updatedExchangeProgram) => {
+    setFormSubmission((prev) => ({
+      ...prev,
+      ExchangeProgram: updatedExchangeProgram,
+    }));
   };
 
   const handleAllRight = () => {
@@ -127,7 +151,7 @@ function Submission() {
   };
 
   const customList = (items) => (
-    <Paper sx={{ width: 200, height: 230, overflow: 'auto' }}>
+    <Paper sx={{ width: 200, height: 230, overflow: "auto" }}>
       <List dense component="div" role="list">
         {items.map((value) => {
           const labelId = `transfer-list-item-${value}-label`;
@@ -144,11 +168,11 @@ function Submission() {
                   tabIndex={-1}
                   disableRipple
                   inputProps={{
-                    'aria-labelledby': labelId,
+                    "aria-labelledby": labelId,
                   }}
                 />
               </ListItemIcon>
-              <ListItemText id={labelId} primary={` ${value }`} />
+              <ListItemText id={labelId} primary={` ${value}`} />
             </ListItemButton>
           );
         })}
@@ -157,22 +181,31 @@ function Submission() {
   );
 
   useEffect(() => {
-    const fetchData = () => {
+    const fetchData = async () => {
+      const supervisors = await getUserByAccessID(6);
+      setSupervisor(supervisors);
       setUser(decodeToken());
+    };
+
+    fetchData();
+  }, []);
+
+  useEffect(() => {
+    if (user) {
+      setFormSubmission((prevForm) => ({
+        ...prevForm,
+        ProdiID: user.prodiId,
+        StudentID: user.id,
+      }));
     }
-
-    fetchData()
-  }, [])
-
+  }, [user]);
   const renderForm = (stepNum) => {
     switch (stepNum) {
       case 0:
         return (
           <>
-            <FormGrid size={{ xs: 6 }}>
-              <FormLabel htmlFor="name">
-                Nama
-              </FormLabel>
+            <FormGrid size={{ xs: 6, xl:6, sm:6 }}>
+              <FormLabel htmlFor="name">Nama</FormLabel>
               <OutlinedInput
                 id="name"
                 name="name"
@@ -181,14 +214,12 @@ function Submission() {
                 autoComplete="name"
                 onChange={handleChange}
                 disabled
-                value={user.name || ''}
+                value={user.name || ""}
                 size="medium"
               />
             </FormGrid>
-            <FormGrid size={{ xs: 6 }}>
-              <FormLabel htmlFor="nim" required>
-                NIM
-              </FormLabel>
+            <FormGrid size={{ xs: 6, xl:6, sm:6 }}>
+              <FormLabel htmlFor="nim">NIM</FormLabel>
               <OutlinedInput
                 id="nim"
                 name="nim"
@@ -197,14 +228,12 @@ function Submission() {
                 autoComplete="nim"
                 onChange={handleChange}
                 disabled
-                value={user.id || ''}
+                value={user.id || ""}
                 size="medium"
               />
             </FormGrid>
-            <FormGrid size={{ xs: 6 }}>
-              <FormLabel htmlFor="programStudy" required>
-                Program Studi
-              </FormLabel>
+            <FormGrid size={{ xs: 6, xl:6, sm:6 }}>
+              <FormLabel htmlFor="programStudy">Program Studi</FormLabel>
               <OutlinedInput
                 id="programStudy"
                 name="programStudy"
@@ -212,23 +241,31 @@ function Submission() {
                 placeholder="Program Studi"
                 autoComplete="programStudy"
                 onChange={handleChange}
-                required
+                disabled
+                value={user.prodiName || ""}
                 size="medium"
               />
             </FormGrid>
-            <FormGrid size={{ xs: 6 }}>
-              <FormLabel htmlFor="supervisor" required>Wali Dosen</FormLabel>
-              <OutlinedInput
-                id="supervisor"
-                name="supervisor"
-                type="supervisor"
-                placeholder="Wali Dosen"
-                autoComplete="supervisor"
-                onChange={handleChange}
-                required
-                size="medium"
-              />
-              <FormHelperText>isikan nama dosen wali apabila tidak ada dosen pembimbing magang/TA</FormHelperText>
+            <FormGrid size={{ xs: 6, xl:6, sm:6 }}>
+              <InputLabel>Dosen Pembimbing</InputLabel>
+              <FormControl fullWidth>
+                <Select
+                  name="SupervisorID"
+                  value={formSubmission.SupervisorID}
+                  onChange={handleChange}
+                  required
+                >
+                  {supervisor.map((s) => (
+                    <MenuItem value={s.UserID}>
+                      {s.UserID} - {s.Name}
+                    </MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
+              <FormHelperText>
+                isikan nama dosen wali apabila tidak ada dosen pembimbing
+                magang/TA
+              </FormHelperText>
             </FormGrid>
           </>
         );
@@ -237,22 +274,42 @@ function Submission() {
           <>
             <Grid item="true" size={{ xs: 12, md: 12 }}>
               <FormControl fullWidth>
-                <InputLabel>Jenis Program Merdeka</InputLabel>
+                <InputLabel id="program-type-label">
+                  Jenis Program Merdeka
+                </InputLabel>
                 <Select
-                  name="freedomProgramType"
-                  value={formData.freedomProgramType}
+                  labelId="program-type-label"
+                  id="program-type"
+                  name="ProgramType"
+                  label="program-type-merkd"
+                  value={formSubmission.ProgramType}
                   onChange={handleChange}
                   required
                 >
-                  <MenuItem value="Program A">Proyek Kemanusiaan</MenuItem>
-                  <MenuItem value="Program B">Kegiatan Wirausaha</MenuItem>
-                  <MenuItem value="Program C">Studi Independen</MenuItem>
-                  <MenuItem value="Program C">Kuliah Kerja Nyata</MenuItem>
-                  <MenuItem value="Program C">Magang Praktik Kerja</MenuItem>
-                  <MenuItem value="Program C">
+                  <MenuItem value="Penilitian /Riset">
+                    Penilitian /Riset
+                  </MenuItem>
+                  <MenuItem value="Proyek Kemanusiaan">
+                    Proyek Kemanusiaan
+                  </MenuItem>
+                  <MenuItem value="Kegiatan Wirausaha">
+                    Kegiatan Wirausaha
+                  </MenuItem>
+                  <MenuItem value="Studi /Proyek Independen">
+                    Studi /Proyek Independen
+                  </MenuItem>
+                  <MenuItem value="Membangun Desa/Kuliah Kerja Nyata Tematik">
+                    Membangun Desa/Kuliah Kerja Nyata Tematik
+                  </MenuItem>
+                  <MenuItem value="Magang Praktik Kerja">
+                    Magang Praktik Kerja
+                  </MenuItem>
+                  <MenuItem value="Asistensi Mengajar di Satuan Pendidikan">
                     Asistensi Mengajar di Satuan Pendidikan
                   </MenuItem>
-                  <MenuItem value="Program C">Pertukaran Pelajar</MenuItem>
+                  <MenuItem value="Pertukaran Pelajar">
+                    Pertukaran Pelajar
+                  </MenuItem>
                 </Select>
                 <FormHelperText>
                   wajib memilih salah satu, untuk lomba pilih Studi/Proyek
@@ -264,8 +321,8 @@ function Submission() {
               <TextField
                 fullWidth
                 label="Judul Kegiatan"
-                name="activityTitle"
-                value={formData.activityTitle}
+                name="Title"
+                value={formSubmission.Title}
                 onChange={handleChange}
                 required
               />
@@ -274,8 +331,8 @@ function Submission() {
               <TextField
                 fullWidth
                 label="Alasan Memilih Program"
-                name="reasonForChoosing"
-                value={formData.reasonForChoosing}
+                name="Reason"
+                value={formSubmission.Reason}
                 onChange={handleChange}
                 multiline
                 rows={4}
@@ -286,8 +343,8 @@ function Submission() {
               <TextField
                 fullWidth
                 label="Nama Lembaga Mitra/ Perusahaan"
-                name="partnerInstitution"
-                value={formData.partnerInstitution}
+                name="InstitutionName"
+                value={formSubmission.InstitutionName}
                 onChange={handleChange}
                 helperText="untuk lomba, isikan dengan nama lomba"
                 required
@@ -297,8 +354,8 @@ function Submission() {
               <TextField
                 fullWidth
                 label="Posisi Di Perusahaan"
-                name="position"
-                value={formData.position}
+                name="Position"
+                value={formSubmission.Position}
                 onChange={handleChange}
                 helperText="Wajib diisi untuk kegiatan MSIB"
                 required
@@ -308,8 +365,8 @@ function Submission() {
               <TextField
                 fullWidth
                 label="Rincian Kegiatan"
-                name="activityDetails"
-                value={formData.activityDetails}
+                name="ActivityDetails"
+                value={formSubmission.ActivityDetails}
                 onChange={handleChange}
                 multiline
                 rows={4}
@@ -321,18 +378,24 @@ function Submission() {
       case 2:
         return (
           <>
-            <Grid item size={{ xs: 12 }} >
+            <Grid item size={{ xs: 12 }}>
               <FormControl fullWidth>
                 <InputLabel>Jenis Pertukaran Pelajar</InputLabel>
                 <Select
                   name="exchangeStudy"
-                  value={formData.exchangeStudy}
+                  value={formSubmission.ProgramType}
                   onChange={handleChange}
                   required
                 >
-                  <MenuItem value="AntarProdiPoltek">Antar Prodi dii Politeknik Negeri Batam</MenuItem>
-                  <MenuItem value="AntarProdiNoPoltek">Antar Prodi pada Perguruan Tinggi yang berbeda</MenuItem>
-                  <MenuItem value="ProdiSamaNoPoltek">Prodi sama pada Perguruan Tinggi yang berbeda</MenuItem>
+                  <MenuItem value="AntarProdiPoltek">
+                    Antar Prodi dii Politeknik Negeri Batam
+                  </MenuItem>
+                  <MenuItem value="AntarProdiNoPoltek">
+                    Antar Prodi pada Perguruan Tinggi yang berbeda
+                  </MenuItem>
+                  <MenuItem value="ProdiSamaNoPoltek">
+                    Prodi sama pada Perguruan Tinggi yang berbeda
+                  </MenuItem>
                 </Select>
               </FormControl>
             </Grid>
@@ -341,19 +404,26 @@ function Submission() {
                 fullWidth
                 label="Nama Program Studi Tujuan"
                 name="destinationprodi"
-                value={formData.destinationprodi}
+                value={formSubmission.destinationprodi}
                 onChange={handleChange}
                 required
               />
             </Grid>
-            <Grid
+            <Grid item size={{ xs: 12}}>
+              <ExchangeProgram onRowsChange={handleExchangeProgramChange}/>
+            </Grid>
+            {/* <Grid
               container
               spacing={2}
-              sx={{ justifyContent: 'center', alignItems: 'center', }}
+              sx={{ justifyContent: "center", alignItems: "center" }}
             >
               <Grid item>{customList(left)}</Grid>
               <Grid item>
-                <Grid container direction="column" sx={{ alignItems: 'center' }}>
+                <Grid
+                  container
+                  direction="column"
+                  sx={{ alignItems: "center" }}
+                >
                   <Button
                     sx={{ my: 0.5 }}
                     variant="outlined"
@@ -397,15 +467,13 @@ function Submission() {
                 </Grid>
               </Grid>
               <Grid item>{customList(right)}</Grid>
-            </Grid>
+            </Grid> */}
           </>
-        )
+        );
       default:
         return null;
     }
   };
-
-
 
   return (
     <Box>
@@ -421,7 +489,21 @@ function Submission() {
 
       <form onSubmit={handleSubmit}>
         <Grid container spacing={3}>
-          {renderForm(stepNum)}
+          <Card
+            sx={{
+              boxShadow: "none",
+              border: "1px solid rgba(224, 224, 224, 1)",
+              width: "100%",
+              py:"1.7rem",
+              px:"1rem"
+            }}
+          >
+            <CardContent>
+              <Grid container spacing={3}>
+                {renderForm(stepNum)}
+              </Grid>
+            </CardContent>
+          </Card>
           <Grid item="true" size={{ xs: 12 }}>
             <Stack
               direction="row"
@@ -447,11 +529,7 @@ function Submission() {
                 </Button>
               )}
               {stepNum === steps.length - 1 && (
-                <Button
-                  type="submit"
-                  variant="contained"
-                  color="primary"
-                >
+                <Button type="submit" variant="contained" color="primary">
                   Submit
                 </Button>
               )}

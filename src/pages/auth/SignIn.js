@@ -74,6 +74,7 @@ export default function SignIn(props) {
     const data = new FormData(event.currentTarget);
     try {
       const token = await login({
+        user: data.get("user"),
         email: data.get("email"),
         password: data.get("password"),
       });
@@ -89,12 +90,14 @@ export default function SignIn(props) {
   };
 
   const validateInputs = () => {
+    const user = document.getElementById("user");
     const email = document.getElementById("email");
     const password = document.getElementById("password");
+    console.log (user.value, password.value);
 
     let isValid = true;
 
-    if (!email.value || !/\S+@\S+\.\S+/.test(email.value)) {
+    if (!user.value || !/\S+@\S+\.\S+/.test(user.value)) {
       setEmailError(true);
       setEmailErrorMessage("Please enter a valid email address.");
       isValid = false;
@@ -102,6 +105,14 @@ export default function SignIn(props) {
       setEmailError(false);
       setEmailErrorMessage("");
     }
+    // if (!email.value || !/\S+@\S+\.\S+/.test(email.value)) {
+    //   setEmailError(true);
+    //   setEmailErrorMessage("Please enter a valid email address.");
+    //   isValid = false;
+    // } else {
+    //   setEmailError(false);
+    //   setEmailErrorMessage("");
+    // }
 
     if (!password.value || password.value.length < 6) {
       setPasswordError(true);
@@ -136,8 +147,8 @@ export default function SignIn(props) {
             gap: 2,
           }}
         >
-          <FormControl>
-            <FormLabel htmlFor="email" sx={{ color: "white" }}>Email</FormLabel>
+          {/* <FormControl>
+            <FormLabel htmlFor="email">Email</FormLabel>
             <TextField
               error={emailError}
               helperText={emailErrorMessage}
@@ -159,6 +170,24 @@ export default function SignIn(props) {
                   "&.Mui-focused fieldset": { borderColor: "white" },
                 },
               }}
+            />
+          </FormControl> */}
+          <FormControl>
+            <FormLabel htmlFor="user" sx={{ color: "white" }}>User</FormLabel>
+            <TextField
+              error={emailError}
+              helperText={emailErrorMessage}
+              id="user"
+              type="user"
+              name="user"
+              placeholder="your@email.com"
+              autoComplete="email"
+              autoFocus
+              required
+              fullWidth
+              variant="outlined"
+              color={emailError ? "error" : "primary"}
+              sx={{ ariaLabel: "email" }}
             />
           </FormControl>
           <FormControl>
@@ -214,7 +243,7 @@ export default function SignIn(props) {
           <Typography sx={{ textAlign: "center", color: "white" }}>
             Don&apos;t have an account?{" "}
             <span>
-              <Link href="/signup" variant="body2" sx={{ alignSelf: "center", color: "#BBDEFB" }}>
+              <Link href="/register" variant="body2" sx={{ alignSelf: "center", color: "#BBDEFB" }}>
                 Sign up
               </Link>
             </span>
