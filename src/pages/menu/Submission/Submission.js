@@ -373,6 +373,30 @@ function Submission() {
                 required
               />
             </Grid>
+            <Grid item="true" size={{ xs: 12, md: 6 }}>
+              <TextField
+                fullWidth
+                // label="Tanggal Mulai"
+                name="StartDate"
+                type="date"
+                value={formSubmission.StartDate}
+                onChange={handleChange}
+                helperText="Wajib diisi untuk kegiatan MSIB"
+                required
+              />
+            </Grid>
+            <Grid item="true" size={{ xs: 12, md: 6 }}>
+              <TextField
+                fullWidth
+                // label="Tanggal Berakhir"
+                name="EndDate"
+                type="date"
+                value={formSubmission.EndDate}
+                onChange={handleChange}
+                helperText="Wajib diisi untuk kegiatan MSIB"
+                required
+              />
+            </Grid>
           </>
         );
       case 2:
