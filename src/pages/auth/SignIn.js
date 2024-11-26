@@ -91,7 +91,6 @@ export default function SignIn(props) {
 
   const validateInputs = () => {
     const user = document.getElementById("user");
-    const email = document.getElementById("email");
     const password = document.getElementById("password");
     console.log (user.value, password.value);
 
@@ -178,16 +177,23 @@ export default function SignIn(props) {
               error={emailError}
               helperText={emailErrorMessage}
               id="user"
-              type="user"
+              type="text"
               name="user"
               placeholder="your@email.com"
-              autoComplete="email"
               autoFocus
               required
               fullWidth
               variant="outlined"
               color={emailError ? "error" : "primary"}
-              sx={{ ariaLabel: "email" }}
+              sx={{
+                "& .MuiOutlinedInput-root": {
+                  "& fieldset": { borderColor: "white" },
+                  "&:hover fieldset": { borderColor: "#BBDEFB" },
+                  "&.Mui-focused fieldset": { borderColor: "white" },
+                  color:"white"
+                },
+                color:"white"
+              }}
             />
           </FormControl>
           <FormControl>

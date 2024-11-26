@@ -166,7 +166,10 @@ export default function TableSubmission({ access, accessId }) {
       cancelButtonColor: "#3F8CFE",
     }).then(async (result) => {
       if (result.isConfirmed) {
-        await deleteSubmission(submissionId).then(navigate(0));
+        await deleteSubmission(submissionId);
+        
+        const breadcrumbData = await getSubmission(accessId);
+        setSubmissions(breadcrumbData);
       }
     });
   };

@@ -15,22 +15,24 @@ import {
   Stack,
   FormLabel,
   OutlinedInput,
-  List,
-  ListItemButton,
-  ListItemIcon,
-  ListItemText,
-  Checkbox,
-  Paper,
   Card,
   CardContent,
+  Typography,
 } from "@mui/material";
 import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
 import ChevronRightIcon from "@mui/icons-material/ChevronRight";
+import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
+import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import { styled } from "@mui/system";
 import { submit } from "../../../service/Submission.Service";
 import { getUserByAccessID } from "../../../service/Static.Service";
 import { decodeToken } from "../../../service/Auth.Service";
 import ExchangeProgram from "./ExchangeProgram";
+import dayjs, { Dayjs } from "dayjs";
+import { DemoContainer } from "@mui/x-date-pickers/internals/demo";
+import { DatePicker } from "@mui/x-date-pickers/DatePicker";
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import { LocalizationProvider } from "@mui/x-date-pickers";
 
 let steps = ["Data Diri", "Program MBKM"];
 const FormGrid = styled(Grid)(() => ({
@@ -42,27 +44,31 @@ function Submission() {
   const [user, setUser] = useState({});
   const [supervisor, setSupervisor] = useState([]);
 
-  function not(a, b) {
-    return a.filter((value) => !b.includes(value));
-  }
+  const handleStartDateChange = (newStartDate) => {
+    formSubmission.StartDate = newStartDate;
+  };
 
-  function intersection(a, b) {
-    return a.filter((value) => b.includes(value));
-  }
+  const handleEndDateChange = (newEndDate) => {
+    formSubmission.EndDate = newEndDate;
+  };
 
   const [formSubmission, setFormSubmission] = useState({
     StudentID: "",
-    SupervisorID: "",
+    LecturerGuardianID: "",
     ProdiID: 0,
     ProgramType: "",
     Reason: "",
     Title: "",
     InstitutionName: "",
-    StartDate: "",
-    EndDate: "",
+    StartDate: dayjs(),
+    EndDate: dayjs(),
     Position: "",
     ActivityDetails: "",
-    ExchangeProgram: []
+    ExchangeProgram: {
+      TypeExchange: "",
+      StudyProgramObjective: "",
+      Courses: [],
+    },
   });
 
   const [stepNum, setStepNum] = useState(0);
@@ -81,15 +87,31 @@ function Submission() {
     if (name === "ProgramType" && value === "Pertukaran Pelajar") {
       steps.push("Data Pertukaran Pelajar");
     } else if (name === "ProgramType") {
-      steps = steps.filter((i) => {
-        return i !== "Data Pertukaran Pelajar";
-      });
+      steps = steps.filter((i) => i !== "Data Pertukaran Pelajar");
     }
 
-    setFormSubmission({
-      ...formSubmission,
-      [name]: value,
-    });
+    if (name === "typeExchange") {
+      setFormSubmission((prev) => ({
+        ...prev,
+        ExchangeProgram: {
+          ...prev.ExchangeProgram,
+          TypeExchange: value,
+        },
+      }));
+    } else if (name === "studyProgramObjective") {
+      setFormSubmission((prev) => ({
+        ...prev,
+        ExchangeProgram: {
+          ...prev.ExchangeProgram,
+          StudyProgramObjective: value,
+        },
+      }));
+    } else {
+      setFormSubmission({
+        ...formSubmission,
+        [name]: value,
+      });
+    }
   };
 
   const handleSubmit = async (e) => {
@@ -97,88 +119,15 @@ function Submission() {
     await submit(formSubmission);
   };
 
-  const [checked, setChecked] = React.useState([]);
-  const [left, setLeft] = React.useState([
-    "001-Statistika-4",
-    "009-Dasar Pemrograman-3",
-    "007-Jaringan Komputer-4",
-  ]);
-  const [right, setRight] = React.useState([]);
-
-  const leftChecked = intersection(checked, left);
-  const rightChecked = intersection(checked, right);
-
-  const handleToggle = (value) => () => {
-    const currentIndex = checked.indexOf(value);
-    const newChecked = [...checked];
-
-    if (currentIndex === -1) {
-      newChecked.push(value);
-    } else {
-      newChecked.splice(currentIndex, 1);
-    }
-
-    setChecked(newChecked);
-  };
-
-  const handleExchangeProgramChange = (updatedExchangeProgram) => {
+  const handleCoursesChange = (updatedCourses) => {
     setFormSubmission((prev) => ({
       ...prev,
-      ExchangeProgram: updatedExchangeProgram,
+      ExchangeProgram: {
+        ...prev.ExchangeProgram,
+        Courses: updatedCourses,
+      },
     }));
   };
-
-  const handleAllRight = () => {
-    setRight(right.concat(left));
-    setLeft([]);
-  };
-
-  const handleCheckedRight = () => {
-    setRight(right.concat(leftChecked));
-    setLeft(not(left, leftChecked));
-    setChecked(not(checked, leftChecked));
-  };
-
-  const handleCheckedLeft = () => {
-    setLeft(left.concat(rightChecked));
-    setRight(not(right, rightChecked));
-    setChecked(not(checked, rightChecked));
-  };
-
-  const handleAllLeft = () => {
-    setLeft(left.concat(right));
-    setRight([]);
-  };
-
-  const customList = (items) => (
-    <Paper sx={{ width: 200, height: 230, overflow: "auto" }}>
-      <List dense component="div" role="list">
-        {items.map((value) => {
-          const labelId = `transfer-list-item-${value}-label`;
-
-          return (
-            <ListItemButton
-              key={value}
-              role="listitem"
-              onClick={handleToggle(value)}
-            >
-              <ListItemIcon>
-                <Checkbox
-                  checked={checked.includes(value)}
-                  tabIndex={-1}
-                  disableRipple
-                  inputProps={{
-                    "aria-labelledby": labelId,
-                  }}
-                />
-              </ListItemIcon>
-              <ListItemText id={labelId} primary={` ${value}`} />
-            </ListItemButton>
-          );
-        })}
-      </List>
-    </Paper>
-  );
 
   useEffect(() => {
     const fetchData = async () => {
@@ -204,7 +153,15 @@ function Submission() {
       case 0:
         return (
           <>
-            <FormGrid size={{ xs: 6, xl:6, sm:6 }}>
+            <FormGrid size={12}>
+              <Typography variant="subtitle1" fontWeight="medium">
+                Data Diri
+              </Typography>
+              <Typography variant="body2" color="#2E263DB2">
+                Isi data diri Anda di bawah ini untuk melengkapi profil Anda.
+              </Typography>
+            </FormGrid>
+            <FormGrid size={{ xs: 6, xl: 6, sm: 6 }}>
               <FormLabel htmlFor="name">Nama</FormLabel>
               <OutlinedInput
                 id="name"
@@ -218,7 +175,7 @@ function Submission() {
                 size="medium"
               />
             </FormGrid>
-            <FormGrid size={{ xs: 6, xl:6, sm:6 }}>
+            <FormGrid size={{ xs: 6, xl: 6, sm: 6 }}>
               <FormLabel htmlFor="nim">NIM</FormLabel>
               <OutlinedInput
                 id="nim"
@@ -232,7 +189,7 @@ function Submission() {
                 size="medium"
               />
             </FormGrid>
-            <FormGrid size={{ xs: 6, xl:6, sm:6 }}>
+            <FormGrid size={{ xs: 6, xl: 6, sm: 6 }}>
               <FormLabel htmlFor="programStudy">Program Studi</FormLabel>
               <OutlinedInput
                 id="programStudy"
@@ -246,12 +203,12 @@ function Submission() {
                 size="medium"
               />
             </FormGrid>
-            <FormGrid size={{ xs: 6, xl:6, sm:6 }}>
+            <FormGrid size={{ xs: 6, xl: 6, sm: 6 }}>
               <InputLabel>Dosen Pembimbing</InputLabel>
               <FormControl fullWidth>
                 <Select
-                  name="SupervisorID"
-                  value={formSubmission.SupervisorID}
+                  name="LecturerGuardianID"
+                  value={formSubmission.LecturerGuardianID}
                   onChange={handleChange}
                   required
                 >
@@ -272,6 +229,15 @@ function Submission() {
       case 1:
         return (
           <>
+            <FormGrid size={12}>
+              <Typography variant="subtitle1" fontWeight="medium">
+                Program MBKM
+              </Typography>
+              <Typography variant="body2" color="#2E263DB2">
+                Pilih dan lengkapi informasi mengenai program MBKM yang ingin
+                Anda ikuti.
+              </Typography>
+            </FormGrid>
             <Grid item="true" size={{ xs: 12, md: 12 }}>
               <FormControl fullWidth>
                 <InputLabel id="program-type-label">
@@ -339,6 +305,30 @@ function Submission() {
                 required
               />
             </Grid>
+            <Grid item="true" size={{ xs: 6 }}>
+              <LocalizationProvider dateAdapter={AdapterDayjs}>
+                <DemoContainer components={["DatePicker", "DatePicker"]}>
+                  <DatePicker
+                    sx={{ width: "100%" }}
+                    label="Start Date"
+                    defaultValue={formSubmission.StartDate}
+                    onChange={handleStartDateChange}
+                  />
+                </DemoContainer>
+              </LocalizationProvider>
+            </Grid>
+            <Grid item="true" size={{ xs: 6 }}>
+              <LocalizationProvider dateAdapter={AdapterDayjs}>
+                <DemoContainer components={["DatePicker", "DatePicker"]}>
+                  <DatePicker
+                    sx={{ width: "100%" }}
+                    label="End Date"
+                    defaultValue={formSubmission.EndDate}
+                    onChange={handleEndDateChange}
+                  />
+                </DemoContainer>
+              </LocalizationProvider>
+            </Grid>
             <Grid item="true" size={{ xs: 12, md: 6 }}>
               <TextField
                 fullWidth
@@ -378,22 +368,31 @@ function Submission() {
       case 2:
         return (
           <>
+            <FormGrid size={12}>
+              <Typography variant="subtitle1" fontWeight="medium">
+                Data Pertukaran Pelajar
+              </Typography>
+              <Typography variant="body2" color="#2E263DB2">
+                Isi informasi yang diperlukan terkait program pertukaran pelajar
+                yang Anda ikuti.
+              </Typography>
+            </FormGrid>
             <Grid item size={{ xs: 12 }}>
               <FormControl fullWidth>
                 <InputLabel>Jenis Pertukaran Pelajar</InputLabel>
                 <Select
-                  name="exchangeStudy"
-                  value={formSubmission.ProgramType}
+                  name="typeExchange"
+                  value={formSubmission.ExchangeProgram.TypeExchange}
                   onChange={handleChange}
                   required
                 >
-                  <MenuItem value="AntarProdiPoltek">
-                    Antar Prodi dii Politeknik Negeri Batam
+                  <MenuItem value="Antar Prodi di Politeknik Negeri Batam">
+                    Antar Prodi di Politeknik Negeri Batam
                   </MenuItem>
-                  <MenuItem value="AntarProdiNoPoltek">
+                  <MenuItem value="Antar Prodi pada Perguruan Tinggi yang berbeda">
                     Antar Prodi pada Perguruan Tinggi yang berbeda
                   </MenuItem>
-                  <MenuItem value="ProdiSamaNoPoltek">
+                  <MenuItem value="Prodi sama pada Perguruan Tinggi yang berbeda">
                     Prodi sama pada Perguruan Tinggi yang berbeda
                   </MenuItem>
                 </Select>
@@ -403,71 +402,15 @@ function Submission() {
               <TextField
                 fullWidth
                 label="Nama Program Studi Tujuan"
-                name="destinationprodi"
-                value={formSubmission.destinationprodi}
+                name="studyProgramObjective"
+                value={formSubmission.ExchangeProgram.StudyProgramObjective}
                 onChange={handleChange}
                 required
               />
             </Grid>
-            <Grid item size={{ xs: 12}}>
-              <ExchangeProgram onRowsChange={handleExchangeProgramChange}/>
+            <Grid item size={{ xs: 12 }}>
+              <ExchangeProgram onRowsChange={handleCoursesChange} />
             </Grid>
-            {/* <Grid
-              container
-              spacing={2}
-              sx={{ justifyContent: "center", alignItems: "center" }}
-            >
-              <Grid item>{customList(left)}</Grid>
-              <Grid item>
-                <Grid
-                  container
-                  direction="column"
-                  sx={{ alignItems: "center" }}
-                >
-                  <Button
-                    sx={{ my: 0.5 }}
-                    variant="outlined"
-                    size="small"
-                    onClick={handleAllRight}
-                    disabled={left.length === 0}
-                    aria-label="move all right"
-                  >
-                    ≫
-                  </Button>
-                  <Button
-                    sx={{ my: 0.5 }}
-                    variant="outlined"
-                    size="small"
-                    onClick={handleCheckedRight}
-                    disabled={leftChecked.length === 0}
-                    aria-label="move selected right"
-                  >
-                    &gt;
-                  </Button>
-                  <Button
-                    sx={{ my: 0.5 }}
-                    variant="outlined"
-                    size="small"
-                    onClick={handleCheckedLeft}
-                    disabled={rightChecked.length === 0}
-                    aria-label="move selected left"
-                  >
-                    &lt;
-                  </Button>
-                  <Button
-                    sx={{ my: 0.5 }}
-                    variant="outlined"
-                    size="small"
-                    onClick={handleAllLeft}
-                    disabled={right.length === 0}
-                    aria-label="move all left"
-                  >
-                    ≪
-                  </Button>
-                </Grid>
-              </Grid>
-              <Grid item>{customList(right)}</Grid>
-            </Grid> */}
           </>
         );
       default:
@@ -494,8 +437,8 @@ function Submission() {
               boxShadow: "none",
               border: "1px solid rgba(224, 224, 224, 1)",
               width: "100%",
-              py:"1.7rem",
-              px:"1rem"
+              py: "1.7rem",
+              px: "1rem",
             }}
           >
             <CardContent>
@@ -515,8 +458,10 @@ function Submission() {
                 color="primary"
                 disabled={stepNum === 0}
                 onClick={() => handlePrevious()}
+                sx={{ textTransform: "none" }}
               >
                 <ChevronLeftIcon />
+                Back
               </Button>
               {stepNum < steps.length - 1 && (
                 <Button
@@ -524,12 +469,20 @@ function Submission() {
                   variant="contained"
                   color="primary"
                   onClick={() => handleNext()}
+                  sx={{ textTransform: "none" }}
                 >
+                  Next
                   <ChevronRightIcon />
+                  {/* <ArrowForwardIcon fontSize="small"/> */}
                 </Button>
               )}
               {stepNum === steps.length - 1 && (
-                <Button type="submit" variant="contained" color="primary">
+                <Button
+                  type="submit"
+                  variant="contained"
+                  color="primary"
+                  sx={{ textTransform: "none" }}
+                >
                   Submit
                 </Button>
               )}

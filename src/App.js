@@ -77,7 +77,9 @@ function App() {
         >
           {generateRoutes(menus.filter((item) => !item.Index))}
         </Route>
-        <Route path="*" element={<NotFound />} />
+        {menus && (
+          <Route path="*" element={<NotFound />} />
+        )}
       </Routes>
     </BrowserRouter>
   );
