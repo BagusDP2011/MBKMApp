@@ -33,6 +33,8 @@ import { DemoContainer } from "@mui/x-date-pickers/internals/demo";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { LocalizationProvider } from "@mui/x-date-pickers";
+import { useNavigate } from "react-router-dom";
+import { useAlert } from "../../../components/AlertProvider";
 
 let steps = ["Data Diri", "Program MBKM"];
 const FormGrid = styled(Grid)(() => ({
@@ -43,6 +45,8 @@ const FormGrid = styled(Grid)(() => ({
 function Submission() {
   const [user, setUser] = useState({});
   const [supervisor, setSupervisor] = useState([]);
+  const navigate = useNavigate();
+  const showAlert = useAlert();
 
   const handleStartDateChange = (newStartDate) => {
     formSubmission.StartDate = newStartDate;
@@ -116,7 +120,13 @@ function Submission() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    await submit(formSubmission);
+    try{
+      await submit(formSubmission);
+      showAlert('Submission has been created','success');
+      navigate('/menu/mbkm/daftar%20pengajuan');
+    }catch(error){
+      showAlert(error.message,'error');
+    }
   };
 
   const handleCoursesChange = (updatedCourses) => {
@@ -290,6 +300,11 @@ function Submission() {
                 name="Title"
                 value={formSubmission.Title}
                 onChange={handleChange}
+                // sx={{
+                //   '& .MuiOutlinedInput-root:hover fieldset': {
+                //     borderColor: '#1976d2',
+                //   },
+                // }}
                 required
               />
             </Grid>
@@ -383,6 +398,7 @@ function Submission() {
                 <Select
                   name="typeExchange"
                   value={formSubmission.ExchangeProgram.TypeExchange}
+                  label="jenisPertukaranPelaja"
                   onChange={handleChange}
                   required
                 >

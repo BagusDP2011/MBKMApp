@@ -6,6 +6,7 @@ import reportWebVitals from "./reportWebVitals";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import "./assets/css/satoshi.css";
 import { AuthProvider } from "./service/AuthContext";
+import { AlertProvider } from "./components/AlertProvider";
 
 const theme = createTheme({
   typography: {
@@ -24,7 +25,9 @@ root.render(
   <React.StrictMode>
     <ThemeProvider theme={theme}>
       <AuthProvider>
-        <App />
+        <AlertProvider>
+          <App />
+        </AlertProvider>
       </AuthProvider>
     </ThemeProvider>
   </React.StrictMode>

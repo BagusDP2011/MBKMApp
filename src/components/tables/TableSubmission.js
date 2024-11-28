@@ -16,6 +16,7 @@ import VisibilityOutlinedIcon from "@mui/icons-material/VisibilityOutlined";
 import DeleteOutlineOutlinedIcon from "@mui/icons-material/DeleteOutlineOutlined";
 import Swal from "sweetalert2";
 import { useNavigate } from "react-router-dom";
+import { useAlert } from "../AlertProvider";
 
 function CustomToolbar() {
   return (
@@ -43,6 +44,7 @@ export default function TableSubmission({ access, accessId }) {
   const [columnVisibilityModel, setColumnVisibilityModel] = useState();
   const [columns, setColumns] = React.useState([]);
   const navigate = useNavigate();
+  const showAlert = useAlert();
 
   const handleColumnVisibilityChange = (newModel) => {
     setColumnVisibilityModel(newModel);
@@ -166,7 +168,12 @@ export default function TableSubmission({ access, accessId }) {
       cancelButtonColor: "#3F8CFE",
     }).then(async (result) => {
       if (result.isConfirmed) {
-        await deleteSubmission(submissionId);
+        try{
+          await deleteSubmission(submissionId);
+          showAlert('Submission already deleted','success')
+        }catch(error){
+          showAlert('Error while delete submission','error')
+        }
         
         const breadcrumbData = await getSubmission(accessId);
         setSubmissions(breadcrumbData);

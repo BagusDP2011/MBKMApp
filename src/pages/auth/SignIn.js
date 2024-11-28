@@ -17,6 +17,7 @@ import { GoogleIcon, FacebookIcon, SitemarkIcon } from "./CustomIcons";
 import { login } from "../../service/Auth.Service";
 import { AuthContext } from "../../service/AuthContext";
 import { useNavigate } from "react-router-dom";
+import { useAlert } from "../../components/AlertProvider";
 // import AppTheme from '../shared-theme/AppTheme';
 // import ColorModeSelect from '../shared-theme/ColorModeSelect';
 
@@ -69,6 +70,7 @@ export default function SignIn(props) {
   const [open, setOpen] = React.useState(false);
   const { loginContext } = useContext(AuthContext);
   const navigate = useNavigate();
+  const showAlert = useAlert();
 
   const handleClickOpen = () => {
     setOpen(true);
@@ -100,7 +102,7 @@ export default function SignIn(props) {
         console.error("Login failed, no token returned");
       }
     } catch (error) {
-      console.error("Error during login:", error);
+      showAlert(error.message,'error');
     }
   };
   

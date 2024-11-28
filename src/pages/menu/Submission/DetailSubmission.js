@@ -121,6 +121,12 @@ export default function DetailSubmission({ menuAccess, accessId }) {
     setTabValue(newValue);
   };
 
+  const handleChangeLecturer = (e) => {
+    const { name, value } = e.target;
+    submission.LecturerGuardianID = value;
+    console.log(value)
+  }
+
   const formatDate = (dateString) => {
     const date = new Date(dateString);
 
@@ -525,7 +531,7 @@ export default function DetailSubmission({ menuAccess, accessId }) {
                               <Select
                                 name="LecturerGuardianID"
                                 value={submission.LecturerGuardianID}
-                                onChange={handleChange}
+                                onChange={handleChangeLecturer}
                                 required
                               >
                                 {supervisors.map((s) => (
@@ -646,14 +652,14 @@ export default function DetailSubmission({ menuAccess, accessId }) {
                   border: "1px solid rgba(224, 224, 224, 1)",
                 }}
               >
-                <CardContent>
+                <CardContent sx={{ paddingBottom:0 }}>
                   <Box
-                    sx={{ display: "flex", columnGap: 1, alignItems: "center" }}
+                    sx={{ display: "flex", columnGap: 1, alignItems: "center", justifyContent:"space-between" }}
                   >
                     <Typography variant="subtitle1" fontWeight="medium">
                       Mata Kuliah
                     </Typography>
-                    {exchangeProgram.StudyProgramObjective && (
+                    {/* {exchangeProgram.StudyProgramObjective && (
                       <Box
                         sx={{
                           backgroundColor: "rgb(86 202 0 / 0.16)",
@@ -675,11 +681,13 @@ export default function DetailSubmission({ menuAccess, accessId }) {
                           {exchangeProgram.StudyProgramObjective}
                         </Typography>
                       </Box>
-                    )}
+                    )} */}
                   </Box>
-                  <Typography variant="body2" color="#2E263DB2">
-                    {exchangeProgram.TypeExchange}
-                  </Typography>
+                  <Box>
+                    <Typography variant="body2" color="#2E263DB2">
+                      {exchangeProgram.TypeExchange} - {exchangeProgram.StudyProgramObjective}
+                    </Typography>
+                  </Box>
                 </CardContent>
                 <TableContainer>
                   <Table sx={{ minWidth: 650 }} aria-label="simple table">
