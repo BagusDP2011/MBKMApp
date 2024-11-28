@@ -42,10 +42,10 @@ export default function SideMenu({ menus }) {
             variant="body2"
             sx={{ fontWeight: 500, lineHeight: "16px" }}
           >
-            Fahrizal Ali
+          christoforus volta 
           </Typography>
           <Typography variant="caption" sx={{ color: "text.secondary" }}>
-            frizali@gmail.com
+           christokwen7@gmail.com
           </Typography>
         </Box>
       </Stack>

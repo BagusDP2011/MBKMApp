@@ -1,5 +1,5 @@
 import React, { useState, useContext } from "react";
-import { Box, Container, Stack, Typography } from "@mui/material";
+import { Box, Stack, Typography, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Button } from "@mui/material";
 import {
   List,
   ListItem,
@@ -7,26 +7,23 @@ import {
   ListItemIcon,
   ListItemText,
   Collapse,
-  Divider,
 } from "@mui/material";
-import { BorderColor, BorderLeft, ExpandLess, ExpandMore } from "@mui/icons-material";
+import { ExpandLess, ExpandMore } from "@mui/icons-material";
 import { Link } from "react-router-dom";
-import SettingsSuggestOutlinedIcon from "@mui/icons-material/SettingsSuggestOutlined";
-import InfoOutlined from "@mui/icons-material/InfoOutlined";
-import { HelpOutline } from "@mui/icons-material";
 import { iconsMap } from "../../mapItem/mapItem";
 import { styled } from "@mui/material/styles";
 import AutoAwesomeIcon from "@mui/icons-material/AutoAwesome";
 import LogoutIcon from "@mui/icons-material/Logout";
 import { useNavigate } from "react-router-dom";
 import { AuthContext } from "../../service/AuthContext";
+import lambang from "../../assets/img/lambang.png";
 
 const CustomListItemButton = styled(ListItemButton)(({ theme }) => ({
   "& .MuiTypography-root": {
     fontWeight: 500,
   },
   "&.Mui-selected": {
-    boxShadow: "inset 4px 0 0 0 #3F8CFE",
+    boxShadow: "inset 5px 0 0 0 #3F8CFE",
     color: "#3F8CFE",
     "& .MuiListItemIcon-root": {
       color: "#3F8CFE",
@@ -34,25 +31,15 @@ const CustomListItemButton = styled(ListItemButton)(({ theme }) => ({
   },
 }));
 
-
-const secondaryListItems = [
-  { Text: "Settings", Icon: <SettingsSuggestOutlinedIcon /> },
-  { Text: "About", Icon: <InfoOutlined /> },
-  { Text: "Feedback", Icon: <HelpOutline /> },
-];
-
 export default function MenuContent({ menus }) {
   const [selectedMenu, setSelectedMenu] = useState(0);
   const [selectedSubMenu, setSelectedSubMenu] = useState(null);
   const [openSubmenu, setOpenSubmenu] = useState(null);
   const [isSubMenu, setIsSubMenu] = useState(null);
+  const [logoutMessage, setLogoutMessage] = useState('');
+  const [openLogoutDialog, setOpenLogoutDialog] = useState(false);
   const { logoutContext } = useContext(AuthContext);
   const navigate = useNavigate();
-
-  const logout = () => {
-    logoutContext();
-    navigate("/signin");
-  };
 
   const handleMenuClick = (id) => {
     setIsSubMenu(false);
@@ -72,19 +59,87 @@ export default function MenuContent({ menus }) {
     return iconsMap[IconString];
   };
 
+  const handleLogoutClick = () => {
+    setOpenLogoutDialog(true);
+  };
+
+  const handleLogoutConfirm = () => {
+    localStorage.setItem('logoutMessage', 'Anda berhasil logout');
+    logoutContext();
+    navigate("/signin");
+  };
+
+  const handleLogoutCancel = () => {
+    setOpenLogoutDialog(false);
+  };
+
   return (
     <Stack sx={{ flexGrow: 1, justifyContent: "space-between" }}>
+      {/* Logout Confirmation Dialog */}
+      <Dialog
+        open={openLogoutDialog}
+        onClose={handleLogoutCancel}
+        aria-labelledby="logout-dialog-title"
+        aria-describedby="logout-dialog-description"
+      >
+        <DialogTitle id="logout-dialog-title">Konfirmasi Logout</DialogTitle>
+        <DialogContent>
+          <DialogContentText id="logout-dialog-description">
+            Anda yakin ingin keluar dari aplikasi?
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleLogoutCancel} color="primary">
+            Batal
+          </Button>
+          <Button onClick={handleLogoutConfirm} color="primary" autoFocus>
+            Ya, Keluar
+          </Button>
+        </DialogActions>
+      </Dialog>
+
+      {/* Pesan Logout */}
+      {logoutMessage && (
+        <Typography
+          sx={{
+            backgroundColor: "#dff0d8",
+            color: "#3c763d",
+            padding: "10px",
+            textAlign: "center",
+            borderRadius: "4px",
+            marginBottom: "10px",
+          }}
+        >
+          {logoutMessage}
+        </Typography>
+      )}
+
       <Box>
-        <Stack direction="row" sx={{ gap: 1, alignItems: "center", p: 3 }}>
-          <AutoAwesomeIcon sx={{ fontSize: "2.5rem", color: "#3F8CFE" }} />
-          <Typography variant="h5" fontWeight="900" color="#252e4a">
+        <Stack 
+          sx={{ 
+            gap: 1, 
+            alignItems: "center", 
+            p: 3,
+            justifyContent: "center",
+            flexDirection: "column" 
+          }}
+        >
+          <img
+            src={lambang} 
+            alt="MBKM Logo" 
+            style={{ 
+              maxWidth: "800px", 
+              maxHeight: "100px"
+            }} 
+          />
+          <Typography variant="h6" fontWeight="800" color="#252e4a">
             MBKM
           </Typography>
         </Stack>
         <List disablePadding dense>
           {menus.map((item) => (
-            <React.StrictMode key={item.MenuID}>
-              <ListItem sx={{ color: "#A6A6A6", fontWeight: 500 }} dense>
+            <React.Fragment key={item.MenuID}>
+              <ListItem sx={{ color: "#A6A6A6", fontWeight: 20 }} dense>
                 <CustomListItemButton
                   component={Link}
                   to={
@@ -149,7 +204,7 @@ export default function MenuContent({ menus }) {
                           </ListItemIcon>
                           <ListItemText
                             primary={subMenu.Title}
-                            sx={{ fontWeight: 500 }}
+                            sx={{ fontWeight: 700 }}
                           />
                         </CustomListItemButton>
                       </ListItem>
@@ -157,26 +212,17 @@ export default function MenuContent({ menus }) {
                   </List>
                 </Collapse>
               )}
-            </React.StrictMode>
+            </React.Fragment>
           ))}
         </List>
       </Box>
-      {/* <List disablePadding dense>
-        {secondaryListItems.map((item, index) => (
-          <ListItem key={index} sx={{ color: "#A6A6A6", fontWeight: 500 }}>
-            <CustomListItemButton sx={{ columnGap: 1 }}>
-              <ListItemIcon sx={{ minWidth: "max-content", color: "#A6A6A6" }}>
-                {item.Icon}
-              </ListItemIcon>
-              <ListItemText primary={item.Text} />
-            </CustomListItemButton>
-          </ListItem>
-        ))}
-      </List> */}
 
       <List disablePadding dense>
         <ListItem>
-          <CustomListItemButton sx={{ columnGap: 1 }} onClick={() => logout()}>
+          <CustomListItemButton 
+            sx={{ columnGap: 1 }} 
+            onClick={handleLogoutClick}
+          >
             <ListItemIcon sx={{ minWidth: "max-content", color: "#A6A6A6" }}>
               <LogoutIcon />
             </ListItemIcon>

@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
 import Checkbox from "@mui/material/Checkbox";
@@ -20,7 +20,6 @@ import { useNavigate } from "react-router-dom";
 import LogoImage from "../../assets/img/informatika.png"; 
 import BackgroundImage from "../../assets/img/backround.png";
 
-
 const Card = styled(MuiCard)(({ theme }) => ({
   display: "flex",
   flexDirection: "column",
@@ -37,7 +36,6 @@ const Card = styled(MuiCard)(({ theme }) => ({
   marginRight: theme.spacing(4), 
 }));
 
-
 const SignInContainer = styled(Stack)(({ theme }) => ({
   minHeight: "100vh",
   padding: theme.spacing(2),
@@ -48,15 +46,33 @@ const SignInContainer = styled(Stack)(({ theme }) => ({
   backgroundPosition: "center", 
 }));
 
-
 export default function SignIn(props) {
-  const [emailError, setEmailError] = React.useState(false);
-  const [emailErrorMessage, setEmailErrorMessage] = React.useState("");
-  const [passwordError, setPasswordError] = React.useState(false);
-  const [passwordErrorMessage, setPasswordErrorMessage] = React.useState("");
-  const [open, setOpen] = React.useState(false);
+  const [emailError, setEmailError] = useState(false);
+  const [emailErrorMessage, setEmailErrorMessage] = useState("");
+  const [passwordError, setPasswordError] = useState(false);
+  const [passwordErrorMessage, setPasswordErrorMessage] = useState("");
+  const [open, setOpen] = useState(false);
+  const [logoutMessage, setLogoutMessage] = useState('');
   const { loginContext } = useContext(AuthContext);
   const navigate = useNavigate();
+
+  // Efek untuk menampilkan pesan logout
+  useEffect(() => {
+    // Cek apakah ada pesan logout di localStorage
+    const message = localStorage.getItem('logoutMessage');
+    if (message) {
+      setLogoutMessage(message);
+      // Hapus pesan dari localStorage setelah ditampilkan
+      localStorage.removeItem('logoutMessage');
+      
+      // Hilangkan pesan setelah 2 detik
+      const timer = setTimeout(() => {
+        setLogoutMessage('');
+      }, 2000);
+
+      
+    }
+  }, []);
 
   const handleClickOpen = () => {
     setOpen(true);
@@ -92,7 +108,7 @@ export default function SignIn(props) {
   const validateInputs = () => {
     const user = document.getElementById("user");
     const password = document.getElementById("password");
-    console.log (user.value, password.value);
+    console.log(user.value, password.value);
 
     let isValid = true;
 
@@ -104,14 +120,6 @@ export default function SignIn(props) {
       setEmailError(false);
       setEmailErrorMessage("");
     }
-    // if (!email.value || !/\S+@\S+\.\S+/.test(email.value)) {
-    //   setEmailError(true);
-    //   setEmailErrorMessage("Please enter a valid email address.");
-    //   isValid = false;
-    // } else {
-    //   setEmailError(false);
-    //   setEmailErrorMessage("");
-    // }
 
     if (!password.value || password.value.length < 6) {
       setPasswordError(true);
@@ -127,14 +135,33 @@ export default function SignIn(props) {
 
   return (
     <SignInContainer>
+      {/* Pesan Logout */}
+      {logoutMessage && (
+        <Box 
+          sx={{
+            position: 'absolute',
+            top: 10,
+            left: 800,
+            width: '20%',
+            backgroundColor: "#dff0d8",
+            color: "#",
+            padding: "10px",
+            textAlign: "center",
+            zIndex: 1000,
+          }}
+        >
+          {logoutMessage}
+        </Box>
+      )}
+
       <Card variant="outlined">
         <Box sx={{ display: "flex", justifyContent: "center", mb: 2 }}>
-  <img 
-    src={LogoImage} 
-    alt="Logo" 
-    style={{ width: "300px", height: "240px" }} 
-  />
-</Box>
+          <img 
+            src={LogoImage} 
+            alt="Logo" 
+            style={{ width: "300px", height: "240px" }} 
+          />
+        </Box>
         <Box
           component="form"
           onSubmit={handleSubmit}
@@ -146,31 +173,6 @@ export default function SignIn(props) {
             gap: 2,
           }}
         >
-          {/* <FormControl>
-            <FormLabel htmlFor="email">Email</FormLabel>
-            <TextField
-              error={emailError}
-              helperText={emailErrorMessage}
-              id="email"
-              type="email"
-              name="email"
-              placeholder="your@email.com"
-              autoComplete="email"
-              autoFocus
-              required
-              fullWidth
-              variant="outlined"
-              color={emailError ? "error" : "primary"}
-              InputProps={{ style: { color: "white" } }}
-              sx={{
-                "& .MuiOutlinedInput-root": {
-                  "& fieldset": { borderColor: "white" },
-                  "&:hover fieldset": { borderColor: "#BBDEFB" },
-                  "&.Mui-focused fieldset": { borderColor: "white" },
-                },
-              }}
-            />
-          </FormControl> */}
           <FormControl>
             <FormLabel htmlFor="user" sx={{ color: "white" }}>User</FormLabel>
             <TextField

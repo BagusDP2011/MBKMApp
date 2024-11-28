@@ -11,7 +11,7 @@ import {
   Stack,
   Card as MuiCard
 } from "@mui/material";
-// import axios from "axios";
+import axios from "axios";
 import { styled } from "@mui/material/styles";
 import { useNavigate } from "react-router-dom";
 
@@ -64,7 +64,7 @@ const RegistrationForm = React.memo(() => {
     try {
       console.log('trial');
       console.log(formData);
-      // const response = await axios.post("http://localhost:3001/api/register", formData);
+      const response = await axios.post("http://localhost:3001/api/register", formData);
       console.log('sukses');
       alert("Registration successful! Redirecting to login page.");
       navigate("/signin");
