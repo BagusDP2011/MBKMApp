@@ -38,7 +38,7 @@ export const approveSubmission = async (submissionId, accessId) => {
   }
 };
 
-export const rejectSubmission = async (submissionId, accessId) => {
+export const rejectSubmission = async (submissionId, accessId, note) => {
   try {
     const token = localStorage.getItem("token");
     const subHeaders = new Headers({
@@ -46,9 +46,14 @@ export const rejectSubmission = async (submissionId, accessId) => {
       Authorization: `Bearer ${token}`,
     });
 
+    const body = {
+      note: note
+    }
     const response = await fetch(
       `http://localhost:3001/api/submission/reject/${submissionId}/${accessId}`,
-      { method:"POST",headers: subHeaders }
+      { method:"POST",
+        headers: subHeaders,
+        body: JSON.stringify(body), }
     );
     const data = await response.json();
     return data;

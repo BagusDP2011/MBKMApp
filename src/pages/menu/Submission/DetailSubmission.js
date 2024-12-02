@@ -31,6 +31,7 @@ import {
   TimelineSeparator,
   TimelineConnector,
   TimelineContent,
+  TimelineOppositeContent,
   TimelineDot,
 } from "@mui/lab";
 import Swal from "sweetalert2";
@@ -57,6 +58,16 @@ const FormGrid = styled(Grid)(() => ({
   display: "flex",
   flexDirection: "column",
 }));
+
+const revisions = [
+  {
+    RevisionID: 1,
+    RevisionNote:
+      "Tolong di perbaiki lagi file jadwalnya dan Rincian kegiatannya di perjelas",
+    RevisionDate: "2024-11-30T02:05:36.000Z",
+    ApproverName: "KPS",
+  },
+];
 
 export default function DetailSubmission({ menuAccess, accessId }) {
   const [isLoading, setIsLoading] = React.useState(false);
@@ -126,9 +137,10 @@ export default function DetailSubmission({ menuAccess, accessId }) {
 
   const handleReAssign = async () => {
     await reAssign(submission);
-    showAlert('Submission updated already','success')
+    showAlert("Submission updated already", "success");
     setIsReAssign(false);
-  }
+    navigate(0);
+  };
 
   const handleChangeLecturer = (e) => {
     const { name, value } = e.target;
@@ -185,23 +197,32 @@ export default function DetailSubmission({ menuAccess, accessId }) {
   };
 
   const handleReject = async (submissionId) => {
-    Swal.fire({
+    const { value: rejectionNote } = await Swal.fire({
       title: "Reject Submission",
       text: "Are you sure want to reject this submission?",
       icon: "warning",
-      input: "textarea",  
-      inputPlaceholder: "Note",
+      input: "textarea",
+      inputPlaceholder: "Write your reason for rejection...",
+      inputAttributes: {
+        "aria-label": "Write your reason for rejection",
+      },
       showCancelButton: true,
       confirmButtonText: "Reject",
       cancelButtonText: "Cancel",
       cancelButtonColor: "#3F8CFE",
       confirmButtonColor: "#FF4C51",
-    }).then(async (result) => {
-      if (result.isConfirmed) {
-        await rejectSubmission(submissionId, accessId);
-        navigate(`/menu/mbkm/daftar%20pengajuan`);
-      }
+      inputValidator: (value) => {
+        if (!value) {
+          return "You need to provide a reason for rejection!";
+        }
+      },
     });
+
+    if (rejectionNote) {
+      await rejectSubmission(submissionId, accessId, rejectionNote);
+
+      navigate(`/menu/mbkm/daftar%20pengajuan`);
+    }
   };
 
   function getBase64FileSize(base64String) {
@@ -331,49 +352,88 @@ export default function DetailSubmission({ menuAccess, accessId }) {
               </Button>
             </Box>
           )}
+
+          {submission.Status == "Rejected" &&
+            accessId === 1 &&
+            menuAccess.CanEdit && (
+              <Box px="1rem" pt="1rem" pb="2rem">
+                <Button
+                  sx={{ width: "100%", textTransform: "none" }}
+                  variant="contained"
+                  color="primary"
+                  onClick={() => navigate("/menu/mbkm/pengajuan")}
+                >
+                  New Submission
+                </Button>
+              </Box>
+            )}
         </Card>
 
-        <Card
-          sx={{
-            marginTop: "1.5rem",
-            boxShadow: "none",
-            border: "1px solid rgba(224, 224, 224, 1)",
-          }}
-        >
-          <Typography variant="h6" sx={{ margin: "1rem" }}>
-            Approval Timeline
-          </Typography>
-          <Divider />
-          <CardContent>
-            <Timeline position="alternate" sx={{ padding: 0, margin: 0 }}>
-              {submissionApproval.map((item, index) => (
-                <TimelineItem key={index}>
-                  <TimelineSeparator>
-                    <TimelineDot
-                      color={
-                        item.ApprovalStatus === "Approved" ||
-                        item.ApprovalStatus === "Submit"
-                          ? "primary"
-                          : "warning"
-                      }
-                    />
-                    {index < submissionApproval.length - 1 && (
-                      <TimelineConnector />
-                    )}
-                  </TimelineSeparator>
-                  <TimelineContent>
-                    <Typography variant="body1">
-                      {item.AccDescription} - {item.ApprovalStatus}
-                    </Typography>
-                    <Typography variant="caption">
-                      {item.ApprovalDate ? formatDate(item.ApprovalDate) : ""}
-                    </Typography>
-                  </TimelineContent>
-                </TimelineItem>
+        {submission.Status !== "Rejected" && (
+          <Card
+            sx={{
+              marginTop: "1.5rem",
+              boxShadow: "none",
+              border: "1px solid rgba(224, 224, 224, 1)",
+            }}
+          >
+            <Typography variant="h6" sx={{ margin: "1rem" }}>
+              Approval Timeline
+            </Typography>
+            <Divider />
+            <CardContent>
+              <Timeline position="alternate" sx={{ padding: 0, margin: 0 }}>
+                {submissionApproval.map((item, index) => (
+                  <TimelineItem key={index}>
+                    <TimelineSeparator>
+                      <TimelineDot
+                        color={
+                          item.ApprovalStatus === "Approved" ||
+                          item.ApprovalStatus === "Submit"
+                            ? "primary"
+                            : "warning"
+                        }
+                      />
+                      {index < submissionApproval.length - 1 && (
+                        <TimelineConnector />
+                      )}
+                    </TimelineSeparator>
+                    <TimelineContent>
+                      <Typography variant="body1">
+                        {item.AccDescription} - {item.ApprovalStatus}
+                      </Typography>
+                      <Typography variant="caption">
+                        {item.ApprovalDate ? formatDate(item.ApprovalDate) : ""}
+                      </Typography>
+                    </TimelineContent>
+                  </TimelineItem>
+                ))}
+              </Timeline>
+            </CardContent>
+          </Card>
+        )}
+
+        {submission.Status === "Rejected" && (
+          <Card
+            sx={{
+              marginTop: "1.5rem",
+              boxShadow: "none",
+              border: "1px solid rgba(224, 224, 224, 1)",
+            }}
+          >
+            <Typography variant="h6" sx={{ margin: "1rem" }}>
+              Revision Note
+            </Typography>
+            <Divider />
+            <CardContent>
+              {revisions.map((item, index) => (
+                <Typography variant="body2" color="#2E263DB2">
+                  {(index += 1)}.{item.RevisionNote} - {item.ApproverName}
+                </Typography>
               ))}
-            </Timeline>
-          </CardContent>
-        </Card>
+            </CardContent>
+          </Card>
+        )}
       </Grid>
       <Grid item size={8}>
         <Tabs
@@ -497,7 +557,10 @@ export default function DetailSubmission({ menuAccess, accessId }) {
                                   border: "1px solid rgb(118, 118, 118)",
                                 }}
                               >
-                                <IconButton color="rgba(224, 224, 224, 1)" onClick={() => handleReAssign()}>
+                                <IconButton
+                                  color="rgba(224, 224, 224, 1)"
+                                  onClick={() => handleReAssign()}
+                                >
                                   <SaveOutlinedIcon />
                                 </IconButton>
                               </Avatar>
@@ -592,9 +655,14 @@ export default function DetailSubmission({ menuAccess, accessId }) {
                   border: "1px solid rgba(224, 224, 224, 1)",
                 }}
               >
-                <CardContent sx={{ paddingBottom:0 }}>
+                <CardContent sx={{ paddingBottom: 0 }}>
                   <Box
-                    sx={{ display: "flex", columnGap: 1, alignItems: "center", justifyContent:"space-between" }}
+                    sx={{
+                      display: "flex",
+                      columnGap: 1,
+                      alignItems: "center",
+                      justifyContent: "space-between",
+                    }}
                   >
                     <Typography variant="subtitle1" fontWeight="medium">
                       Mata Kuliah
@@ -624,8 +692,13 @@ export default function DetailSubmission({ menuAccess, accessId }) {
                     )} */}
                   </Box>
                   <Box>
-                    <Typography variant="body2" color="#2E263DB2" sx={{ mb:".5rem" }}>
-                      {exchangeProgram.TypeExchange} - {exchangeProgram.StudyProgramObjective}
+                    <Typography
+                      variant="body2"
+                      color="#2E263DB2"
+                      sx={{ mb: ".5rem" }}
+                    >
+                      {exchangeProgram.TypeExchange} -{" "}
+                      {exchangeProgram.StudyProgramObjective}
                     </Typography>
                   </Box>
                 </CardContent>
