@@ -22,6 +22,16 @@ export const getMenu = async (accessId) => {
   }
 };
 
+export const getMenuAccessDetail = async (accessId) => {
+  try {
+    const response = await fetch(`${config.baseURL}/menu/menu-access-detail/${accessId}`);
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    throw error;
+  }
+};
+
 export const getListRoleDetail = async () => {
   try {
     const response = await fetch(`http://localhost:3001/api/role-detail`);

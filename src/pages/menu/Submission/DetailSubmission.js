@@ -50,6 +50,8 @@ import CircularProgress from "@mui/material/CircularProgress";
 import { getUserByAccessID } from "../../../service/Static.Service";
 import SaveOutlinedIcon from "@mui/icons-material/SaveOutlined";
 import CloseOutlinedIcon from "@mui/icons-material/CloseOutlined";
+import { reAssign } from "../../../service/Submission.Service";
+import { useAlert } from "../../../components/AlertProvider";
 
 const FormGrid = styled(Grid)(() => ({
   display: "flex",
@@ -65,6 +67,7 @@ export default function DetailSubmission({ menuAccess, accessId }) {
   const [submissionApproval, setSubmissionApproval] = React.useState([]);
   const [submissionAttachment, setSubmissionAttachment] = React.useState([]);
   const [exchangeProgram, setExchangeProgram] = React.useState({});
+  const showAlert = useAlert();
 
   const [isReAssign, setIsReAssign] = React.useState(false);
   const [supervisors, setSupervisors] = React.useState([]);
@@ -121,11 +124,19 @@ export default function DetailSubmission({ menuAccess, accessId }) {
     setTabValue(newValue);
   };
 
+  const handleReAssign = async () => {
+    await reAssign(submission);
+    showAlert('Submission updated already','success')
+    setIsReAssign(false);
+  }
+
   const handleChangeLecturer = (e) => {
     const { name, value } = e.target;
-    submission.LecturerGuardianID = value;
-    console.log(value)
-  }
+    setSubmission((prevSubmission) => ({
+      ...prevSubmission,
+      [name]: value,
+    }));
+  };
 
   const formatDate = (dateString) => {
     const date = new Date(dateString);
@@ -148,15 +159,6 @@ export default function DetailSubmission({ menuAccess, accessId }) {
     const formattedTime = date.toLocaleTimeString("en-US", optionsTime);
 
     return `${formattedDate}, ${formattedTime}`;
-  };
-
-  const showAlert = () => {
-    Swal.fire({
-      title: "Hello!",
-      text: "This is a SweetAlert in React",
-      icon: "success",
-      confirmButtonText: "Cool",
-    });
   };
 
   const showPdf = (base64) => {
@@ -185,8 +187,10 @@ export default function DetailSubmission({ menuAccess, accessId }) {
   const handleReject = async (submissionId) => {
     Swal.fire({
       title: "Reject Submission",
-      text: "Are you sure want to approve this submission?",
+      text: "Are you sure want to reject this submission?",
       icon: "warning",
+      input: "textarea",  
+      inputPlaceholder: "Note",
       showCancelButton: true,
       confirmButtonText: "Reject",
       cancelButtonText: "Cancel",
@@ -254,45 +258,11 @@ export default function DetailSubmission({ menuAccess, accessId }) {
               />
             )}
             <Typography variant="h6">{student.Name}</Typography>
-            {/* <Box
-              sx={{
-                backgroundColor: "rgb(22 177 255 / 0.16)",
-                px: "8px",
-                height: "22.875px",
-                borderRadius: "1rem",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-              }}
-            >
-              <Typography
-                variant="subtitle2"
-                sx={{ color: "#16B1FF", fontSize: "0.9rem" }}
-                fontWeight="bold"
-              >
-                3312311045
-              </Typography>
-            </Box> */}
             <Typography variant="subtitle2" color="primary" fontWeight="medium">
               {student.NIM}
             </Typography>
           </Box>
-
-          {/* <Stack direction="row" spacing={2} justifyContent="center" mt={2}>
-            <Box textAlign="center">
-              <CheckCircleIcon color="primary" />
-              <Typography variant="body1">1.23k</Typography>
-              <Typography variant="caption">Task Done</Typography>
-            </Box>
-            <Box textAlign="center">
-              <StarIcon color="secondary" />
-              <Typography variant="body1">568</Typography>
-              <Typography variant="caption">Project Done</Typography>
-            </Box>
-          </Stack> */}
-
           <Divider sx={{ my: 2 }} />
-
           <CardContent sx={{ py: 0 }}>
             <Stack spacing={1}>
               <Typography variant="subtitle1" fontWeight="medium">
@@ -318,25 +288,6 @@ export default function DetailSubmission({ menuAccess, accessId }) {
                 <Typography variant="body2" fontWeight="medium">
                   Prodi:
                 </Typography>
-                {/* <Box
-                  sx={{
-                    backgroundColor: "rgb(86 202 0 / 0.16)",
-                    px: "8px",
-                    height: "22.875px",
-                    borderRadius: "1rem",
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                  }}
-                >
-                  <Typography
-                    variant="subtitle2"
-                    sx={{ color: "#56CA00", fontSize: "0.9rem" }}
-                    fontWeight="bold"
-                  >
-                    Teknik Informatika
-                  </Typography>
-                </Box> */}
                 <Typography variant="body2" color="#2E263DB2">
                   {student.ProdiName}
                 </Typography>
@@ -482,14 +433,6 @@ export default function DetailSubmission({ menuAccess, accessId }) {
                       </Typography>
                     </Box>
                   </Box>
-                  {/* <Box>
-                  <Typography variant="body2" fontWeight="medium">
-                    Jenis Kegiatan
-                  </Typography>
-                  <Typography variant="body2" color="#2E263DB2">
-                    {submission.ProgramType}
-                  </Typography>
-                </Box> */}
                   <Box>
                     <Typography variant="body2" fontWeight="medium">
                       Dosen Pembimbing
@@ -507,9 +450,6 @@ export default function DetailSubmission({ menuAccess, accessId }) {
                         </Typography>
                       )}
                       {menuAccess.CanEdit && !isReAssign && accessId !== 1 && (
-                        // <Typography variant="body2" color="#2E263DB2">
-                        //   Re-Assign
-                        // </Typography>
                         <Button
                           sx={{
                             textTransform: "none",
@@ -535,7 +475,7 @@ export default function DetailSubmission({ menuAccess, accessId }) {
                                 required
                               >
                                 {supervisors.map((s) => (
-                                  <MenuItem value={s.UserID}>
+                                  <MenuItem key={s.UserID} value={s.UserID}>
                                     {s.UserID} - {s.Name}
                                   </MenuItem>
                                 ))}
@@ -557,7 +497,7 @@ export default function DetailSubmission({ menuAccess, accessId }) {
                                   border: "1px solid rgb(118, 118, 118)",
                                 }}
                               >
-                                <IconButton color="rgba(224, 224, 224, 1)">
+                                <IconButton color="rgba(224, 224, 224, 1)" onClick={() => handleReAssign()}>
                                   <SaveOutlinedIcon />
                                 </IconButton>
                               </Avatar>
@@ -684,7 +624,7 @@ export default function DetailSubmission({ menuAccess, accessId }) {
                     )} */}
                   </Box>
                   <Box>
-                    <Typography variant="body2" color="#2E263DB2">
+                    <Typography variant="body2" color="#2E263DB2" sx={{ mb:".5rem" }}>
                       {exchangeProgram.TypeExchange} - {exchangeProgram.StudyProgramObjective}
                     </Typography>
                   </Box>

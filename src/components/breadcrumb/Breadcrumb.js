@@ -26,9 +26,19 @@ export default function Breadcrumb() {
     getBreadcrumb();
   }, []);
 
+  // useEffect(() => {
+  //   const titlePath = `/${pathnames.join("/")}`;
+  //   setTitle(breadcrumbNameMap[titlePath]);
+  // }, [breadcrumbNameMap, location.pathname]);
+
   useEffect(() => {
     const titlePath = `/${pathnames.join("/")}`;
-    setTitle(breadcrumbNameMap[titlePath]);
+
+    const matchedKey = Object.keys(breadcrumbNameMap)
+      .filter((key) => titlePath.startsWith(key)) // Hanya ambil key yang cocok
+      .sort((a, b) => b.length - a.length)[0]; // Ambil key terpanjang
+
+    setTitle(breadcrumbNameMap[matchedKey]);
   }, [breadcrumbNameMap, location.pathname]);
 
   if (isLoading) {
@@ -36,8 +46,11 @@ export default function Breadcrumb() {
   }
 
   return (
-    <Stack direction="row" sx={{justifyContent:'space-between', alignItems:'center'}}>
-      <Typography variant="h5" sx={{fontWeight:600}}>
+    <Stack
+      direction="row"
+      sx={{ justifyContent: "space-between", alignItems: "center" }}
+    >
+      <Typography variant="h5" sx={{ fontWeight: 600 }}>
         {title}
       </Typography>
       <Breadcrumbs aria-label="breadcrumb">
@@ -45,9 +58,15 @@ export default function Breadcrumb() {
           const last = index === pathnames.length - 1;
           const to = `/${pathnames.slice(0, index + 1).join("/")}`;
 
+          const matchedKey = Object.keys(breadcrumbNameMap)
+            .filter((key) => to.startsWith(key))
+            .sort((a, b) => b.length - a.length)[0];
+
+          if (!matchedKey) return null;
+
           return last ? (
             <Typography key={to} sx={{ color: "#3F8CFE", fontWeight: 600 }}>
-              {breadcrumbNameMap[to]}
+              {breadcrumbNameMap[matchedKey]}
             </Typography>
           ) : (
             <LinkRouter
@@ -57,7 +76,7 @@ export default function Breadcrumb() {
               to={to}
               key={to}
             >
-              {breadcrumbNameMap[to]}
+              {breadcrumbNameMap[matchedKey]}
             </LinkRouter>
           );
         })}

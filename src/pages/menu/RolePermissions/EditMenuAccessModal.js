@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Modal,
   Box,
@@ -31,9 +31,13 @@ const style = {
   borderRadius: 2,
 };
 
-const EditMenuAccessModal = ({ open, handleClose, permissionsData }) => {
+const EditMenuAccessModal = ({ open, handleClose, menuAccess }) => {
   const [roleName, setRoleName] = useState("Editor");
-  const [permissions, setPermissions] = useState(permissionsData);
+  const [permissions, setPermissions] = useState(menuAccess);
+
+  useEffect(() => {
+    setPermissions(menuAccess);
+  }, [menuAccess]);
 
   const handlePermissionChange = (menuAccessID, type) => {
     setPermissions((prevPermissions) =>
@@ -78,10 +82,10 @@ const EditMenuAccessModal = ({ open, handleClose, permissionsData }) => {
                   key={permission.MenuAccessID}
                   sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
                 >
-                  <TableCell component="th" scope="row">
+                  <TableCell component="th" scope="row" sx={{ py:'0.5rem' }}>
                     {permission.Title}
                   </TableCell>
-                  <TableCell align="right">
+                  <TableCell align="right" sx={{ py:'0.5rem' }}>
                     {/* Read */}
                     <FormControlLabel
                       sx={{ p: 0 }}
@@ -96,7 +100,7 @@ const EditMenuAccessModal = ({ open, handleClose, permissionsData }) => {
                           }
                         />
                       }
-                      label={<Typography fontSize="1rem">Print</Typography>}
+                      label={<Typography fontSize="1rem">Read</Typography>}
                     />
                     {/* Add */}
                     <FormControlLabel
@@ -167,10 +171,10 @@ const EditMenuAccessModal = ({ open, handleClose, permissionsData }) => {
         </TableContainer>
 
         <Box display="flex" justifyContent="center" gap={2} sx={{ mt: 3 }}>
-          <Button variant="contained" color="primary" onClick={handleClose}>
-            Submit
+          <Button variant="contained" color="primary" sx={{ textTransform:'none' }} onClick={handleClose}>
+            Save
           </Button>
-          <Button variant="outlined" color="primary" onClick={handleClose}>
+          <Button variant="outlined" color="primary" sx={{ textTransform:'none' }} onClick={handleClose}>
             Cancel
           </Button>
         </Box>

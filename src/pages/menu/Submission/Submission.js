@@ -35,8 +35,9 @@ import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { LocalizationProvider } from "@mui/x-date-pickers";
 import { useNavigate } from "react-router-dom";
 import { useAlert } from "../../../components/AlertProvider";
+import AttachmentSubmission from "./AttachmentSubmission";
 
-let steps = ["Data Diri", "Program MBKM"];
+let steps = ["Data Diri", "Program MBKM", "Rincian Kegiatan"];
 const FormGrid = styled(Grid)(() => ({
   display: "flex",
   flexDirection: "column",
@@ -73,6 +74,7 @@ function Submission() {
       StudyProgramObjective: "",
       Courses: [],
     },
+    Attachment: []
   });
 
   const [stepNum, setStepNum] = useState(0);
@@ -120,12 +122,12 @@ function Submission() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    try{
+    try {
       await submit(formSubmission);
-      showAlert('Submission has been created','success');
-      navigate('/menu/mbkm/daftar%20pengajuan');
-    }catch(error){
-      showAlert(error.message,'error');
+      showAlert("Submission has been created", "success");
+      navigate("/menu/mbkm/daftar%20pengajuan");
+    } catch (error) {
+      showAlert(error.message, "error");
     }
   };
 
@@ -138,6 +140,13 @@ function Submission() {
       },
     }));
   };
+
+  const handleFilesChange = (updatedFiles) => {
+    setFormSubmission((prev) => ({
+      ...prev,
+      Attachment: updatedFiles
+    }))
+  }
 
   useEffect(() => {
     const fetchData = async () => {
@@ -223,7 +232,7 @@ function Submission() {
                   required
                 >
                   {supervisor.map((s) => (
-                    <MenuItem value={s.UserID}>
+                    <MenuItem key={s.UserID} value={s.UserID}>
                       {s.UserID} - {s.Name}
                     </MenuItem>
                   ))}
@@ -380,7 +389,7 @@ function Submission() {
             </Grid>
           </>
         );
-      case 2:
+      case 3:
         return (
           <>
             <FormGrid size={12}>
@@ -427,6 +436,21 @@ function Submission() {
             <Grid item size={{ xs: 12 }}>
               <ExchangeProgram onRowsChange={handleCoursesChange} />
             </Grid>
+          </>
+        );
+      case 2:
+        return (
+          <>
+            <FormGrid size={12}>
+              <Typography variant="subtitle1" fontWeight="medium">
+                Rincian Kegiatan
+              </Typography>
+              <Typography variant="body2" color="#2E263DB2">
+                Dilampirkan (jadwal kegiatan, deskripsi kegiatan, bukti
+                keikutsertaan lomba, sertifikat lomba, dll)
+              </Typography>
+            </FormGrid>
+            <AttachmentSubmission onFilesChange={handleFilesChange} />
           </>
         );
       default:
