@@ -1,4 +1,5 @@
 import React, { createContext, useState, useEffect } from 'react';
+import { isTokenExpired } from './Auth.Service';
 
 export const AuthContext = createContext();
 
@@ -7,12 +8,15 @@ export const AuthProvider = ({ children }) => {
 
   useEffect(() => {
     const token = localStorage.getItem('token');
-    if (token) {
+    if (token && !isTokenExpired) {
       setIsLoggedIn(true);
+    }else{
+      setIsLoggedIn(false);
     }
   }, []);
 
   const loginContext = (token) => {
+    console.log(token)
     localStorage.setItem('token', token);
     setIsLoggedIn(true);
   };

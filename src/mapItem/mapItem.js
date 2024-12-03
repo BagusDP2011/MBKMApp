@@ -3,7 +3,7 @@ import GroupsOutlinedIcon from '@mui/icons-material/GroupsOutlined';
 import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
 import DescriptionOutlinedIcon from '@mui/icons-material/DescriptionOutlined';
 import SegmentOutlinedIcon from '@mui/icons-material/SegmentOutlined';
-import ListSubmission from "../pages/menu/Submission/ListSubmission";
+import SubmissionApproval from "../pages/menu/Submission/SubmissionApproval";
 import Submission from "../pages/menu/Submission/Submission";
 import DetailSubmission from "../pages/menu/Submission/DetailSubmission";
 import AttachFileIcon from '@mui/icons-material/AttachFile';
@@ -12,6 +12,7 @@ import SubmissionInformation from "../pages/menu/Submission/SubmissionInformatio
 import FiberManualRecordOutlinedIcon from '@mui/icons-material/FiberManualRecordOutlined';
 import HttpsOutlinedIcon from '@mui/icons-material/HttpsOutlined';
 import RolePermissions from "../pages/menu/RolePermissions/RolePermissions";
+import SubmissionStatus from "../pages/menu/Submission/SubmissionStatus";
 
 export const iconsMap = {
     "<SegmentOutlinedIcon />" : <SegmentOutlinedIcon sx={{fontSize:'1.7rem'}}/>,
@@ -25,7 +26,8 @@ export const iconsMap = {
   };
   
   export const componentsMap = {
-    "<ListSubmission />" : ListSubmission,
+    "<SubmissionApproval />" : SubmissionApproval,
+    "<SubmissionStatus />" : SubmissionStatus,
     "<Submission />" : Submission,
     "<DetailSubmission />" : DetailSubmission,
     "<AttachmentSubmission />" : AttachmentSubmission,

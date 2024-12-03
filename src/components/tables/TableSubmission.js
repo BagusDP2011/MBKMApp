@@ -38,7 +38,7 @@ function CustomToolbar() {
 
 const paginationModel = { page: 0, pageSize: 10 };
 
-export default function TableSubmission({ access, accessId }) {
+export default function TableSubmission({ access, accessId, dataTable }) {
   const [submissions, setSubmissions] = React.useState([]);
   const [selectedRows, setSelectedRows] = React.useState([]);
   const [columnVisibilityModel, setColumnVisibilityModel] = useState();
@@ -53,8 +53,8 @@ export default function TableSubmission({ access, accessId }) {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const breadcrumbData = await getSubmission(accessId);
-        setSubmissions(breadcrumbData);
+        // const submissions = await getSubmission();
+        setSubmissions(dataTable);
 
         const columnData = await getColumn("Submission", accessId);
         setColumns(columnData.column);
@@ -65,7 +65,7 @@ export default function TableSubmission({ access, accessId }) {
     };
 
     fetchData();
-  }, []);
+  }, [dataTable]);
 
   const debounce = (func, delay) => {
     let timeout;
@@ -169,8 +169,8 @@ export default function TableSubmission({ access, accessId }) {
     }).then(async (result) => {
       if (result.isConfirmed) {
         try{
-          await deleteSubmission(submissionId);
-          showAlert('Submission already deleted','success')
+          var response = await deleteSubmission(submissionId);
+          showAlert(response.message,'success')
         }catch(error){
           showAlert('Error while delete submission','error')
         }

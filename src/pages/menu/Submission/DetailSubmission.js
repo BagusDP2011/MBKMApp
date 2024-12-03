@@ -190,7 +190,7 @@ export default function DetailSubmission({ menuAccess, accessId }) {
       confirmButtonColor: "#3F8CFE",
     }).then(async (result) => {
       if (result.isConfirmed) {
-        await approveSubmission(submissionId, accessId);
+        await approveSubmission(submissionId);
         navigate(`/menu/mbkm/daftar%20pengajuan`);
       }
     });
@@ -219,7 +219,7 @@ export default function DetailSubmission({ menuAccess, accessId }) {
     });
 
     if (rejectionNote) {
-      await rejectSubmission(submissionId, accessId, rejectionNote);
+      await rejectSubmission(submissionId, rejectionNote);
 
       navigate(`/menu/mbkm/daftar%20pengajuan`);
     }
@@ -427,7 +427,7 @@ export default function DetailSubmission({ menuAccess, accessId }) {
             <Divider />
             <CardContent>
               {revisions.map((item, index) => (
-                <Typography variant="body2" color="#2E263DB2">
+                <Typography key={item.RevisionID} variant="body2" color="#2E263DB2">
                   {(index += 1)}.{item.RevisionNote} - {item.ApproverName}
                 </Typography>
               ))}
@@ -444,7 +444,7 @@ export default function DetailSubmission({ menuAccess, accessId }) {
         >
           <Tab label="Overview" />
           <Tab label="Document" />
-          <Tab label="Preview Document" disabled="true" />
+          <Tab label="Preview Document" disabled={true} />
         </Tabs>
 
         {tabValue === 0 && (
@@ -667,29 +667,6 @@ export default function DetailSubmission({ menuAccess, accessId }) {
                     <Typography variant="subtitle1" fontWeight="medium">
                       Mata Kuliah
                     </Typography>
-                    {/* {exchangeProgram.StudyProgramObjective && (
-                      <Box
-                        sx={{
-                          backgroundColor: "rgb(86 202 0 / 0.16)",
-                          height: "24px",
-                          borderRadius: "1rem",
-                          display: "flex",
-                          alignItems: "center",
-                          justifyContent: "center",
-                        }}
-                      >
-                        <Typography
-                          variant="subtitle2"
-                          sx={{
-                            color: "#56CA00",
-                            fontSize: "0.8125rem",
-                            paddingInline: "12px",
-                          }}
-                        >
-                          {exchangeProgram.StudyProgramObjective}
-                        </Typography>
-                      </Box>
-                    )} */}
                   </Box>
                   <Box>
                     <Typography
@@ -731,16 +708,6 @@ export default function DetailSubmission({ menuAccess, accessId }) {
                           <TableCell>{row.Credits}</TableCell>
                         </TableRow>
                       ))}
-                      {/* <TableRow
-                        key="total"
-                        sx={{
-                          "&:last-child td, &:last-child th": { border: 0 },
-                        }}
-                      >
-                        <TableCell component="th" scope="row"></TableCell>
-                        <TableCell></TableCell>
-                        <TableCell>{totalCredits}</TableCell>
-                      </TableRow> */}
                     </TableBody>
                   </Table>
                 </TableContainer>
@@ -805,9 +772,6 @@ export default function DetailSubmission({ menuAccess, accessId }) {
         )}
 
         {tabValue === 2 && (
-          // <PDFViewer style={{ width: "100%", height: "100vh" }}>
-          //   <SubmissionPDF />
-          // </PDFViewer>
           <PDFViewerComponent base64File={base64pdf} />
         )}
       </Grid>

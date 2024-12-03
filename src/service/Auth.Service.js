@@ -42,7 +42,11 @@ export const decodeToken = () => {
 
 export function isTokenExpired() {
   var token = localStorage.getItem("token");
-  const arrayToken = token.split(".");
-  const tokenPayload = JSON.parse(atob(arrayToken[1]));
-  return Math.floor(new Date().getTime() / 1000) >= tokenPayload?.sub;
+  if(token){
+    const arrayToken = token.split(".");
+    const tokenPayload = JSON.parse(atob(arrayToken[1]));
+    return Math.floor(new Date().getTime() / 1000) >= tokenPayload?.sub;
+  }else{
+    return true;
+  }
 }
