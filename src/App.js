@@ -1,8 +1,8 @@
 import "./App.css";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { Routes, Route, useNavigate } from "react-router-dom";
 import DashboardLayout from "./components/layout/DashboardLayout";
 import { componentsMap } from "./mapItem/mapItem";
-import { useEffect, useState, useContext, Stack } from "react";
+import { useEffect, useState, useContext } from "react";
 import NotFound from "./pages/NotFound";
 import { getMenu } from "./service/Static.Service";
 import { decodeToken, isTokenExpired } from "./service/Auth.Service";
@@ -12,12 +12,12 @@ import { AuthContext } from "./service/AuthContext";
 function App() {
   const { isLoggedIn } = useContext(AuthContext);
   const [menus, setMenus] = useState([]);
+  const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     async function fetchData() {
       try {
-        console.log(isLoggedIn)
         if (isLoggedIn) {
           const data = await getMenu();
           setMenus(data);
@@ -31,12 +31,10 @@ function App() {
 
     if (isLoggedIn) {
       fetchData();
+    } else {
+      localStorage.removeItem("token");
+      navigate("/signin");
     }
-
-    if (isTokenExpired()){
-      localStorage.removeItem('token')
-    }
-
   }, [isLoggedIn]);
 
   function generateRoutes(menuItems) {
@@ -51,37 +49,27 @@ function App() {
 
       return (
         <Route key={menu.MenuID} path={menu.Title} element={component}>
-          {menu.child && menu.child.length > 0 && generateRoutes(menu.child)}
+          {menu.child?.length > 0 && generateRoutes(menu.child)}
         </Route>
       );
     });
   }
 
-  // if (isLoading) {
-  //   return (
-  //   <Stack direction="row" sx={{justifyContent:'center', alignItems:'center', height:'100vh', columnGap:1}}>
-  //     <CircularProgress /> Loading...
-  //   </Stack>
-  //   )
-  // }
-
   return (
-    <BrowserRouter>
-      <Routes>
-        <Route path="/signin" element={<SignIn />} />
-        {isLoggedIn && (
-          <Route
-            path="/menu"
-            element={
-              <DashboardLayout menus={menus.filter((item) => !item.Index)} />
-            }
-          >
-            {generateRoutes(menus.filter((item) => !item.Index))}
-          </Route>
-        )}
-        {menus && <Route path="*" element={<NotFound />} />}
-      </Routes>
-    </BrowserRouter>
+    <Routes>
+      <Route path="/signin" element={<SignIn />} />
+      {isLoggedIn && (
+        <Route
+          path="/menu"
+          element={
+            <DashboardLayout menus={menus.filter((item) => !item.Index)} />
+          }
+        >
+          {generateRoutes(menus.filter((item) => !item.Index))}
+        </Route>
+      )}
+      <Route path="*" element={<NotFound />} />
+    </Routes>
   );
 }
 

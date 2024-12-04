@@ -332,7 +332,7 @@ export default function DetailSubmission({ menuAccess, accessId }) {
             </Stack>
           </CardContent>
 
-          {accessId !== 1 && (
+          {accessId !== 1 && submission.IsApprove === 0 && (
             <Box display="flex" gap={2} px="1rem" pt="1rem" pb="2rem">
               <Button
                 sx={{ width: "100%", textTransform: "none" }}

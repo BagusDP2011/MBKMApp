@@ -4,19 +4,15 @@ import "./index.css";
 import App from "./App";
 import reportWebVitals from "./reportWebVitals";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
+import { BrowserRouter } from "react-router-dom";
 import "./assets/css/satoshi.css";
 import { AuthProvider } from "./service/AuthContext";
 import { AlertProvider } from "./components/AlertProvider";
 
 const theme = createTheme({
   typography: {
-    // fontFamily: "Poppins, Arial, sans-serif",
     fontFamily: "Plus Jakarta Sans, sans-serif",
     fontSize: 16,
-    // fontFamily: 'Satoshi, Arial, sans-serif',
-    // allVariants: {
-    //   fontWeight: 600,
-    // },
   },
 });
 
@@ -26,12 +22,15 @@ root.render(
     <ThemeProvider theme={theme}>
       <AuthProvider>
         <AlertProvider>
-          <App />
+          <BrowserRouter>
+            <App />
+          </BrowserRouter>
         </AlertProvider>
       </AuthProvider>
     </ThemeProvider>
   </React.StrictMode>
 );
+
 // If you want to start measuring performance in your app, pass a function
 // to log results (for example: reportWebVitals(console.log))
 // or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
