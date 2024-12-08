@@ -19,6 +19,8 @@ import { useNavigate } from "react-router-dom";
 
 import LogoImage from "../../assets/img/informatika.png"; 
 import BackgroundImage from "../../assets/img/backround.png";
+import Swal from 'sweetalert2'
+
 
 const Card = styled(MuiCard)(({ theme }) => ({
   display: "flex",
@@ -96,11 +98,21 @@ export default function SignIn(props) {
       });
       if (token) {
         loginContext(token);
+        Swal.fire({
+          title: "Success!",
+          text: "Login berhasil!",
+          icon: "success"
+        });
         navigate("/menu");
       } else {
         console.error("Login failed, no token returned");
       }
     } catch (error) {
+      Swal.fire({
+        title: "Error!",
+        text: "Anda gagal untuk masuk, silahkan coba lagi!",
+        icon: "error"
+      });
       console.error("Error during login:", error);
     }
   };
@@ -108,7 +120,7 @@ export default function SignIn(props) {
   const validateInputs = () => {
     const user = document.getElementById("user");
     const password = document.getElementById("password");
-    console.log(user.value, password.value);
+    // console.log(user.value, password.value);
 
     let isValid = true;
 
