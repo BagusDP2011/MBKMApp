@@ -15,6 +15,7 @@ import PoltekImage from "./../assets/img/bersama.jpg"; // Import gambar
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 
+
 const announcements = [
   {
     date: "19 November 2024",
@@ -29,6 +30,7 @@ const announcements = [
     content: "Info terbaru mengenai program MBKM semester depan.",
   },
 ];
+
 function SilamKW() {
   return (
     <div className="App">
@@ -113,6 +115,7 @@ function SilamKW() {
           </Button>
         </Box>
       </Container>
+
       {/* Panduan MBKM */}
       <Container sx={{ mt: 4 }}>
         <Typography variant="h5" sx={{ fontWeight: "bold", mb: 2 }}>

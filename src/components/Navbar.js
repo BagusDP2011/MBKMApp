@@ -12,6 +12,7 @@ import PolibatamLogo from "../assets/img/polibatam-white.png";
 import MBKM from "../assets/img/KampusMerdekaBelajar.png";
 import { useNavigate } from "react-router-dom";
 import DescriptionIcon from "@mui/icons-material/Description";
+
 const programItems = [
   { label: "Beasiswa", path: "/beasiswa" },
   { label: "Wisuda", path: "/wisuda" },
@@ -21,9 +22,11 @@ const programItems = [
 function Navbar() {
   const navigate = useNavigate();
   const [anchorEl, setAnchorEl] = useState(null);
+
   const handleMenuOpen = (event) => {
     setAnchorEl(event.currentTarget);
   };
+
   const handleMenuClose = (path) => {
     setAnchorEl(null);
     if (path) navigate(path);
@@ -57,6 +60,7 @@ function Navbar() {
             />
           </IconButton>
         </Box>
+
         {/* Menu Navigasi */}
         <Box sx={{ display: { xs: "none", md: "flex" }, gap: 3 }}>
           <Button
@@ -74,6 +78,7 @@ function Navbar() {
           >
             Beranda
           </Button>
+
           {/* Menu Program dengan Dropdown */}
           <Button
             color="inherit"
@@ -91,6 +96,7 @@ function Navbar() {
           >
             Program
           </Button>
+
           {/* Dropdown Items */}
           <Menu
             anchorEl={anchorEl}
@@ -112,6 +118,7 @@ function Navbar() {
             ))}
           </Menu>
         </Box>
+
         {/* Tombol Login */}
         <Button
           variant="contained"

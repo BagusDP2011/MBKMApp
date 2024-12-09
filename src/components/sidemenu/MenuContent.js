@@ -1,15 +1,5 @@
 import React, { useState, useContext } from "react";
-import {
-  Box,
-  Stack,
-  Typography,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogContentText,
-  DialogTitle,
-  Button,
-} from "@mui/material";
+import { Box, Stack, Typography, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Button } from "@mui/material";
 import {
   List,
   ListItem,
@@ -26,7 +16,7 @@ import AutoAwesomeIcon from "@mui/icons-material/AutoAwesome";
 import LogoutIcon from "@mui/icons-material/Logout";
 import { useNavigate } from "react-router-dom";
 import { AuthContext } from "../../service/AuthContext";
-import lambang from "../../assets/img/404Cuate.svg";
+import lambang from "../../assets/img/lambang.png";
 
 const CustomListItemButton = styled(ListItemButton)(({ theme }) => ({
   "& .MuiTypography-root": {
@@ -46,7 +36,7 @@ export default function MenuContent({ menus }) {
   const [selectedSubMenu, setSelectedSubMenu] = useState(null);
   const [openSubmenu, setOpenSubmenu] = useState(null);
   const [isSubMenu, setIsSubMenu] = useState(null);
-  const [logoutMessage, setLogoutMessage] = useState("");
+  const [logoutMessage, setLogoutMessage] = useState('');
   const [openLogoutDialog, setOpenLogoutDialog] = useState(false);
   const { logoutContext } = useContext(AuthContext);
   const navigate = useNavigate();
@@ -104,6 +94,7 @@ export default function MenuContent({ menus }) {
           </Button>
         </DialogActions>
       </Dialog>
+
       {/* Pesan Logout */}
       {logoutMessage && (
         <Typography
@@ -119,12 +110,28 @@ export default function MenuContent({ menus }) {
           {logoutMessage}
         </Typography>
       )}
+
       <Box>
-        <Stack direction="row" sx={{ gap: 1, alignItems: "center", p: 3 }}>
-          <AutoAwesomeIcon sx={{ fontSize: "2.5rem", color: "#3F8CFE" }} />
-          <Typography variant="h5" fontWeight="900" color="#252e4a">
+        <Stack 
+          sx={{ 
+            gap: 1, 
+            alignItems: "center", 
+            p: 3,
+            justifyContent: "center",
+            flexDirection: "column" 
+          }}
+        >
+          <img
+            src={lambang} 
+            alt="MBKM Logo" 
+            style={{ 
+              maxWidth: "800px", 
+              maxHeight: "100px"
+            }} 
+          />
+          {/* <Typography variant="h6" fontWeight="800" color="#252e4a">
             MBKM
-          </Typography>
+          </Typography> */}
         </Stack>
         <List disablePadding dense>
           {menus.map((item) => (
@@ -211,8 +218,8 @@ export default function MenuContent({ menus }) {
 
       <List disablePadding dense>
         <ListItem>
-          <CustomListItemButton
-            sx={{ columnGap: 1 }}
+          <CustomListItemButton 
+            sx={{ columnGap: 1 }} 
             onClick={handleLogoutClick}
           >
             <ListItemIcon sx={{ minWidth: "max-content", color: "#A6A6A6" }}>

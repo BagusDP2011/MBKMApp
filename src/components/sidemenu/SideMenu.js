@@ -1,9 +1,10 @@
-import * as React from "react";
+import React, { useState, useEffect } from "react";
 import { styled } from "@mui/material/styles";
 import MuiDrawer, { drawerClasses } from "@mui/material/Drawer";
 import MenuContent from "./MenuContent";
 import { Stack, Avatar, Box, Typography } from "@mui/material";
 import AvatarLogo from "../../assets/img/Profile.jpg";
+import {jwtDecode} from "jwt-decode";
 
 const drawerWidth = 240;
 
@@ -17,8 +18,30 @@ const Drawer = styled(MuiDrawer)({
 });
 
 export default function SideMenu({ menus }) {
+  const [user, setUser] = useState(null);
+  const [NIM, setNIM] = useState(null);
+
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    if (token) {
+      try {
+        const decodedToken = jwtDecode(token);
+        console.log(decodedToken);
+        setUser(decodedToken.name);
+        setNIM(decodedToken.id);
+      } catch (error) {
+        console.error("Failed to decode the token:", error);
+        setUser("Tamu Terlarang");
+        setNIM("NIM Tamu");
+      }
+    } else {
+      setUser("Tamu Terlarang");
+      setNIM("NIM Tamu");
+    }
+  }, []);
+
   return (
-    <Drawer variant="permanent" sx={{zIndex:1000}}>
+    <Drawer variant="permanent" sx={{ zIndex: 1000 }}>
       <MenuContent menus={menus} />
 
       <Stack
@@ -33,7 +56,7 @@ export default function SideMenu({ menus }) {
       >
         <Avatar
           sizes="small"
-          alt="Fahrizal Ali"
+          alt="User Avatar"
           src={AvatarLogo}
           sx={{ width: 36, height: 36 }}
         />
@@ -42,10 +65,10 @@ export default function SideMenu({ menus }) {
             variant="body2"
             sx={{ fontWeight: 500, lineHeight: "16px" }}
           >
-            Fahrizal Ali
+            {user}
           </Typography>
           <Typography variant="caption" sx={{ color: "text.secondary" }}>
-            frizali@gmail.com
+            NIM: {NIM}
           </Typography>
         </Box>
       </Stack>
