@@ -13,6 +13,7 @@ import FiberManualRecordOutlinedIcon from '@mui/icons-material/FiberManualRecord
 import HttpsOutlinedIcon from '@mui/icons-material/HttpsOutlined';
 import RolePermissions from "../pages/menu/RolePermissions/RolePermissions";
 import SubmissionStatus from "../pages/menu/Submission/SubmissionStatus";
+import Dashboard from "../pages/menu/Dashboard/Dashboard";
 
 export const iconsMap = {
     "<SegmentOutlinedIcon />" : <SegmentOutlinedIcon sx={{fontSize:'1.7rem'}}/>,
@@ -33,4 +34,5 @@ export const iconsMap = {
     "<AttachmentSubmission />" : AttachmentSubmission,
     "<SubmissionInformation />" : SubmissionInformation,
     "<RolePermissions />" : RolePermissions,
+    "<Dashboard />": Dashboard
   };

@@ -22,7 +22,7 @@ export default function DashboardLayout({ menus }) {
           <Stack
             spacing={2}
             sx={{
-              mx: 3,
+              mx: 12,
               pb: 10,
               mt: { xs: 8, md: 0 },
             }}

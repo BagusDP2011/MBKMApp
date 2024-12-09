@@ -69,6 +69,28 @@ const revisions = [
   },
 ];
 
+const getDotColor = (status, total, index) => {
+  if (status === "Rejected") {
+    return "#F44336"; // Merah
+  } else if (status === "Pending") {
+    return "#FFC107"; // Kuning (Warning)
+  } else if (status === "Approved" && total === index) {
+    return "#4CAF50"; // Hijau
+  } else {
+    return "#2196F3"; // Biru
+  }
+
+  // switch (status) {
+  //   case "Approved":
+  //     return "#4CAF50"; // Hijau
+  //   case "Rejected":
+  //     return "#F44336"; // Merah
+  //   case "Submit":
+  //     return "#2196F3"; // Biru
+  //   default:
+  //     return "#FFC107"; // Kuning (Warning)
+};
+
 export default function DetailSubmission({ menuAccess, accessId }) {
   const [isLoading, setIsLoading] = React.useState(false);
   const [base64pdf, setBase64pdf] = React.useState("");
@@ -353,7 +375,7 @@ export default function DetailSubmission({ menuAccess, accessId }) {
             </Box>
           )}
 
-          {submission.Status == "Rejected" &&
+          {submission.Status === "Rejected" &&
             accessId === 1 &&
             menuAccess.CanEdit && (
               <Box px="1rem" pt="1rem" pb="2rem">
@@ -369,50 +391,6 @@ export default function DetailSubmission({ menuAccess, accessId }) {
             )}
         </Card>
 
-        {submission.Status !== "Rejected" && (
-          <Card
-            sx={{
-              marginTop: "1.5rem",
-              boxShadow: "none",
-              border: "1px solid rgba(224, 224, 224, 1)",
-            }}
-          >
-            <Typography variant="h6" sx={{ margin: "1rem" }}>
-              Approval Timeline
-            </Typography>
-            <Divider />
-            <CardContent>
-              <Timeline position="alternate" sx={{ padding: 0, margin: 0 }}>
-                {submissionApproval.map((item, index) => (
-                  <TimelineItem key={index}>
-                    <TimelineSeparator>
-                      <TimelineDot
-                        color={
-                          item.ApprovalStatus === "Approved" ||
-                          item.ApprovalStatus === "Submit"
-                            ? "primary"
-                            : "warning"
-                        }
-                      />
-                      {index < submissionApproval.length - 1 && (
-                        <TimelineConnector />
-                      )}
-                    </TimelineSeparator>
-                    <TimelineContent>
-                      <Typography variant="body1">
-                        {item.AccDescription} - {item.ApprovalStatus}
-                      </Typography>
-                      <Typography variant="caption">
-                        {item.ApprovalDate ? formatDate(item.ApprovalDate) : ""}
-                      </Typography>
-                    </TimelineContent>
-                  </TimelineItem>
-                ))}
-              </Timeline>
-            </CardContent>
-          </Card>
-        )}
-
         {submission.Status === "Rejected" && (
           <Card
             sx={{
@@ -427,13 +405,67 @@ export default function DetailSubmission({ menuAccess, accessId }) {
             <Divider />
             <CardContent>
               {revisions.map((item, index) => (
-                <Typography key={item.RevisionID} variant="body2" color="#2E263DB2">
+                <Typography
+                  key={item.RevisionID}
+                  variant="body2"
+                  color="#2E263DB2"
+                >
                   {(index += 1)}.{item.RevisionNote} - {item.ApproverName}
                 </Typography>
               ))}
             </CardContent>
           </Card>
         )}
+
+        <Card
+          sx={{
+            marginTop: "1.5rem",
+            boxShadow: "none",
+            border: "1px solid rgba(224, 224, 224, 1)",
+          }}
+        >
+          <Typography variant="h6" sx={{ margin: "1rem" }}>
+            Approval Timeline
+          </Typography>
+          <Divider />
+          <CardContent>
+            <Timeline position="alternate" sx={{ padding: 0, margin: 0 }}>
+              {submissionApproval.map((item, index) => (
+                <TimelineItem key={index}>
+                  <TimelineSeparator>
+                    <TimelineDot
+                      // color={
+                      //   item.ApprovalStatus === "Approved" ||
+                      //   item.ApprovalStatus === "Submit"
+                      //     ? "primary"
+                      //     : "warning"
+                      // }
+
+                      sx={{
+                        backgroundColor: getDotColor(
+                          item.ApprovalStatus,
+                          submissionApproval.length - 1,
+                          index
+                        ),
+                      }}
+                    />
+                    {index < submissionApproval.length - 1 && (
+                      <TimelineConnector />
+                    )}
+                  </TimelineSeparator>
+                  <TimelineContent>
+                    <Typography variant="body1">
+                      {item.AccDescription} - {item.ApprovalStatus}
+                    </Typography>
+                    <Typography variant="caption">
+                      {item.ApprovalDate ? formatDate(item.ApprovalDate) : ""}
+                    </Typography>
+                  </TimelineContent>
+                </TimelineItem>
+              ))}
+            </Timeline>
+          </CardContent>
+        </Card>
       </Grid>
       <Grid item size={8}>
         <Tabs
@@ -509,18 +541,21 @@ export default function DetailSubmission({ menuAccess, accessId }) {
                           {submission.LecturerGuardianName}
                         </Typography>
                       )}
-                      {menuAccess.CanEdit && !isReAssign && accessId !== 1 && (
-                        <Button
-                          sx={{
-                            textTransform: "none",
-                            color: "#2E263DB2",
-                            padding: 0,
-                          }}
-                          onClick={() => setIsReAssign(true)}
-                        >
-                          Re-Assign
-                        </Button>
-                      )}
+                      {menuAccess.CanEdit &&
+                        !isReAssign &&
+                        accessId !== 1 &&
+                        submission.IsApprove === 0 && (
+                          <Button
+                            sx={{
+                              textTransform: "none",
+                              color: "#2E263DB2",
+                              padding: 0,
+                            }}
+                            onClick={() => setIsReAssign(true)}
+                          >
+                            Re-Assign
+                          </Button>
+                        )}
 
                       {isReAssign && accessId !== 1 && (
                         <Box
@@ -771,9 +806,7 @@ export default function DetailSubmission({ menuAccess, accessId }) {
           </Card>
         )}
 
-        {tabValue === 2 && (
-          <PDFViewerComponent base64File={base64pdf} />
-        )}
+        {tabValue === 2 && <PDFViewerComponent base64File={base64pdf} />}
       </Grid>
     </Grid>
   );
