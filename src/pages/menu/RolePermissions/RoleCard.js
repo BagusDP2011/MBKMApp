@@ -11,98 +11,22 @@ import {
   Grid,
   Button,
 } from "@mui/material";
-import { getListRoleDetail } from "../../../service/Static.Service";
+import { getListRoleDetail, getMenuAccessDetail } from "../../../service/Static.Service";
 import EditMenuAccessModal from "./EditMenuAccessModal";
-
-const permissionsData = [
-  {
-    "Title": "Menu",
-    "MenuAccessID": 1,
-    "MenuID": 1,
-    "AccessID": 1,
-    "CanRead": true,
-    "CanAdd": false,
-    "CanEdit": false,
-    "CanDelete": false,
-    "CanPrint": false
-  },
-  {
-    "Title": "MBKM",
-    "MenuAccessID": 2,
-    "MenuID": 3,
-    "AccessID": 1,
-    "CanRead": true,
-    "CanAdd": false,
-    "CanEdit": false,
-    "CanDelete": false,
-    "CanPrint": false
-  },
-  {
-    "Title": "Informasi",
-    "MenuAccessID": 3,
-    "MenuID": 4,
-    "AccessID": 1,
-    "CanRead": true,
-    "CanAdd": false,
-    "CanEdit": false,
-    "CanDelete": false,
-    "CanPrint": false
-  },
-  {
-    "Title": "Pengajuan",
-    "MenuAccessID": 4,
-    "MenuID": 5,
-    "AccessID": 1,
-    "CanRead": true,
-    "CanAdd": true,
-    "CanEdit": true,
-    "CanDelete": true,
-    "CanPrint": true
-  },
-  {
-    "Title": "Daftar Pengajuan",
-    "MenuAccessID": 13,
-    "MenuID": 6,
-    "AccessID": 1,
-    "CanRead": true,
-    "CanAdd": true,
-    "CanEdit": true,
-    "CanDelete": true,
-    "CanPrint": false
-  },
-  {
-    "Title": "Detail/:id",
-    "MenuAccessID": 14,
-    "MenuID": 7,
-    "AccessID": 1,
-    "CanRead": true,
-    "CanAdd": true,
-    "CanEdit": true,
-    "CanDelete": true,
-    "CanPrint": true
-  },
-  {
-    "Title": "Lampiran",
-    "MenuAccessID": 17,
-    "MenuID": 8,
-    "AccessID": 1,
-    "CanRead": true,
-    "CanAdd": true,
-    "CanEdit": true,
-    "CanDelete": true,
-    "CanPrint": true
-  }
-];
-
 
 const RoleCard = () => {
   const [listRoleDetail, setListRoleDetail] = useState([]);
+  const [menuAccess, setMenuAccess] = useState([]);
   const [open, setOpen] = useState(false);
 
-  const handleOpen = () => setOpen(true);
+  const handleOpen = async (accessId) => {
+    const data = await getMenuAccessDetail(accessId);
+    setMenuAccess(data);
+    setOpen(true);
+  }
   const handleClose = () => setOpen(false);
 
-  const UserRoleCard = ({ role, totalUsers, users }) => {
+  const UserRoleCard = ({ accessId, role, totalUsers, users }) => {
     return (
       <Card variant="outlined" sx={{ borderRadius: 2 }}>
         <CardContent>
@@ -145,8 +69,8 @@ const RoleCard = () => {
           </Typography>
   
           <Button
-            sx={{ fontSize: "0.875rem", padding:0 }}
-            onClick={handleOpen}
+            sx={{ padding:0, textTransform:'none' }}
+            onClick={() => handleOpen(accessId)} 
           >
             Edit Menu Access
           </Button>
@@ -174,6 +98,7 @@ const RoleCard = () => {
         {listRoleDetail.map((roleData, index) => (
           <Grid item xs={12} sm={6} md={4} key={index} sx={{ padding: 0 }}>
             <UserRoleCard
+              accessId={roleData.AccessID}
               role={roleData.Role}
               totalUsers={roleData.TotalUser}
               users={roleData.users}
@@ -181,7 +106,7 @@ const RoleCard = () => {
           </Grid>
         ))}
       </Grid>
-      <EditMenuAccessModal open={open} handleClose={handleClose} permissionsData={permissionsData} />
+      <EditMenuAccessModal open={open} handleClose={handleClose} menuAccess={menuAccess} />
     </Box>
 
   );

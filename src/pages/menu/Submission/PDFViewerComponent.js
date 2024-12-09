@@ -2,7 +2,6 @@ import React from 'react';
 
 const PDFViewerComponent = ({ base64File }) => {
   const base64ToBlob = (base64, mimeType) => {
-    console.log(base64)
     const byteCharacters = atob(base64);
     const byteArrays = [];
 

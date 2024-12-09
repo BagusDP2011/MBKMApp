@@ -4,6 +4,7 @@ import GroupsOutlinedIcon from '@mui/icons-material/GroupsOutlined';
 import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
 import DescriptionOutlinedIcon from '@mui/icons-material/DescriptionOutlined';
 import SegmentOutlinedIcon from '@mui/icons-material/SegmentOutlined';
+import SubmissionApproval from "../pages/menu/Submission/SubmissionApproval";
 import LocalLibraryIcon from '@mui/icons-material/LocalLibrary';
 import AccountBalanceWalletOutlinedIcon from '@mui/icons-material/AccountBalanceWalletOutlined';
 import AccessibilityNewOutlinedIcon from '@mui/icons-material/AccessibilityNewOutlined';
@@ -14,11 +15,9 @@ import AccountBoxOutlinedIcon from '@mui/icons-material/AccountBoxOutlined';
 import AttachFileIcon from '@mui/icons-material/AttachFile';
 
 // Page general
-import Dashboard from "../pages/Dashboard";
 
 
 // Page submissions
-import ListSubmission from "../pages/menu/Submission/ListSubmission";
 import Submission from "../pages/menu/Submission/Submission";
 import PengajuanMHS from "../pages/menu/PengajuanMHS";
 import DetailSubmission from "../pages/menu/Submission/DetailSubmission";
@@ -36,6 +35,8 @@ import ProfileSocialMedia from "../pages/menu/Profile/ProfileSocialMedia";
 import FiberManualRecordOutlinedIcon from '@mui/icons-material/FiberManualRecordOutlined';
 import HttpsOutlinedIcon from '@mui/icons-material/HttpsOutlined';
 import RolePermissions from "../pages/menu/RolePermissions/RolePermissions";
+import SubmissionStatus from "../pages/menu/Submission/SubmissionStatus";
+import Dashboard from "../pages/menu/Dashboard/Dashboard";
 
 export const iconsMap = {
     "<SegmentOutlinedIcon />" : <SegmentOutlinedIcon sx={{fontSize:'1.7rem'}}/>,
@@ -52,11 +53,12 @@ export const iconsMap = {
     "<ConnectWithoutContactOutlinedIcon />" : <ConnectWithoutContactOutlinedIcon sx={{fontSize:'1.7rem'}}/>,
     "<AccountBoxOutlinedIcon />" : <AccountBoxOutlinedIcon sx={{fontSize:'1.7rem'}}/>,
     "<HttpsOutlinedIcon />" : <HttpsOutlinedIcon sx={{fontSize:'1.7rem'}}/>,
-    "<FiberManualRecordOutlinedIcon />" : <FiberManualRecordOutlinedIcon sx={{fontSize:'1.2rem'}}/>,
+    // "<FiberManualRecordOutlinedIcon />" : <FiberManualRecordOutlinedIcon sx={{fontSize:'1.2rem'}}/>,
   };
   
   export const componentsMap = {
-    "<ListSubmission />" : ListSubmission,
+    "<SubmissionApproval />" : SubmissionApproval,
+    "<SubmissionStatus />" : SubmissionStatus,
     "<Submission />" : Submission,
     "<PengajuanMHS />" : PengajuanMHS,
     "<DetailSubmission />" : DetailSubmission,

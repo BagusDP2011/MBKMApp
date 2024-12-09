@@ -6,7 +6,15 @@ import {
   GridToolbarFilterButton,
   GridToolbarExport,
 } from "@mui/x-data-grid";
-import { Box, Avatar, Stack, Button, Tooltip } from "@mui/material";
+import {
+  Box,
+  Avatar,
+  Stack,
+  Button,
+  Tooltip,
+  Typography,
+  IconButton,
+} from "@mui/material";
 import {
   getSubmission,
   deleteSubmission,
@@ -16,6 +24,27 @@ import VisibilityOutlinedIcon from "@mui/icons-material/VisibilityOutlined";
 import DeleteOutlineOutlinedIcon from "@mui/icons-material/DeleteOutlineOutlined";
 import Swal from "sweetalert2";
 import { useNavigate } from "react-router-dom";
+import { useAlert } from "../AlertProvider";
+
+const IconButtonCustom = ({
+  icon,
+  onClick,
+  hoverColor = "#3F8CFE",
+  color = "#757575",
+}) => {
+  return (
+    <IconButton
+      onClick={onClick}
+      sx={{
+        padding: 0,
+        color: color,
+        "&:hover": { color: hoverColor },
+      }}
+    >
+      {icon}
+    </IconButton>
+  );
+};
 
 function CustomToolbar() {
   return (
@@ -37,12 +66,13 @@ function CustomToolbar() {
 
 const paginationModel = { page: 0, pageSize: 10 };
 
-export default function TableSubmission({ access, accessId }) {
+export default function TableSubmission({ access, accessId, dataTable }) {
   const [submissions, setSubmissions] = React.useState([]);
   const [selectedRows, setSelectedRows] = React.useState([]);
   const [columnVisibilityModel, setColumnVisibilityModel] = useState();
   const [columns, setColumns] = React.useState([]);
   const navigate = useNavigate();
+  const showAlert = useAlert();
 
   const handleColumnVisibilityChange = (newModel) => {
     setColumnVisibilityModel(newModel);
@@ -51,8 +81,8 @@ export default function TableSubmission({ access, accessId }) {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const breadcrumbData = await getSubmission(accessId);
-        setSubmissions(breadcrumbData);
+        // const submissions = await getSubmission();
+        setSubmissions(dataTable);
 
         const columnData = await getColumn("Submission", accessId);
         setColumns(columnData.column);
@@ -63,7 +93,7 @@ export default function TableSubmission({ access, accessId }) {
     };
 
     fetchData();
-  }, []);
+  }, [dataTable]);
 
   const debounce = (func, delay) => {
     let timeout;
@@ -113,11 +143,29 @@ export default function TableSubmission({ access, accessId }) {
               sx={{
                 height: "100%",
                 alignItems: "center",
+                columnGap: 1,
               }}
               direction="row"
             >
+              {access.CanDelete && (
+                <Tooltip title="Delete" placement="top">
+                  {/* <Button onClick={() => handleDelete(params.id)}>
+                    <Avatar
+                      variant="rounded"
+                      sx={{ backgroundColor: "#FF4C51" }}
+                    >
+                      <DeleteOutlineOutlinedIcon />
+                    </Avatar>
+                  </Button> */}
+                  <IconButtonCustom
+                    icon={<DeleteOutlineOutlinedIcon />}
+                    onClick={() => handleDelete(params.id)}
+                    hoverColor="#FF4C51"
+                  />
+                </Tooltip>
+              )}
               <Tooltip title="Detail" placement="top">
-                <Button
+                {/* <Button
                   sx={{
                     maxWidth: "max-content",
                     minWidth: "max-content",
@@ -128,24 +176,73 @@ export default function TableSubmission({ access, accessId }) {
                   <Avatar variant="rounded" sx={{ backgroundColor: "#3F8CFE" }}>
                     <VisibilityOutlinedIcon />
                   </Avatar>
-                </Button>
+                </Button> */}
+                <IconButtonCustom
+                  icon={<VisibilityOutlinedIcon />}
+                  onClick={() => navigate(`/menu/mbkm/detail/${params.id}`)}
+                  hoverColor="#3F8CFE"
+                />
               </Tooltip>
-              {access.CanDelete && (
-                <Tooltip title="Delete" placement="top">
-                  <Button onClick={() => handleDelete(params.id)}>
-                    <Avatar
-                      variant="rounded"
-                      sx={{ backgroundColor: "#FF4C51" }}
-                    >
-                      <DeleteOutlineOutlinedIcon />
-                    </Avatar>
-                  </Button>
-                </Tooltip>
-              )}
             </Stack>
           ),
         };
       }
+
+      // Tambahkan logika untuk kolom CurrentApproval
+      if (col.field === "Status") {
+        return {
+          ...col,
+          renderCell: (params) => {
+            const getStatusColor = () => {
+              switch (params.value) {
+                case "Approved":
+                  return "#56CA00";
+                case "Rejected":
+                  return "#FF4C51";
+                case "Processing":
+                  return "#16B1FF";
+                default:
+                  return "#000000";
+              }
+            };
+
+            return (
+              <Box
+                sx={{
+                  display: "flex",
+                  alignItems: "center",
+                  height: "100%", // Pastikan cell memenuhi tinggi container
+                  width: "100%", // Pastikan cell memenuhi lebar container
+                }}
+              >
+                <Box
+                  sx={{
+                    backgroundColor: `${getStatusColor()}20`,
+                    height: "24px",
+                    width: "max-content",
+                    borderRadius: "1rem",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                  }}
+                >
+                  <Typography
+                    variant="subtitle2"
+                    sx={{
+                      color: getStatusColor(),
+                      fontSize: "0.8125rem",
+                      paddingInline: "12px",
+                    }}
+                  >
+                    {params.value} {/* Data dari cell */}
+                  </Typography>
+                </Box>
+              </Box>
+            );
+          },
+        };
+      }
+
       return col;
     });
   };
@@ -166,7 +263,15 @@ export default function TableSubmission({ access, accessId }) {
       cancelButtonColor: "#3F8CFE",
     }).then(async (result) => {
       if (result.isConfirmed) {
-        await deleteSubmission(submissionId).then(navigate(0));
+        try {
+          var response = await deleteSubmission(submissionId);
+          showAlert(response.message, "success");
+        } catch (error) {
+          showAlert("Error while delete submission", "error");
+        }
+
+        const breadcrumbData = await getSubmission(accessId);
+        setSubmissions(breadcrumbData);
       }
     });
   };

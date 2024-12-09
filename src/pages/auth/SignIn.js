@@ -12,14 +12,16 @@ import Stack from "@mui/material/Stack";
 import MuiCard from "@mui/material/Card";
 import { styled } from "@mui/material/styles";
 import ForgotPassword from "./ForgotPassword";
-import { GoogleIcon } from "./CustomIcons"; 
+import { GoogleIcon } from "./CustomIcons";
 import { login } from "../../service/Auth.Service";
 import { AuthContext } from "../../service/AuthContext";
 import { useNavigate } from "react-router-dom";
+import { useAlert } from "../../components/AlertProvider";
+// import AppTheme from '../shared-theme/AppTheme';
+// import ColorModeSelect from '../shared-theme/ColorModeSelect';
 
-import LogoImage from "../../assets/img/informatika.png"; 
+import LogoImage from "../../assets/img/informatika.png";
 import BackgroundImage from "../../assets/img/backround.png";
-
 
 const Card = styled(MuiCard)(({ theme }) => ({
   display: "flex",
@@ -34,20 +36,18 @@ const Card = styled(MuiCard)(({ theme }) => ({
   backgroundColor: "#0D47A1",
   boxShadow: "0px 10px 30px rgba(0, 0, 0, 0.3)",
   color: "white",
-  marginRight: theme.spacing(4), 
+  marginRight: theme.spacing(4),
 }));
-
 
 const SignInContainer = styled(Stack)(({ theme }) => ({
   minHeight: "100vh",
   padding: theme.spacing(2),
   justifyContent: "center",
   alignItems: "flex-end",
-  backgroundImage: `url(${BackgroundImage})`, 
-  backgroundSize: "cover", 
-  backgroundPosition: "center", 
+  backgroundImage: `url(${BackgroundImage})`,
+  backgroundSize: "cover",
+  backgroundPosition: "center",
 }));
-
 
 export default function SignIn(props) {
   const [emailError, setEmailError] = React.useState(false);
@@ -57,6 +57,7 @@ export default function SignIn(props) {
   const [open, setOpen] = React.useState(false);
   const { loginContext } = useContext(AuthContext);
   const navigate = useNavigate();
+  const showAlert = useAlert();
 
   const handleClickOpen = () => {
     setOpen(true);
@@ -80,12 +81,12 @@ export default function SignIn(props) {
       });
       if (token) {
         loginContext(token);
-        navigate("/menu");
+        navigate("/menu/mbkm/daftar%20pengajuan");
       } else {
         console.error("Login failed, no token returned");
       }
     } catch (error) {
-      console.error("Error during login:", error);
+      showAlert(error.message, "error");
     }
   };
 
@@ -93,7 +94,7 @@ export default function SignIn(props) {
     const user = document.getElementById("user");
     const email = document.getElementById("email");
     const password = document.getElementById("password");
-    console.log (user.value, password.value);
+    console.log(user.value, password.value);
 
     let isValid = true;
 
@@ -130,12 +131,12 @@ export default function SignIn(props) {
     <SignInContainer>
       <Card variant="outlined">
         <Box sx={{ display: "flex", justifyContent: "center", mb: 2 }}>
-  <img 
-    src={LogoImage} 
-    alt="Logo" 
-    style={{ width: "300px", height: "240px" }} 
-  />
-</Box>
+          <img
+            src={LogoImage}
+            alt="Logo"
+            style={{ width: "300px", height: "240px" }}
+          />
+        </Box>
         <Box
           component="form"
           onSubmit={handleSubmit}
@@ -173,7 +174,9 @@ export default function SignIn(props) {
             />
           </FormControl> */}
           <FormControl>
-            <FormLabel htmlFor="user" sx={{ color: "white" }}>User</FormLabel>
+            <FormLabel htmlFor="user" sx={{ color: "white" }}>
+              User
+            </FormLabel>
             <TextField
               error={emailError}
               helperText={emailErrorMessage}
@@ -187,12 +190,22 @@ export default function SignIn(props) {
               fullWidth
               variant="outlined"
               color={emailError ? "error" : "primary"}
-              sx={{ ariaLabel: "email" }}
+              sx={{
+                "& .MuiOutlinedInput-root": {
+                  "& fieldset": { borderColor: "white" },
+                  "&:hover fieldset": { borderColor: "#BBDEFB" },
+                  "&.Mui-focused fieldset": { borderColor: "white" },
+                  color: "white",
+                },
+                color: "white",
+              }}
             />
           </FormControl>
           <FormControl>
             <Box sx={{ display: "flex", justifyContent: "space-between" }}>
-              <FormLabel htmlFor="password" sx={{ color: "white" }}>Password</FormLabel>
+              <FormLabel htmlFor="password" sx={{ color: "white" }}>
+                Password
+              </FormLabel>
               <Link
                 component="button"
                 type="button"
@@ -243,7 +256,11 @@ export default function SignIn(props) {
           <Typography sx={{ textAlign: "center", color: "white" }}>
             Don&apos;t have an account?{" "}
             <span>
-              <Link href="/register" variant="body2" sx={{ alignSelf: "center", color: "#BBDEFB" }}>
+              <Link
+                href="/register"
+                variant="body2"
+                sx={{ alignSelf: "center", color: "#BBDEFB" }}
+              >
                 Sign up
               </Link>
             </span>
@@ -258,7 +275,10 @@ export default function SignIn(props) {
             sx={{
               color: "white",
               borderColor: "white",
-              "&:hover": { borderColor: "#BBDEFB", backgroundColor: "rgba(255, 255, 255, 0.1)" },
+              "&:hover": {
+                borderColor: "#BBDEFB",
+                backgroundColor: "rgba(255, 255, 255, 0.1)",
+              },
             }}
           >
             Sign in with Google
