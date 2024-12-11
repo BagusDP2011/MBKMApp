@@ -36,7 +36,9 @@ import FiberManualRecordOutlinedIcon from '@mui/icons-material/FiberManualRecord
 import HttpsOutlinedIcon from '@mui/icons-material/HttpsOutlined';
 import RolePermissions from "../pages/menu/RolePermissions/RolePermissions";
 import SubmissionStatus from "../pages/menu/Submission/SubmissionStatus";
-import Dashboard from "../pages/menu/Dashboard/Dashboard";
+import Dashboard from "../pages/menu/Dashboard/DashboardTU";
+import DashboardTU from "../pages/menu/Dashboard/DashboardTU";
+import InformasiMHS from '../pages/menu/Dashboard/InformasiMHS'
 
 export const iconsMap = {
     "<SegmentOutlinedIcon />" : <SegmentOutlinedIcon sx={{fontSize:'1.7rem'}}/>,
@@ -57,6 +59,7 @@ export const iconsMap = {
   };
   
   export const componentsMap = {
+    "<DashboardTU />":  DashboardTU,
     "<SubmissionApproval />" : SubmissionApproval,
     "<SubmissionStatus />" : SubmissionStatus,
     "<Submission />" : Submission,
@@ -73,4 +76,5 @@ export const iconsMap = {
     "<ProfileBank />" : ProfileBank,
     "<Dashboard />" : Dashboard,
     "<RolePermissions />" : RolePermissions,
+    "<InformasiMHS />": InformasiMHS,
   };

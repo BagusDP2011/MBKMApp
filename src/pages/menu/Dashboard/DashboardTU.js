@@ -40,7 +40,7 @@ const stats = [
   },
 ];
 
-const Dashboard = () => {
+const DashboardTU = () => {
   const navigate = useNavigate();
   // Data untuk grafik
   const barChartData = [
@@ -247,4 +247,4 @@ const Dashboard = () => {
   );
 };
 
-export default Dashboard;
+export default DashboardTU;

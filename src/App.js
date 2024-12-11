@@ -1,5 +1,5 @@
 import "./App.css";
-import { Routes, Route, useNavigate } from "react-router-dom";
+import { Routes, Route, useNavigate, Navigate } from "react-router-dom";
 import DashboardLayout from "./components/layout/DashboardLayout";
 // Services
 import { componentsMap } from "./mapItem/mapItem";
@@ -62,7 +62,7 @@ function App() {
 
   return (
     <Routes>
-              <Route path="/" element={<SilamKW />} />
+        <Route path="/" element={<SilamKW />} />
         <Route path="/signin" element={<SignIn />} />
         <Route path="/register" element={<Register />} />
       {isLoggedIn && (
@@ -72,6 +72,7 @@ function App() {
             <DashboardLayout menus={menus.filter((item) => !item.Index)} />
           }
         >
+          {decodeToken().accessId.toString() === "1" && <Route index element={<Navigate to="/menu/mbkm/informasi" />} />} 
           {generateRoutes(menus.filter((item) => !item.Index))}
         </Route>
       )}
