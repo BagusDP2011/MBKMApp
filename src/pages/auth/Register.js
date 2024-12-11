@@ -1,47 +1,52 @@
 import React, { useState } from "react";
+import { styled } from "@mui/system";
 import {
+  Stack,
+  Box,
+  Card as MuiCard,
+  Typography,
   TextField,
+  Button,
   RadioGroup,
   FormControlLabel,
   Radio,
   FormControl,
   FormLabel,
-  Button,
-  Typography,
-  Stack,
-  Card as MuiCard
 } from "@mui/material";
-import axios from "axios";
-import { styled } from "@mui/material/styles";
 import { useNavigate } from "react-router-dom";
+import axios from "axios";
+import { Home } from "@mui/icons-material";
+import { IconButton } from "@mui/material";
+import BackgroundImage from "../../assets/img/backround.png";
 
+const RegisterContainer = styled(Stack)(({ theme }) => ({
+  minHeight: "100vh",
+  height: "100vh",
+  overflow: "hidden",
+  padding: theme.spacing(2),
+  justifyContent: "center",
+  alignItems: "flex-end", // Align similar to SignIn page
+  backgroundImage: `url(${BackgroundImage})`,
+  backgroundSize: "cover",
+  backgroundPosition: "center",
+}));
 
-
-// Styled components moved outside the functional component to avoid re-creation
 const Card = styled(MuiCard)(({ theme }) => ({
   display: "flex",
   flexDirection: "column",
-  alignSelf: "center",
   width: "100%",
   padding: theme.spacing(4),
   gap: theme.spacing(2),
   margin: "auto",
-  [theme.breakpoints.up("sm")]: {
-    maxWidth: "450px",
-  },
+  maxWidth: "450px",
+  borderRadius: theme.shape.borderRadius * 2,
+  backgroundColor: "#0D47A1",
+  boxShadow: "0px 10px 30px rgba(0, 0, 0, 0.3)",
+  color: "white",
+  marginRight: theme.spacing(4),
 }));
 
-const RegisterContainer = styled(Stack)(({ theme }) => ({
-  minHeight: "100%",
-  maxWidth: "sm",
-  padding: theme.spacing(2),
-  [theme.breakpoints.up("sm")]: {
-    padding: theme.spacing(4),
-  },
-}));
-
-// Main registration form component
-const RegistrationForm = React.memo(() => {
+const RegistrationForm = () => {
   const [formData, setFormData] = useState({
     userId: "",
     email: "",
@@ -53,36 +58,57 @@ const RegistrationForm = React.memo(() => {
 
   const navigate = useNavigate();
 
-  // Handle input change
   const handleChange = (event) => {
     const { name, value } = event.target;
     setFormData((prevData) => ({ ...prevData, [name]: value }));
   };
 
-  // Handle form submission
   const handleSubmit = async () => {
     try {
-      console.log('trial');
-      console.log(formData);
-      const response = await axios.post("http://localhost:3001/api/register", formData);
-      console.log('sukses');
+      const response = await axios.post(
+        "http://localhost:3001/api/register",
+        formData
+      );
       alert("Registration successful! Redirecting to login page.");
       navigate("/signin");
     } catch (error) {
-      console.log(error);
       alert("Registration failed: " + error.message);
     }
   };
 
   return (
-    <RegisterContainer direction="column" justifyContent="space-between">
+    <RegisterContainer>
+      <Box
+        sx={{
+          position: "relative",
+          display: "flex",
+          justifyContent: "right",
+          alignItems: "right",
+          // backgroundColor: "#282c34",
+          padding: "10px",
+        }}
+      >
+        {/* Tombol Kembali */}
+        <IconButton
+          sx={{
+            position: "absolute",
+            top: 5,
+            right: 40,
+            color: "black",
+          }}
+          onClick={() => navigate("/")}
+        >
+          <Home sx={{ marginRight: "4px" }} />
+          <span style={{ fontSize: "14px", color: "black" }}>Kembali</span>
+        </IconButton>
+      </Box>
       <Card variant="outlined">
-        <Typography variant="h5" gutterBottom>
-          Registration
+        <Typography variant="h5" gutterBottom sx={{ color: "white" }}>
+          Registrasi Mahasiswa
         </Typography>
 
-        <center>
-          <FormControl component="fieldset" sx={{ marginBottom: "10px" }}>
+        {/* <center>
+          <FormControl component="fieldset" sx={{ marginBottom: "10px", color: "white" }}>
             <RadioGroup
               row
               name="accountType"
@@ -91,13 +117,17 @@ const RegistrationForm = React.memo(() => {
             >
               <FormControlLabel
                 value="personal"
-                control={<Radio />}
-                label="Personal"
+                control={<Radio sx={{ color: "white", '&.Mui-checked': { color: "white" } }} />}
+                label={<Typography sx={{ color: "white" }}>Personal</Typography>}
               />
-              <FormControlLabel value="silam" control={<Radio />} label="Silam" />
+              <FormControlLabel
+                value="silam"
+                control={<Radio sx={{ color: "white", '&.Mui-checked': { color: "white" } }} />}
+                label={<Typography sx={{ color: "white" }}>Silam</Typography>}
+              />
             </RadioGroup>
           </FormControl>
-        </center>
+        </center> */}
 
         <TextField
           label="UserID / NIM"
@@ -108,6 +138,15 @@ const RegistrationForm = React.memo(() => {
           margin="normal"
           value={formData.userId}
           onChange={handleChange}
+          sx={{
+            "& .MuiOutlinedInput-root": {
+              "& fieldset": { borderColor: "white" },
+              "&:hover fieldset": { borderColor: "#BBDEFB" },
+              "&.Mui-focused fieldset": { borderColor: "white" },
+              color: "white",
+            },
+            color: "white",
+          }}
         />
         <TextField
           label="Name"
@@ -117,6 +156,15 @@ const RegistrationForm = React.memo(() => {
           margin="normal"
           value={formData.name}
           onChange={handleChange}
+          sx={{
+            "& .MuiOutlinedInput-root": {
+              "& fieldset": { borderColor: "white" },
+              "&:hover fieldset": { borderColor: "#BBDEFB" },
+              "&.Mui-focused fieldset": { borderColor: "white" },
+              color: "white",
+            },
+            color: "white",
+          }}
         />
         <TextField
           label="Email"
@@ -126,6 +174,15 @@ const RegistrationForm = React.memo(() => {
           margin="normal"
           value={formData.email}
           onChange={handleChange}
+          sx={{
+            "& .MuiOutlinedInput-root": {
+              "& fieldset": { borderColor: "white" },
+              "&:hover fieldset": { borderColor: "#BBDEFB" },
+              "&.Mui-focused fieldset": { borderColor: "white" },
+              color: "white",
+            },
+            color: "white",
+          }}
         />
         <TextField
           label="Password"
@@ -136,34 +193,84 @@ const RegistrationForm = React.memo(() => {
           margin="normal"
           value={formData.password}
           onChange={handleChange}
+          sx={{
+            "& .MuiOutlinedInput-root": {
+              "& fieldset": { borderColor: "white" },
+              "&:hover fieldset": { borderColor: "#BBDEFB" },
+              "&.Mui-focused fieldset": { borderColor: "white" },
+              color: "white",
+            },
+            color: "white",
+          }}
         />
 
-        <FormControl component="fieldset" sx={{ marginTop: "10px" }}>
-          <FormLabel component="legend">Prodi</FormLabel>
+        <FormControl
+          component="fieldset"
+          sx={{ marginTop: "10px", color: "white" }}
+        >
+          <FormLabel component="legend" sx={{ color: "white" }}>
+            Prodi
+          </FormLabel>
           <RadioGroup
             row
             name="prodiId"
             value={formData.prodiId}
             onChange={handleChange}
           >
-            <FormControlLabel value="1" control={<Radio />} label="Informatika" />
-            <FormControlLabel value="2" control={<Radio />} label="Multimedia" />
-            <FormControlLabel value="3" control={<Radio />} label="Geomatika" />
-            {/* <FormControlLabel value="4" control={<Radio />} label="RPL" /> */}
+            <FormControlLabel
+              value="1"
+              control={
+                <Radio
+                  sx={{ color: "white", "&.Mui-checked": { color: "white" } }}
+                />
+              }
+              label={
+                <Typography sx={{ color: "white" }}>Informatika</Typography>
+              }
+            />
+            <FormControlLabel
+              value="2"
+              control={
+                <Radio
+                  sx={{ color: "white", "&.Mui-checked": { color: "white" } }}
+                />
+              }
+              label={
+                <Typography sx={{ color: "white" }}>Multimedia</Typography>
+              }
+            />
+            <FormControlLabel
+              value="3"
+              control={
+                <Radio
+                  sx={{ color: "white", "&.Mui-checked": { color: "white" } }}
+                />
+              }
+              label={<Typography sx={{ color: "white" }}>Geomatika</Typography>}
+            />
           </RadioGroup>
         </FormControl>
-
-        <Typography sx={{ fontSize: "12px", color: "#666", marginTop: "10px" }}>
-          By clicking Register, you agree on our{" "}
-          <a href="#" style={{ color: "#007bff", textDecoration: "none" }}>
-            terms and conditions.
-          </a>
-        </Typography>
-
+        <center>
+          <Typography
+            sx={{ fontSize: "16px", color: "white", marginTop: "10px" }}
+          >
+            Anda punya akun? Silahkan{" "}
+            <a
+              href="/signin"
+              style={{ color: "#BBDEFB", textDecoration: "none" }}
+            >
+              login disini
+            </a>
+          </Typography>
+        </center>
         <Button
           fullWidth
           variant="contained"
-          sx={{ marginTop: "10px", backgroundColor: "#007bff", color: "#fff" }}
+          sx={{
+            marginTop: "10px",
+            bgcolor: "#1E88E5",
+            "&:hover": { bgcolor: "#1565C0" },
+          }}
           onClick={handleSubmit}
         >
           Submit
@@ -171,6 +278,6 @@ const RegistrationForm = React.memo(() => {
       </Card>
     </RegisterContainer>
   );
-});
+};
 
 export default RegistrationForm;

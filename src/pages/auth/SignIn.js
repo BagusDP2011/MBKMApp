@@ -23,6 +23,8 @@ import { useAlert } from "../../components/AlertProvider";
 import LogoImage from "../../assets/img/informatika.png";
 import BackgroundImage from "../../assets/img/backround.png";
 import Swal from "sweetalert2";
+import { Home } from "@mui/icons-material";
+import { IconButton } from "@mui/material";
 
 const Card = styled(MuiCard)(({ theme }) => ({
   display: "flex",
@@ -147,6 +149,30 @@ export default function SignIn(props) {
 
   return (
     <SignInContainer>
+      <Box
+        sx={{
+          position: "relative",
+          display: "flex",
+          justifyContent: "right",
+          alignItems: "right",
+          // backgroundColor: "#282c34",
+          padding: "10px",
+        }}
+      >
+        {/* Tombol Kembali */}
+        <IconButton
+          sx={{
+            position: "absolute",
+            top: 5,
+            right: 40,
+            color: "black",
+          }}
+          onClick={() => navigate("/")}
+        >
+          <Home sx={{ marginRight: "4px" }} />
+          <span style={{ fontSize: "14px", color: "black" }}>Kembali</span>
+        </IconButton>
+      </Box>
       {/* Pesan Logout */}
       {logoutMessage && (
         <Box
@@ -266,19 +292,19 @@ export default function SignIn(props) {
             Sign in
           </Button>
           <Typography sx={{ textAlign: "center", color: "white" }}>
-            Don&apos;t have an account?{" "}
+            Anda tidak punya akun? Silahkan{" "}
             <span>
               <Link
                 href="/register"
                 variant="body2"
                 sx={{ alignSelf: "center", color: "#BBDEFB" }}
               >
-                Sign up
+                Daftar
               </Link>
             </span>
           </Typography>
         </Box>
-        <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
+        {/* <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
           <Button
             fullWidth
             variant="outlined"
@@ -295,7 +321,7 @@ export default function SignIn(props) {
           >
             Sign in with Google
           </Button>
-        </Box>
+        </Box> */}
       </Card>
     </SignInContainer>
   );
