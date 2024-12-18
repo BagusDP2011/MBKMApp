@@ -93,11 +93,13 @@ export default function SignIn(props) {
     }
     const data = new FormData(event.currentTarget);
     try {
+      console.log(data.get("password"));
       const token = await login({
         user: data.get("user"),
         email: data.get("email"),
         password: data.get("password"),
       });
+      console.log(token);
       if (token) {
         loginContext(token);
         Swal.fire({
@@ -213,7 +215,7 @@ export default function SignIn(props) {
         >
           <FormControl>
             <FormLabel htmlFor="user" sx={{ color: "white" }}>
-              User
+              Email
             </FormLabel>
             <TextField
               error={emailError}

@@ -7,9 +7,9 @@ import {
   Typography,
   TextField,
   Button,
-  RadioGroup,
-  FormControlLabel,
-  Radio,
+  InputLabel,
+  Select,
+  MenuItem,
   FormControl,
   FormLabel,
 } from "@mui/material";
@@ -128,128 +128,164 @@ const RegistrationForm = () => {
             </RadioGroup>
           </FormControl>
         </center> */}
-
-        <TextField
-          label="UserID / NIM"
-          name="userId"
-          type="number"
-          variant="outlined"
-          fullWidth
-          margin="normal"
-          value={formData.userId}
-          onChange={handleChange}
-          sx={{
-            "& .MuiOutlinedInput-root": {
-              "& fieldset": { borderColor: "white" },
-              "&:hover fieldset": { borderColor: "#BBDEFB" },
-              "&.Mui-focused fieldset": { borderColor: "white" },
-              color: "white",
-            },
-            color: "white",
-          }}
-        />
-        <TextField
-          label="Name"
-          name="name"
-          variant="outlined"
-          fullWidth
-          margin="normal"
-          value={formData.name}
-          onChange={handleChange}
-          sx={{
-            "& .MuiOutlinedInput-root": {
-              "& fieldset": { borderColor: "white" },
-              "&:hover fieldset": { borderColor: "#BBDEFB" },
-              "&.Mui-focused fieldset": { borderColor: "white" },
-              color: "white",
-            },
-            color: "white",
-          }}
-        />
-        <TextField
-          label="Email"
-          name="email"
-          variant="outlined"
-          fullWidth
-          margin="normal"
-          value={formData.email}
-          onChange={handleChange}
-          sx={{
-            "& .MuiOutlinedInput-root": {
-              "& fieldset": { borderColor: "white" },
-              "&:hover fieldset": { borderColor: "#BBDEFB" },
-              "&.Mui-focused fieldset": { borderColor: "white" },
-              color: "white",
-            },
-            color: "white",
-          }}
-        />
-        <TextField
-          label="Password"
-          name="password"
-          type="password"
-          variant="outlined"
-          fullWidth
-          margin="normal"
-          value={formData.password}
-          onChange={handleChange}
-          sx={{
-            "& .MuiOutlinedInput-root": {
-              "& fieldset": { borderColor: "white" },
-              "&:hover fieldset": { borderColor: "#BBDEFB" },
-              "&.Mui-focused fieldset": { borderColor: "white" },
-              color: "white",
-            },
-            color: "white",
-          }}
-        />
-
         <FormControl
           component="fieldset"
           sx={{ marginTop: "10px", color: "white" }}
         >
           <FormLabel component="legend" sx={{ color: "white" }}>
+            UserID / NIM
+          </FormLabel>
+          <TextField
+            label="UserID / NIM"
+            name="userId"
+            type="number"
+            variant="outlined"
+            fullWidth
+            margin="normal"
+            value={formData.userId}
+            onChange={handleChange}
+            sx={{
+              "& .MuiOutlinedInput-root": {
+                "& fieldset": { borderColor: "white" },
+                "&:hover fieldset": { borderColor: "#BBDEFB" },
+                "&.Mui-focused fieldset": { borderColor: "white" },
+              },
+              "& .MuiInputBase-input": {
+                color: "white",
+              },
+              "& .MuiInputLabel-root": {
+                color: "white",
+              },
+              "& .MuiInputLabel-root.Mui-focused": {
+                color: "white",
+              },
+            }}
+          />
+          <FormLabel component="legend" sx={{ color: "white" }}>
+            Name
+          </FormLabel>
+          <TextField
+            label="Name"
+            name="name"
+            variant="outlined"
+            fullWidth
+            margin="normal"
+            value={formData.name}
+            onChange={handleChange}
+            sx={{
+              "& .MuiOutlinedInput-root": {
+                "& fieldset": { borderColor: "white" },
+                "&:hover fieldset": { borderColor: "#BBDEFB" },
+                "&.Mui-focused fieldset": { borderColor: "white" },
+              },
+              "& .MuiInputBase-input": {
+                color: "white",
+              },
+              "& .MuiInputLabel-root": {
+                color: "white",
+              },
+              "& .MuiInputLabel-root.Mui-focused": {
+                color: "white",
+              },
+            }}
+          />
+          <FormLabel component="legend" sx={{ color: "white" }}>
+            Email
+          </FormLabel>
+          <TextField
+            label="Email"
+            name="email"
+            variant="outlined"
+            fullWidth
+            margin="normal"
+            value={formData.email}
+            onChange={handleChange}
+            sx={{
+              "& .MuiOutlinedInput-root": {
+                "& fieldset": { borderColor: "white" },
+                "&:hover fieldset": { borderColor: "#BBDEFB" },
+                "&.Mui-focused fieldset": { borderColor: "white" },
+              },
+              "& .MuiInputBase-input": {
+                color: "white",
+              },
+              "& .MuiInputLabel-root": {
+                color: "white",
+              },
+              "& .MuiInputLabel-root.Mui-focused": {
+                color: "white",
+              },
+            }}
+          />
+          <FormLabel component="legend" sx={{ color: "white" }}>
+            Password
+          </FormLabel>
+          <TextField
+            label="Password harus lebih dari 6 angka atau huruf"
+            name="password"
+            type="password"
+            variant="outlined"
+            fullWidth
+            margin="normal"
+            value={formData.password}
+            onChange={handleChange}
+            sx={{
+              "& .MuiOutlinedInput-root": {
+                "& fieldset": { borderColor: "white" },
+                "&:hover fieldset": { borderColor: "#BBDEFB" },
+                "&.Mui-focused fieldset": { borderColor: "white" },
+              },
+              "& .MuiInputBase-input": {
+                color: "white",
+              },
+              "& .MuiInputLabel-root": {
+                color: "white",
+              },
+              "& .MuiInputLabel-root.Mui-focused": {
+                color: "white",
+              },
+            }}
+          />
+          <FormLabel component="legend" sx={{ color: "white" }}>
             Prodi
           </FormLabel>
-          <RadioGroup
-            row
-            name="prodiId"
-            value={formData.prodiId}
-            onChange={handleChange}
-          >
-            <FormControlLabel
-              value="1"
-              control={
-                <Radio
-                  sx={{ color: "white", "&.Mui-checked": { color: "white" } }}
-                />
-              }
-              label={
-                <Typography sx={{ color: "white" }}>Informatika</Typography>
-              }
-            />
-            <FormControlLabel
-              value="2"
-              control={
-                <Radio
-                  sx={{ color: "white", "&.Mui-checked": { color: "white" } }}
-                />
-              }
-              label={
-                <Typography sx={{ color: "white" }}>Multimedia</Typography>
-              }
-            />
-            <FormControlLabel
-              value="3"
-              control={
-                <Radio
-                  sx={{ color: "white", "&.Mui-checked": { color: "white" } }}
-                />
-              }
-              label={<Typography sx={{ color: "white" }}>Geomatika</Typography>}
-            />
-          </RadioGroup>
+          <FormControl fullWidth>
+            <Select
+              name="prodiId"
+              value={formData.prodiId}
+              onChange={handleChange}
+              sx={{
+                color: "white",
+                "& .MuiOutlinedInput-notchedOutline": { borderColor: "white" },
+                "&:hover .MuiOutlinedInput-notchedOutline": {
+                  borderColor: "#BBDEFB",
+                },
+                "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
+                  borderColor: "white",
+                },
+                "& .MuiInputBase-input": {
+                  color: "white",
+                },
+                "& .MuiInputLabel-root": {
+                  color: "white",
+                },
+                "& .MuiInputLabel-root.Mui-focused": {
+                  color: "white",
+                },
+              }}
+            >
+              <MenuItem value="1">D3 Informatika</MenuItem>
+              <MenuItem value="2">D3 Geomatika</MenuItem>
+              <MenuItem value="3">D4 Animasi</MenuItem>
+              <MenuItem value="4">D4 Teknologi Rekayasa Multimedia</MenuItem>
+              <MenuItem value="5">D4 Rekayasa Keamanan Siber</MenuItem>
+              <MenuItem value="6">D4 Rekayasa Perangkat Lunak</MenuItem>
+              <MenuItem value="7">S2 Rekayasa/ Teknik Komputer</MenuItem>
+              <MenuItem value="8">D4 Teknologi Permainan</MenuItem>
+            </Select>
+          </FormControl>
         </FormControl>
+
         <center>
           <Typography
             sx={{ fontSize: "16px", color: "white", marginTop: "10px" }}

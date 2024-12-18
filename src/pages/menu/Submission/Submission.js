@@ -329,7 +329,7 @@ function Submission() {
                 required
               />
             </Grid>
-            <Grid item="true" size={{ xs: 6 }}>
+            {/* <Grid item="true" size={{ xs: 6 }}>
               <LocalizationProvider dateAdapter={AdapterDayjs}>
                 <DemoContainer components={["DatePicker", "DatePicker"]}>
                   <DatePicker
@@ -352,7 +352,7 @@ function Submission() {
                   />
                 </DemoContainer>
               </LocalizationProvider>
-            </Grid>
+            </Grid> */}
             <Grid item="true" size={{ xs: 12, md: 6 }}>
               <TextField
                 fullWidth
@@ -390,24 +390,24 @@ function Submission() {
             <Grid item="true" size={{ xs: 12, md: 6 }}>
               <TextField
                 fullWidth
-                // label="Tanggal Mulai"
+                label="Tanggal Mulai"
                 name="StartDate"
                 type="date"
                 value={formSubmission.StartDate}
                 onChange={handleChange}
-                helperText="Wajib diisi untuk kegiatan MSIB"
+                helperText="Wajib diisi"
                 required
               />
             </Grid>
             <Grid item="true" size={{ xs: 12, md: 6 }}>
               <TextField
                 fullWidth
-                // label="Tanggal Berakhir"
+                label="Tanggal Berakhir"
                 name="EndDate"
                 type="date"
                 value={formSubmission.EndDate}
                 onChange={handleChange}
-                helperText="Wajib diisi untuk kegiatan MSIB"
+                helperText="Wajib diisi"
                 required
               />
             </Grid>
