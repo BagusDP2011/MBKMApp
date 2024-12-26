@@ -525,7 +525,7 @@ function Submission() {
                 sx={{ textTransform: "none" }}
               >
                 <ChevronLeftIcon />
-                Back
+                Kembali
               </Button>
               {stepNum < steps.length - 1 && (
                 <Button
@@ -535,7 +535,7 @@ function Submission() {
                   onClick={() => handleNext()}
                   sx={{ textTransform: "none" }}
                 >
-                  Next
+                  Selanjutnya
                   <ChevronRightIcon />
                   {/* <ArrowForwardIcon fontSize="small"/> */}
                 </Button>

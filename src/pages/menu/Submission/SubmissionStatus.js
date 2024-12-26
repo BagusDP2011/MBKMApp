@@ -10,7 +10,7 @@ import { getSubmissionStatus } from "../../../service/Submission.Service";
 const stats = [
   // { label: "Revision", value: 56, icon: <CalendarMonthIcon />, backColor: "#FFC107"},
   {
-    label: "Processing",
+    label: "Waiting Approval",
     value: 12689,
     icon: <HourglassEmptyOutlinedIcon />,
     backColor: "#2196F3",

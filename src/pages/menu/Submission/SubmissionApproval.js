@@ -9,7 +9,7 @@ import { getSubmission } from "../../../service/Submission.Service";
 
 const stats = [
   // { label: "Revision", value: 56, icon: <CalendarMonthIcon />, backColor: "#FFC107"},
-  { label: "Processing", value: 12689, icon: <HourglassEmptyOutlinedIcon />,  backColor: "#2196F3" },
+  { label: "Waiting Approval", value: 12689, icon: <HourglassEmptyOutlinedIcon />,  backColor: "#2196F3" },
   { label: "Approved", value: 124, icon: <CheckOutlinedIcon />,  backColor: "#4CAF50" },
   { label: "Rejected", value: 32, icon: <CloseOutlinedIcon />,  backColor: "#F44336" },
 ];

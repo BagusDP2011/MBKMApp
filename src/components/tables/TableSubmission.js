@@ -199,7 +199,7 @@ export default function TableSubmission({ access, accessId, dataTable }) {
                   return "#56CA00";
                 case "Rejected":
                   return "#FF4C51";
-                case "Processing":
+                case "Waiting Approval":
                   return "#16B1FF";
                 default:
                   return "#000000";
