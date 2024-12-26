@@ -300,7 +300,14 @@ export default function DetailSubmission({ menuAccess, accessId }) {
                 sx={{ width: 80, height: 80, mb: 2 }}
               />
             )}
-            <Typography variant="h6">{student.Name}</Typography>
+            {student.Name && !student.UserPhoto && (
+              <Avatar 
+                sx={{ width: 80, height: 80, mb: 2 }}
+              >{student.Name[0].toUpperCase()}</Avatar>
+            )}
+            <Typography variant="h6" textAlign="center">
+              {student.Name}
+            </Typography>
             <Typography variant="subtitle2" color="primary" fontWeight="medium">
               {student.NIM}
             </Typography>
@@ -358,19 +365,19 @@ export default function DetailSubmission({ menuAccess, accessId }) {
             <Box display="flex" gap={2} px="1rem" pt="1rem" pb="2rem">
               <Button
                 sx={{ width: "100%", textTransform: "none" }}
-                variant="outlined"
-                color="error"
-                onClick={() => handleReject(submission.SubmissionID)}
-              >
-                Reject
-              </Button>
-              <Button
-                sx={{ width: "100%", textTransform: "none" }}
                 variant="contained"
                 color="primary"
                 onClick={() => handleApprove(submission.SubmissionID)}
               >
                 Approve
+              </Button>
+              <Button
+                sx={{ width: "100%", textTransform: "none" }}
+                variant="outlined"
+                color="error"
+                onClick={() => handleReject(submission.SubmissionID)}
+              >
+                Reject
               </Button>
             </Box>
           )}

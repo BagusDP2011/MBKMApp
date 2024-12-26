@@ -93,13 +93,11 @@ export default function SignIn(props) {
     }
     const data = new FormData(event.currentTarget);
     try {
-      console.log(data.get("password"));
       const token = await login({
         user: data.get("user"),
         email: data.get("email"),
         password: data.get("password"),
       });
-      console.log(token);
       if (token) {
         loginContext(token);
         Swal.fire({
@@ -124,7 +122,6 @@ export default function SignIn(props) {
   const validateInputs = () => {
     const user = document.getElementById("user");
     const password = document.getElementById("password");
-    console.log(user.value, password.value);
 
     let isValid = true;
 

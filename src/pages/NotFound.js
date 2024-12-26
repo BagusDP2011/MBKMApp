@@ -1,8 +1,25 @@
 import React from "react";
-import { Box } from "@mui/material";
+import { Box, Stack } from "@mui/material";
+import CircularProgress from "@mui/material/CircularProgress";
 import NotFoundImg from "../assets/img/404Cuate.svg";
 
-export default function NotFound() {
+export default function NotFound({ isLoading }) {
+  if (isLoading) {
+    return (
+      <Stack
+        direction="row"
+        sx={{
+          justifyContent: "center",
+          alignItems: "center",
+          height: "100vh",
+          columnGap: 1,
+        }}
+      >
+        <CircularProgress /> Loading...
+      </Stack>
+    );
+  }
+
   return (
     <Box
       sx={{
