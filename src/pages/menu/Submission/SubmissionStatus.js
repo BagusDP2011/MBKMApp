@@ -8,22 +8,21 @@ import HourglassEmptyOutlinedIcon from "@mui/icons-material/HourglassEmptyOutlin
 import { getSubmissionStatus } from "../../../service/Submission.Service";
 
 const stats = [
-  // { label: "Revision", value: 56, icon: <CalendarMonthIcon />, backColor: "#FFC107"},
   {
     label: "Processing",
-    value: 12689,
+    value: 0,
     icon: <HourglassEmptyOutlinedIcon />,
     backColor: "#2196F3",
   },
   {
     label: "Approved",
-    value: 124,
+    value: 0,
     icon: <CheckOutlinedIcon />,
     backColor: "#4CAF50",
   },
   {
     label: "Rejected",
-    value: 32,
+    value: 0,
     icon: <CloseOutlinedIcon />,
     backColor: "#F44336",
   },
@@ -35,8 +34,11 @@ export default function SubmissionStatus({ menuAccess, accessId }) {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const submissions = await getSubmissionStatus();
-        setSubmissions(submissions);
+        const data = await getSubmissionStatus();
+        setSubmissions(data);
+        stats[0].value = data.filter(x => x.Status === 'Processing').length || 0
+        stats[1].value = data.filter(x => x.Status === 'Approved').length || 0
+        stats[2].value = data.filter(x => x.Status === 'Rejected').length || 0
       } catch (error) {
         console.error("Error fetching data:", error);
       }

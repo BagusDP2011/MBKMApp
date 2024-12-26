@@ -9,10 +9,8 @@ export const AuthProvider = ({ children }) => {
   useEffect(() => {
     const token = localStorage.getItem('token');
     if (token && !isTokenExpired()) {
-      console.log("A")
       setIsLoggedIn(true);
     }else{
-      console.log("A")
       setIsLoggedIn(false);
     }
   }, []);

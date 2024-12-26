@@ -229,6 +229,7 @@ function Submission() {
                   name="LecturerGuardianID"
                   value={formSubmission.LecturerGuardianID}
                   onChange={handleChange}
+                  label="Pilih Dosen Pembimbing"
                   required
                 >
                   {supervisor.map((s) => (
