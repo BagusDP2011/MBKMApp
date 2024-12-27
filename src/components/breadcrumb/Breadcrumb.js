@@ -26,17 +26,12 @@ export default function Breadcrumb() {
     getBreadcrumb();
   }, []);
 
-  // useEffect(() => {
-  //   const titlePath = `/${pathnames.join("/")}`;
-  //   setTitle(breadcrumbNameMap[titlePath]);
-  // }, [breadcrumbNameMap, location.pathname]);
-
   useEffect(() => {
     const titlePath = `/${pathnames.join("/")}`;
 
     const matchedKey = Object.keys(breadcrumbNameMap)
-      .filter((key) => titlePath.startsWith(key)) // Hanya ambil key yang cocok
-      .sort((a, b) => b.length - a.length)[0]; // Ambil key terpanjang
+      .filter((key) => titlePath.startsWith(key))
+      .sort((a, b) => b.length - a.length)[0];
 
     setTitle(breadcrumbNameMap[matchedKey]);
   }, [breadcrumbNameMap, location.pathname]);

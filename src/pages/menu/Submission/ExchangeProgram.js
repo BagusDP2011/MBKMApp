@@ -31,7 +31,7 @@ function EditToolbar({ setRows, setRowModesModel }) {
   return (
     <GridToolbarContainer>
       <Button color="primary" startIcon={<AddIcon />} onClick={handleClick}>
-        Add record
+        Tambah Matakuliah
       </Button>
     </GridToolbarContainer>
   );
@@ -90,13 +90,13 @@ export default function ExchangeProgram({ onRowsChange }) {
   };
 
   const columns = [
-    { field: 'courseCode', headerName: 'Course Code', flex: 1, editable: true },
-    { field: 'courseName', headerName: 'Course Name', flex: 2, editable: true },
-    { field: 'credits', headerName: 'Credits', flex: 1, editable: true },
+    { field: 'courseCode', headerName: 'KODE', flex: 1, editable: true },
+    { field: 'courseName', headerName: 'NAMA MATAKULIAH', flex: 2, editable: true },
+    { field: 'credits', headerName: 'SKS', flex: 1, editable: true },
     {
       field: 'actions',
       type: 'actions',
-      headerName: 'Actions',
+      headerName: 'AKSI',
       flex: 1,
       cellClassName: 'actions',
       getActions: ({ id }) => {

@@ -47,7 +47,7 @@ export const approveSubmission = async (submissionId) => {
     });
 
     const response = await fetch(
-      `http://localhost:3001/api/submission/approve/${submissionId}`,
+      `${config.baseURL}/submission/approve/${submissionId}`,
       { method:"POST",headers: subHeaders }
     );
     const data = await response.json();
@@ -69,7 +69,7 @@ export const rejectSubmission = async (submissionId, note) => {
       note: note
     }
     const response = await fetch(
-      `http://localhost:3001/api/submission/reject/${submissionId}`,
+      `${config.baseURL}/submission/reject/${submissionId}`,
       { method:"POST",
         headers: subHeaders,
         body: JSON.stringify(body), }

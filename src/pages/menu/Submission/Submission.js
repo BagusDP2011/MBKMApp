@@ -21,14 +21,12 @@ import {
 } from "@mui/material";
 import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
 import ChevronRightIcon from "@mui/icons-material/ChevronRight";
-import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
-import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import { styled } from "@mui/system";
 import { submit } from "../../../service/Submission.Service";
 import { getUserByAccessID } from "../../../service/Static.Service";
 import { decodeToken } from "../../../service/Auth.Service";
 import ExchangeProgram from "./ExchangeProgram";
-import dayjs, { Dayjs } from "dayjs";
+import dayjs from "dayjs";
 import { DemoContainer } from "@mui/x-date-pickers/internals/demo";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
@@ -37,6 +35,8 @@ import { useNavigate } from "react-router-dom";
 import { useAlert } from "../../../components/AlertProvider";
 import AttachmentSubmission from "./AttachmentSubmission";
 
+let exchangeStep = ["Data Diri", "Program MBKM", "Rincian Kegiatan", "Data Pertukaran Pelajar"];
+let otherStep = ["Data Diri", "Program MBKM", "Rincian Kegiatan"];
 let steps = ["Data Diri", "Program MBKM", "Rincian Kegiatan"];
 const FormGrid = styled(Grid)(() => ({
   display: "flex",
@@ -74,7 +74,7 @@ function Submission() {
       StudyProgramObjective: "",
       Courses: [],
     },
-    Attachment: []
+    Attachment: [],
   });
 
   const [stepNum, setStepNum] = useState(0);
@@ -91,9 +91,11 @@ function Submission() {
     const { name, value } = e.target;
 
     if (name === "ProgramType" && value === "Pertukaran Pelajar") {
-      steps.push("Data Pertukaran Pelajar");
+      steps = exchangeStep;
+      // steps.push("Data Pertukaran Pelajar");
     } else if (name === "ProgramType") {
-      steps = steps.filter((i) => i !== "Data Pertukaran Pelajar");
+      steps = otherStep;
+      // steps = steps.filter((i) => i !== "Data Pertukaran Pelajar");
     }
 
     if (name === "typeExchange") {
@@ -144,9 +146,9 @@ function Submission() {
   const handleFilesChange = (updatedFiles) => {
     setFormSubmission((prev) => ({
       ...prev,
-      Attachment: updatedFiles
-    }))
-  }
+      Attachment: updatedFiles,
+    }));
+  };
 
   useEffect(() => {
     const fetchData = async () => {
@@ -182,17 +184,24 @@ function Submission() {
             </FormGrid>
             <FormGrid size={{ xs: 6, xl: 6, sm: 6 }}>
               <FormLabel htmlFor="name">Nama</FormLabel>
-              <OutlinedInput
-                id="name"
-                name="name"
-                type="name"
-                placeholder="Nama lengkap"
-                autoComplete="name"
-                onChange={handleChange}
-                disabled
-                value={user.name || ""}
-                size="medium"
-              />
+                <OutlinedInput
+                  id="name"
+                  name="name"
+                  type="name"
+                  placeholder="Nama lengkap"
+                  autoComplete="name"
+                  onChange={handleChange}
+                  disabled
+                  value={user.name || ""}
+                  size="medium"
+                  sx={{
+                    "& .Mui-disabled": {
+                      color: "black !important",
+                      opacity: 1,
+                      "-webkit-text-fill-color": "black !important",
+                    },
+                  }}
+                />
             </FormGrid>
             <FormGrid size={{ xs: 6, xl: 6, sm: 6 }}>
               <FormLabel htmlFor="nim">NIM</FormLabel>
@@ -206,6 +215,13 @@ function Submission() {
                 disabled
                 value={user.id || ""}
                 size="medium"
+                sx={{
+                  "& .Mui-disabled": {
+                    color: "black !important",
+                    opacity: 1,
+                    "-webkit-text-fill-color": "black !important",
+                  },
+                }}
               />
             </FormGrid>
             <FormGrid size={{ xs: 6, xl: 6, sm: 6 }}>
@@ -220,6 +236,13 @@ function Submission() {
                 disabled
                 value={user.prodiName || ""}
                 size="medium"
+                sx={{
+                  "& .Mui-disabled": {
+                    color: "black !important",
+                    opacity: 1,
+                    "-webkit-text-fill-color": "black !important",
+                  },
+                }}
               />
             </FormGrid>
             <FormGrid size={{ xs: 6, xl: 6, sm: 6 }}>
@@ -330,7 +353,7 @@ function Submission() {
                 required
               />
             </Grid>
-            {/* <Grid item="true" size={{ xs: 6 }}>
+            <Grid item="true" size={{ xs: 6 }}>
               <LocalizationProvider dateAdapter={AdapterDayjs}>
                 <DemoContainer components={["DatePicker", "DatePicker"]}>
                   <DatePicker
@@ -353,7 +376,7 @@ function Submission() {
                   />
                 </DemoContainer>
               </LocalizationProvider>
-            </Grid> */}
+            </Grid>
             <Grid item="true" size={{ xs: 12, md: 6 }}>
               <TextField
                 fullWidth
@@ -385,30 +408,6 @@ function Submission() {
                 onChange={handleChange}
                 multiline
                 rows={4}
-                required
-              />
-            </Grid>
-            <Grid item="true" size={{ xs: 12, md: 6 }}>
-              <TextField
-                fullWidth
-                label="Tanggal Mulai"
-                name="StartDate"
-                type="date"
-                value={formSubmission.StartDate}
-                onChange={handleChange}
-                helperText="Wajib diisi"
-                required
-              />
-            </Grid>
-            <Grid item="true" size={{ xs: 12, md: 6 }}>
-              <TextField
-                fullWidth
-                label="Tanggal Berakhir"
-                name="EndDate"
-                type="date"
-                value={formSubmission.EndDate}
-                onChange={handleChange}
-                helperText="Wajib diisi"
                 required
               />
             </Grid>
@@ -538,7 +537,6 @@ function Submission() {
                 >
                   Selanjutnya
                   <ChevronRightIcon />
-                  {/* <ArrowForwardIcon fontSize="small"/> */}
                 </Button>
               )}
               {stepNum === steps.length - 1 && (
@@ -548,7 +546,7 @@ function Submission() {
                   color="primary"
                   sx={{ textTransform: "none" }}
                 >
-                  Submit
+                  Kirim
                 </Button>
               )}
             </Stack>

@@ -1,14 +1,8 @@
-import React, { useState, useContext } from "react";
+import React, { useState } from "react";
 import {
   Box,
   Stack,
-  Typography,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogContentText,
-  DialogTitle,
-  Button,
+  Typography
 } from "@mui/material";
 import {
   List,
@@ -23,9 +17,6 @@ import { Link } from "react-router-dom";
 import { iconsMap } from "../../mapItem/mapItem";
 import { styled } from "@mui/material/styles";
 import AutoAwesomeIcon from "@mui/icons-material/AutoAwesome";
-import LogoutIcon from "@mui/icons-material/Logout";
-import { useNavigate } from "react-router-dom";
-import { AuthContext } from "../../service/AuthContext";
 import lambang from "../../assets/img/lambang.png";
 
 const CustomListItemButton = styled(ListItemButton)(({ theme }) => ({
@@ -46,10 +37,6 @@ export default function MenuContent({ menus }) {
   const [selectedSubMenu, setSelectedSubMenu] = useState(null);
   const [openSubmenu, setOpenSubmenu] = useState(null);
   const [isSubMenu, setIsSubMenu] = useState(null);
-  const [logoutMessage, setLogoutMessage] = useState("");
-  const [openLogoutDialog, setOpenLogoutDialog] = useState(false);
-  const { logoutContext } = useContext(AuthContext);
-  const navigate = useNavigate();
 
   const handleMenuClick = (id) => {
     setIsSubMenu(false);
@@ -69,60 +56,10 @@ export default function MenuContent({ menus }) {
     return iconsMap[IconString];
   };
 
-  const handleLogoutClick = () => {
-    setOpenLogoutDialog(true);
-  };
-  const handleLogoutConfirm = () => {
-    localStorage.setItem("logoutMessage", "Anda berhasil logout");
-    logoutContext();
-    navigate("/signin");
-  };
-  const handleLogoutCancel = () => {
-    setOpenLogoutDialog(false);
-  };
   return (
     <Stack sx={{ flexGrow: 1, justifyContent: "space-between" }}>
-      {/* Logout Confirmation Dialog */}
-      <Dialog
-        open={openLogoutDialog}
-        onClose={handleLogoutCancel}
-        aria-labelledby="logout-dialog-title"
-        aria-describedby="logout-dialog-description"
-      >
-        <DialogTitle id="logout-dialog-title">Konfirmasi Logout</DialogTitle>
-        <DialogContent>
-          <DialogContentText id="logout-dialog-description">
-            Anda yakin ingin keluar dari aplikasi?
-          </DialogContentText>
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={handleLogoutCancel} color="primary">
-            Batal
-          </Button>
-          <Button onClick={handleLogoutConfirm} color="primary" autoFocus>
-            Ya, Keluar
-          </Button>
-        </DialogActions>
-      </Dialog>
-
-      {/* Pesan Logout */}
-      {logoutMessage && (
-        <Typography
-          sx={{
-            backgroundColor: "#dff0d8",
-            color: "#3c763d",
-            padding: "10px",
-            textAlign: "center",
-            borderRadius: "4px",
-            marginBottom: "10px",
-          }}
-        >
-          {logoutMessage}
-        </Typography>
-      )}
-
       <Box>
-        <Stack 
+        {/* <Stack 
           sx={{ 
             gap: 1, 
             alignItems: "center", 
@@ -139,13 +76,13 @@ export default function MenuContent({ menus }) {
               maxHeight: "100px"
             }} 
           />
-        </Stack>
-        {/* <Stack direction="row" sx={{ gap: 1, alignItems: "center", p: 3 }}>
+        </Stack> */}
+        <Stack direction="row" sx={{ gap: 1, alignItems: "center", p: 3 }}>
           <AutoAwesomeIcon sx={{ fontSize: "2.5rem", color: "#3F8CFE" }} />
           <Typography variant="h5" fontWeight="900" color="#252e4a">
             MBKM
           </Typography>
-        </Stack> */}
+        </Stack>
 
         <List disablePadding dense>
           {menus.map((item) => (
@@ -229,20 +166,6 @@ export default function MenuContent({ menus }) {
           ))}
         </List>
       </Box>
-
-      {/* <List disablePadding dense>
-        <ListItem>
-          <CustomListItemButton
-            sx={{ columnGap: 1 }}
-            onClick={handleLogoutClick}
-          >
-            <ListItemIcon sx={{ minWidth: "max-content", color: "#A6A6A6" }}>
-              <LogoutIcon />
-            </ListItemIcon>
-            <ListItemText primary="Logout" />
-          </CustomListItemButton>
-        </ListItem>
-      </List> */}
     </Stack>
   );
 }

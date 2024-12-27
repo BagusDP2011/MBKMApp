@@ -20,8 +20,6 @@ import {
   TableHead,
   TableRow,
   FormControl,
-  FormHelperText,
-  InputLabel,
   MenuItem,
   IconButton,
 } from "@mui/material";
@@ -31,7 +29,6 @@ import {
   TimelineSeparator,
   TimelineConnector,
   TimelineContent,
-  TimelineOppositeContent,
   TimelineDot,
 } from "@mui/lab";
 import Swal from "sweetalert2";
@@ -43,8 +40,6 @@ import {
 import pdfIcon from "../../../assets/img/icons8-pdf-48.png";
 import { useParams } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
-import { PDFViewer } from "@react-pdf/renderer";
-import SubmissionPDF from "./SubmissionPDF";
 import { styled } from "@mui/system";
 import PDFViewerComponent from "./PDFViewerComponent";
 import CircularProgress from "@mui/material/CircularProgress";
@@ -71,24 +66,14 @@ const revisions = [
 
 const getDotColor = (status, total, index) => {
   if (status === "Rejected") {
-    return "#F44336"; // Merah
+    return "#F44336";
   } else if (status === "Pending") {
-    return "#FFC107"; // Kuning (Warning)
+    return "#FFC107";
   } else if (status === "Approved" && total === index) {
-    return "#4CAF50"; // Hijau
+    return "#4CAF50";
   } else {
-    return "#2196F3"; // Biru
+    return "#2196F3";
   }
-
-  // switch (status) {
-  //   case "Approved":
-  //     return "#4CAF50"; // Hijau
-  //   case "Rejected":
-  //     return "#F44336"; // Merah
-  //   case "Submit":
-  //     return "#2196F3"; // Biru
-  //   default:
-  //     return "#FFC107"; // Kuning (Warning)
 };
 
 export default function DetailSubmission({ menuAccess, accessId }) {
@@ -301,9 +286,9 @@ export default function DetailSubmission({ menuAccess, accessId }) {
               />
             )}
             {student.Name && !student.UserPhoto && (
-              <Avatar 
-                sx={{ width: 80, height: 80, mb: 2 }}
-              >{student.Name[0].toUpperCase()}</Avatar>
+              <Avatar sx={{ width: 80, height: 80, mb: 2 }}>
+                {student.Name[0].toUpperCase()}
+              </Avatar>
             )}
             <Typography variant="h6" textAlign="center">
               {student.Name}
@@ -441,13 +426,6 @@ export default function DetailSubmission({ menuAccess, accessId }) {
                 <TimelineItem key={index}>
                   <TimelineSeparator>
                     <TimelineDot
-                      // color={
-                      //   item.ApprovalStatus === "Approved" ||
-                      //   item.ApprovalStatus === "Submit"
-                      //     ? "primary"
-                      //     : "warning"
-                      // }
-
                       sx={{
                         backgroundColor: getDotColor(
                           item.ApprovalStatus,

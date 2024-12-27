@@ -9,7 +9,7 @@ import { getSubmissionStatus } from "../../../service/Submission.Service";
 
 const stats = [
   {
-    label: "Waiting Approval",
+    label: "Pending",
     value: 0,
     icon: <HourglassEmptyOutlinedIcon />,
     backColor: "#2196F3",
@@ -36,7 +36,7 @@ export default function SubmissionStatus({ menuAccess, accessId }) {
       try {
         const data = await getSubmissionStatus();
         setSubmissions(data);
-        stats[0].value = data.filter(x => x.Status === 'Waiting Approval').length || 0
+        stats[0].value = data.filter(x => x.Status === 'Pending').length || 0
         stats[1].value = data.filter(x => x.Status === 'Approved').length || 0
         stats[2].value = data.filter(x => x.Status === 'Rejected').length || 0
       } catch (error) {

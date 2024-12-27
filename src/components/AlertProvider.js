@@ -1,16 +1,17 @@
-import React, { createContext, useState, useContext, useCallback } from 'react';
-import { Alert, Snackbar } from '@mui/material';
+import React, { createContext, useState, useContext, useCallback } from "react";
+import { Alert, AlertTitle, Snackbar } from "@mui/material";
+import CheckIcon from "@mui/icons-material/Check";
 
 const AlertContext = createContext();
 
 export const AlertProvider = ({ children }) => {
   const [alert, setAlert] = useState({
     open: false,
-    message: '',
-    severity: 'info', // info, success, warning, error
+    message: "",
+    severity: "info",
   });
 
-  const showAlert = useCallback((message, severity = 'info') => {
+  const showAlert = useCallback((message, severity = "info") => {
     setAlert({ open: true, message, severity });
   }, []);
 
@@ -25,9 +26,14 @@ export const AlertProvider = ({ children }) => {
         open={alert.open}
         // autoHideDuration={4000}
         onClose={hideAlert}
-        anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
+        anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
       >
-        <Alert onClose={hideAlert} severity={alert.severity}>
+        <Alert
+          onClose={hideAlert}
+          severity={alert.severity}
+          icon={<CheckIcon />}
+        >
+          <AlertTitle>{alert.severity.charAt(0).toUpperCase() + alert.severity.slice(1)}</AlertTitle>
           {alert.message}
         </Alert>
       </Snackbar>

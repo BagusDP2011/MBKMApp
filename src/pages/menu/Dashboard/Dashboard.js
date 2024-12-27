@@ -4,18 +4,15 @@ import {
   Grid2 as Grid,
   Typography,
   Card,
-  CardContent,
   Button,
   Avatar,
   Divider,
-  Stack,
 } from "@mui/material";
 import { BarChart, PieChart } from "@mui/x-charts";
 import ThinkingCuate from "../../../assets/img/Multitasking-cuate.svg";
 import CloseOutlinedIcon from "@mui/icons-material/CloseOutlined";
 import CheckOutlinedIcon from "@mui/icons-material/CheckOutlined";
 import HourglassEmptyOutlinedIcon from "@mui/icons-material/HourglassEmptyOutlined";
-import { EventAvailableTwoTone } from "@mui/icons-material";
 import { useNavigate } from "react-router-dom";
 import {
   getSubmissionStatus,
@@ -24,7 +21,7 @@ import {
 
 const stats = [
   {
-    label: "Waiting Approval",
+    label: "Pending",
     value: 0,
     icon: <HourglassEmptyOutlinedIcon />,
     backColor: "#2196F3",
@@ -58,12 +55,12 @@ const DashboardTU = () => {
         setBarChartData(dataStatus);
         setPieChartDate(dataTotal);
 
-        let processing = 0;
+        let pending = 0;
         let approved = 0;
         let rejected = 0;
 
         dataStatus.series[0].data.forEach((e) => {
-          processing += parseInt(e);
+          pending += parseInt(e);
         });
 
         dataStatus.series[1].data.forEach((e) => {
@@ -74,7 +71,7 @@ const DashboardTU = () => {
           rejected += parseInt(e);
         });
 
-        stats[0].value = processing;
+        stats[0].value = pending;
         stats[1].value = approved;
         stats[2].value = rejected;
 
@@ -89,7 +86,6 @@ const DashboardTU = () => {
 
   return (
     <Grid container spacing={3}>
-      {/* Header */}
       <Grid item container size={8} spacing={3}>
         <Grid item size={12}>
           <Card
@@ -201,7 +197,7 @@ const DashboardTU = () => {
                     color="primary"
                     onClick={() => navigate("/menu/mbkm/status%20pengajuan")}
                   >
-                    Submission Status
+                    Status Pengajuan
                   </Button>
                 </Box>
               </Box>
@@ -241,128 +237,6 @@ const DashboardTU = () => {
           )}
         </Grid>
       </Grid>
-
-      {/* <Grid item size={2}>
-        <Card
-          sx={{
-            padding: 2,
-            boxShadow: "none",
-            border: "1px solid rgba(224, 224, 224, 1)",
-          }}
-        >
-          <Typography variant="body1" fontWeight="bold" color="text.secondary">
-            Transactions
-          </Typography>
-          <Typography variant="h4" fontWeight="bold" color="blue">
-            12.1k
-          </Typography>
-          <Typography variant="caption" color="blue">
-            +38% Daily Transactions
-          </Typography>
-        </Card>
-      </Grid>
-
-      <Grid item size={8} md={8}>
-        {barChartData && (
-          <Card
-            sx={{
-              boxShadow: "none",
-              border: "1px solid rgba(224, 224, 224, 1)",
-            }}
-          >
-            <Box sx={{ display: "flex" }}>
-              <Box sx={{ height: 340, p: 3 }}>
-                <Typography variant="h6" fontWeight="bold">
-                  Status Pengajuan
-                </Typography>
-                <BarChart
-                  xAxis={[
-                    {
-                      scaleType: "band",
-                      data: barChartData.categories,
-                    },
-                  ]}
-                  series={barChartData.series.map((s) => ({
-                    data: s.data,
-                    color: s.color,
-                  }))}
-                  width={500}
-                  height={300}
-                />
-              </Box>
-              <Divider orientation="vertical" flexItem />
-              <Box
-                sx={{
-                  p: 3,
-                  display: "flex",
-                  flexDirection: "column",
-                  justifyContent: "center",
-                  rowGap: 4,
-                  flex: 1,
-                }}
-              >
-                {stats.map((stat, index) => (
-                  <Box sx={{ display: "flex", columnGap: 1 }}>
-                    <Avatar
-                      variant="rounded"
-                      sx={{ backgroundColor: `${stat.backColor}20` }}
-                    >
-                      {React.cloneElement(stat.icon, {
-                        sx: { color: stat.backColor },
-                      })}
-                    </Avatar>
-                    <Box>
-                      <Typography Typography variant="body2" fontWeight="bold">
-                        {stat.value}
-                      </Typography>
-                      <Typography variant="body2" color="#2E263DB2">
-                        {stat.label}
-                      </Typography>
-                    </Box>
-                  </Box>
-                ))}
-                <Button
-                  sx={{ width: "100%", textTransform: "none" }}
-                  variant="contained"
-                  color="primary"
-                  onClick={() => navigate("/menu/mbkm/status%20pengajuan")}
-                >
-                  Submission Status
-                </Button>
-              </Box>
-            </Box>
-          </Card>
-        )}
-      </Grid>
-
-      <Grid item size={4} md={4}>
-        {pieChartData && (
-          <Card
-            sx={{
-              padding: 3,
-              boxShadow: "none",
-              border: "1px solid rgba(224, 224, 224, 1)",
-            }}
-          >
-            <Typography variant="h6" fontWeight="bold">
-              Total Pengajuan
-            </Typography>
-            <Box sx={{ height: 300 }}>
-              <PieChart
-                // margin={{ right: 250 }}
-                series={[
-                  {
-                    data: pieChartData,
-                    highlightScope: { faded: "global", highlighted: "item" },
-                  },
-                ]}
-                // width={400}
-                // height={200}
-              />
-            </Box>
-          </Card>
-        )}
-      </Grid> */}
     </Grid>
   );
 };

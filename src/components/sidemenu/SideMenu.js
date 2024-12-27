@@ -13,7 +13,6 @@ import {
   ListItemIcon,
   Divider,
 } from "@mui/material";
-import AvatarLogo from "../../assets/img/Profile.jpg";
 import { jwtDecode } from "jwt-decode";
 import MoreVertOutlinedIcon from "@mui/icons-material/MoreVertOutlined";
 import Settings from "@mui/icons-material/Settings";
@@ -99,17 +98,16 @@ export default function SideMenu({ menus }) {
           borderColor: "divider",
         }}
       >
-        <Avatar
-          sizes="small"
-          alt="User Avatar"
-          src={AvatarLogo}
-          sx={{ width: 36, height: 36 }}
-        />
+        {user && (
+          <Avatar sx={{ width: 40, height: 40 }}>
+            {user[0].toUpperCase()}
+          </Avatar>
+        )}
         <Box sx={{ mr: "auto" }}>
           <Typography
             variant="body2"
             sx={{
-              width:"100%",
+              width: "100%",
               fontWeight: 500,
               lineHeight: "16px",
             }}
