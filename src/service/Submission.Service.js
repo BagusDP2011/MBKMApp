@@ -38,6 +38,25 @@ export const getSubmissionStatus = async () => {
   }
 };
 
+export const getSubmissionMentorship = async () => {
+  try {
+    const token = localStorage.getItem("token");
+    const subHeaders = new Headers({
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    });
+
+    const response = await fetch(
+      `${config.baseURL}/submission-mentorship`,
+      { headers: subHeaders }
+    );
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    throw error;
+  }
+};
+
 export const approveSubmission = async (submissionId) => {
   try {
     const token = localStorage.getItem("token");

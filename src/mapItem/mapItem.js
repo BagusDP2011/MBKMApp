@@ -23,6 +23,7 @@ import PengajuanMHS from "../pages/menu/PengajuanMHS";
 import DetailSubmission from "../pages/menu/Submission/DetailSubmission";
 import AttachmentSubmission from "../pages/menu/Submission/AttachmentSubmission";
 import SubmissionInformation from "../pages/menu/Submission/SubmissionInformation";
+import SubmissionMentorship from "../pages/menu/Submission/SubmissionMentorship";
 
 // Page profile
 import Profile from "../pages/menu/Profile/Profile";
@@ -60,6 +61,7 @@ export const iconsMap = {
     "<DashboardTU />":  Dashboard,
     "<SubmissionApproval />" : SubmissionApproval,
     "<SubmissionStatus />" : SubmissionStatus,
+    "<SubmissionMentorship />" : SubmissionMentorship,
     "<Submission />" : Submission,
     "<PengajuanMHS />" : PengajuanMHS,
     "<DetailSubmission />" : DetailSubmission,
