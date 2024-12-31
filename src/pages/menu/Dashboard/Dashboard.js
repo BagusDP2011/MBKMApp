@@ -43,6 +43,7 @@ const stats = [
 const DashboardTU = () => {
   const [isLoading, setIsLoading] = React.useState(false);
   const [barChartData, setBarChartData] = React.useState(null);
+  const [total, setTotal] = React.useState(0);
   const [pieChartData, setPieChartDate] = React.useState(null);
   const navigate = useNavigate();
 
@@ -75,6 +76,7 @@ const DashboardTU = () => {
         stats[1].value = approved;
         stats[2].value = rejected;
 
+        setTotal(pending + approved + rejected)
         setIsLoading(false);
       } catch (error) {
         console.error("Error fetching data:", error);
@@ -161,7 +163,7 @@ const DashboardTU = () => {
                 >
                   <Box>
                     <Typography variant="body2" fontWeight="medium">
-                      5 Pengajuan
+                      {total} Pengajuan
                     </Typography>
                     {/* <Typography variant="body2" color="#2E263DB2">
                       Periksa pengajuan yang tertunda di approval anda
@@ -218,7 +220,7 @@ const DashboardTU = () => {
               }}
             >
               <Typography variant="h6" fontWeight="bold">
-                Total Pengajuan
+                Total Pengajuan {total}
               </Typography>
               <Box sx={{ height: 300 }}>
                 <PieChart

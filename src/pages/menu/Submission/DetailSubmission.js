@@ -25,9 +25,8 @@ import {
   Dialog,
   DialogActions,
   DialogContent,
-  TextField,
   FormLabel,
-  OutlinedInput
+  OutlinedInput,
 } from "@mui/material";
 import {
   Timeline,
@@ -59,22 +58,17 @@ import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { LocalizationProvider } from "@mui/x-date-pickers";
 import { DemoContainer } from "@mui/x-date-pickers/internals/demo";
+import AddIcon from "@mui/icons-material/Add";
+import {
+  submitLogbook,
+  getLogbookBySubmissionID,
+} from "../../../service/Logbook.Service";
 import dayjs from "dayjs";
 
 const FormGrid = styled(Grid)(() => ({
   display: "flex",
   flexDirection: "column",
 }));
-
-const revisions = [
-  {
-    RevisionID: 1,
-    RevisionNote:
-      "Tolong di perbaiki lagi file jadwalnya dan Rincian kegiatannya di perjelas",
-    RevisionDate: "2024-11-30T02:05:36.000Z",
-    ApproverName: "KPS",
-  },
-];
 
 const getDotColor = (status, total, index) => {
   if (status === "Rejected") {
@@ -90,6 +84,7 @@ const getDotColor = (status, total, index) => {
 
 export default function DetailSubmission({ menuAccess, accessId }) {
   const [openModalLogbook, setOpenModalLogBook] = React.useState(false);
+  const [isLoadingLogbook, setIsLoadingLogbook] = React.useState(false);
   const [isLoading, setIsLoading] = React.useState(false);
   const [base64pdf, setBase64pdf] = React.useState("");
   const [tabValue, setTabValue] = React.useState(0);
@@ -98,6 +93,7 @@ export default function DetailSubmission({ menuAccess, accessId }) {
   const [submissionApproval, setSubmissionApproval] = React.useState([]);
   const [submissionAttachment, setSubmissionAttachment] = React.useState([]);
   const [exchangeProgram, setExchangeProgram] = React.useState({});
+  const [logbook, setLogbok] = React.useState([]);
   const showAlert = useAlert();
 
   const [isReAssign, setIsReAssign] = React.useState(false);
@@ -122,15 +118,40 @@ export default function DetailSubmission({ menuAccess, accessId }) {
     setOpenModalLogBook(false);
   };
 
+  const handelSubmitLogbook = async () => {
+    setIsLoadingLogbook(true);
+    await submitLogbook(formLogbook);
+    const logbooks = await getLogbookBySubmissionID(id);
+    setLogbok(
+      logbooks.map((item) => ({
+        id: item.ID,
+        label: item.Label,
+        date: item.Date,
+        color: "#1976d2",
+      }))
+    );
+    setOpenModalLogBook(false);
+    setIsLoadingLogbook(false);
+  };
+
   useEffect(() => {
     const fetchData = async () => {
       try {
         setIsLoading(true);
         const submission = await getSubmissionByID(id);
         const supervisors = await getUserByAccessID(6);
+        const logbooks = await getLogbookBySubmissionID(id);
         setSupervisors(supervisors);
         setSubmission(submission.submission);
         setStudent(submission.student);
+        setLogbok(
+          logbooks.map((item) => ({
+            id: item.ID,
+            label: item.Label,
+            date: item.Date,
+            color: "#1976d2",
+          }))
+        );
         let submitTimeline = {
           AccDescription: submission.student.Name,
           Level: 0,
@@ -148,6 +169,10 @@ export default function DetailSubmission({ menuAccess, accessId }) {
         setSubmissionApproval(updatedSubmissionApproval);
         setExchangeProgram(submission.exchangeProgram);
         setSubmissionAttachment(submission.submissionAttachment);
+        setFormLogbook({
+          ...formLogbook,
+          SubmissionID: submission.submission.SubmissionID,
+        });
 
         if (submission?.exchangeProgram?.Courses.length > 0) {
           const total = submission?.exchangeProgram?.Courses.map((c) =>
@@ -165,8 +190,20 @@ export default function DetailSubmission({ menuAccess, accessId }) {
     fetchData();
   }, []);
 
-  const handleStartDateChange = (newStartDate) => {
-    // formSubmission.StartDate = newStartDate;
+  const handleDateChange = (newDate) => {
+    setFormLogbook({
+      ...formLogbook,
+      Date: newDate,
+    });
+  };
+
+  const handleLabelChange = (e) => {
+    const { name, value } = e.target;
+
+    setFormLogbook({
+      ...formLogbook,
+      Label: value,
+    });
   };
 
   const handleChange = (event, newValue) => {
@@ -853,84 +890,132 @@ export default function DetailSubmission({ menuAccess, accessId }) {
         </Grid>
       </Grid>
 
-      <Box
-        sx={{
-          marginTop: "1.5rem",
-          boxShadow: "none",
-          border: "1px solid rgba(224, 224, 224, 1)",
-          textAlign: "center",
-        }}
-      >
-        <Typography variant="h6" sx={{ margin: "1rem" }}>
-          Logbook Kegiatan
-        </Typography>
-        <Divider />
-        <CardContent>
-          <ComScheduler />
-          <Dialog
-            open={openModalLogbook}
-            aria-labelledby="logout-dialog-title"
-            aria-describedby="logout-dialog-description"
+      {logbook && submission.Status === 'Approved' && (
+        <Box
+          sx={{
+            marginTop: "1.5rem",
+            boxShadow: "none",
+            border: "1px solid rgba(224, 224, 224, 1)",
+            textAlign: "center",
+          }}
+        >
+          <Box
+            sx={{ display: "flex", p: "1rem", justifyContent: "space-between" }}
           >
-            <DialogContent>
-              <Box
-                sx={{
-                  marginTop: "1.5rem",
-                  boxShadow: "none",
-                  border: "1px solid rgba(224, 224, 224, 1)",
-                  textAlign: "center",
-                }}
+            <Typography variant="h6">Logbook Kegiatan</Typography>
+            {menuAccess.CanAdd && (
+              <Button
+                sx={{ textTransform: "none" }}
+                variant="contained"
+                color="primary"
+                onClick={() => handleModalOpen()}
               >
-                <Typography variant="h6" sx={{ margin: "1rem" }}>
-                  Logbook Kegiatan
-                </Typography>
-                <Divider />
-                <CardContent>
-                  <Box sx={{ px: "1rem", py: "1.7rem" }}>
-                    <Box sx={{ mb: "1.5rem", textAlign: "left" }}>
-                      <Typography variant="subtitle1" fontWeight="medium">
-                        Data Diri
-                      </Typography>
-                      <Typography variant="body2" color="#2E263DB2">
-                        Isi data diri Anda di bawah ini untuk melengkapi profil
-                        Anda.
-                      </Typography>
-                    </Box>
-                    <LocalizationProvider dateAdapter={AdapterDayjs}>
-                      <DemoContainer components={["DatePicker", "DatePicker"]}>
-                        <DatePicker
-                          sx={{ width: "100%" }}
-                          label="Date"
-                          defaultValue={formLogbook.Date}
-                          onChange={handleStartDateChange}
-                        />
-                      </DemoContainer>
-                    </LocalizationProvider>
-                    <Box sx={{ mt: "1.5rem", textAlign: "left", display:'flex', flexDirection:'column' }}>
-                      <FormLabel htmlFor="name">Label</FormLabel>
-                      <OutlinedInput
-                        id="name"
-                        name="name"
-                        type="name"
-                        placeholder="Label Kegiatan"
-                        autoComplete="name"
-                        onChange={handleChange}
-                        size="medium"
-                      />
-                    </Box>
-                  </Box>
-                </CardContent>
-              </Box>
-            </DialogContent>
-            <DialogActions>
-              <Button color="primary" onClick={() => handleModalCancel()}>Batal</Button>
-              <Button color="primary" autoFocus>
-                Simpan
+                <AddIcon /> Tambah
               </Button>
-            </DialogActions>
-          </Dialog>
-        </CardContent>
-      </Box>
+            )}
+          </Box>
+          <Divider />
+          <CardContent>
+            <ComScheduler data={logbook} />
+            <Dialog
+              open={openModalLogbook}
+              aria-labelledby="logout-dialog-title"
+              aria-describedby="logout-dialog-description"
+            >
+              <DialogContent>
+                <Box
+                  sx={{
+                    marginTop: "1.5rem",
+                    boxShadow: "none",
+                    border: "1px solid rgba(224, 224, 224, 1)",
+                    textAlign: "center",
+                  }}
+                >
+                  <Typography variant="h6" sx={{ margin: "1rem" }}>
+                    Logbook Kegiatan
+                  </Typography>
+                  <Divider />
+                  <CardContent>
+                    <Box sx={{ px: "1rem", py: "1.7rem" }}>
+                      <Box sx={{ mb: "1.5rem", textAlign: "left" }}>
+                        <Typography variant="subtitle1" fontWeight="medium">
+                          Data Diri
+                        </Typography>
+                        <Typography variant="body2" color="#2E263DB2">
+                          Isi data diri Anda di bawah ini untuk melengkapi
+                          profil Anda.
+                        </Typography>
+                      </Box>
+                      <LocalizationProvider dateAdapter={AdapterDayjs}>
+                        <DemoContainer
+                          components={["DatePicker", "DatePicker"]}
+                        >
+                          <DatePicker
+                            sx={{ width: "100%" }}
+                            label="Date"
+                            defaultValue={formLogbook.Date}
+                            onChange={handleDateChange}
+                          />
+                        </DemoContainer>
+                      </LocalizationProvider>
+                      <Box
+                        sx={{
+                          mt: "1.5rem",
+                          textAlign: "left",
+                          display: "flex",
+                          flexDirection: "column",
+                        }}
+                      >
+                        <FormLabel htmlFor="label">Label</FormLabel>
+                        <OutlinedInput
+                          id="label"
+                          name="label"
+                          type="label"
+                          placeholder="Label Kegiatan"
+                          autoComplete="label"
+                          onChange={handleLabelChange}
+                          size="medium"
+                        />
+                      </Box>
+                    </Box>
+                  </CardContent>
+                </Box>
+              </DialogContent>
+              <DialogActions>
+                {!isLoadingLogbook && (
+                  <Box>
+                    <Button
+                      color="primary"
+                      onClick={() => handelSubmitLogbook()}
+                    >
+                      Simpan
+                    </Button>
+                    <Button color="primary" onClick={() => handleModalCancel()}>
+                      Batal
+                    </Button>
+                  </Box>
+                )}
+
+                {isLoadingLogbook && (
+                  <Stack
+                    direction="row"
+                    sx={{
+                      justifyContent: "center",
+                      alignItems: "center",
+                      columnGap: 1,
+                    }}
+                  >
+                    <CircularProgress />
+                    <Typography variant="body2" color="#2E263DB2">
+                      Loading...
+                    </Typography>
+                  </Stack>
+                )}
+              </DialogActions>
+            </Dialog>
+          </CardContent>
+        </Box>
+      )}
     </Box>
   );
 }

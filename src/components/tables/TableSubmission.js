@@ -6,13 +6,7 @@ import {
   GridToolbarFilterButton,
   GridToolbarExport,
 } from "@mui/x-data-grid";
-import {
-  Box,
-  Stack,
-  Tooltip,
-  Typography,
-  IconButton,
-} from "@mui/material";
+import { Box, Stack, Tooltip, Typography, IconButton } from "@mui/material";
 import {
   getSubmission,
   deleteSubmission,
@@ -131,33 +125,36 @@ export default function TableSubmission({ access, accessId, dataTable }) {
       if (col.field === "Actions") {
         return {
           ...col,
-          renderCell: (params) => (
-            <Stack
-              sx={{
-                height: "100%",
-                alignItems: "center",
-                columnGap: 1,
-              }}
-              direction="row"
-            >
-              {access.CanDelete && (
-                <Tooltip title="Delete" placement="top">
+          renderCell: (params) => {
+            const status = params.row.Status;
+            return (
+              <Stack
+                sx={{
+                  height: "100%",
+                  alignItems: "center",
+                  columnGap: 1,
+                }}
+                direction="row"
+              >
+                <Tooltip title="Detail" placement="top">
                   <IconButtonCustom
-                    icon={<DeleteOutlineOutlinedIcon />}
-                    onClick={() => handleDelete(params.id)}
-                    hoverColor="#FF4C51"
+                    icon={<VisibilityOutlinedIcon />}
+                    onClick={() => navigate(`/menu/mbkm/detail/${params.id}`)}
+                    hoverColor="#3F8CFE"
                   />
                 </Tooltip>
-              )}
-              <Tooltip title="Detail" placement="top">
-                <IconButtonCustom
-                  icon={<VisibilityOutlinedIcon />}
-                  onClick={() => navigate(`/menu/mbkm/detail/${params.id}`)}
-                  hoverColor="#3F8CFE"
-                />
-              </Tooltip>
-            </Stack>
-          ),
+                {access.CanDelete && status !== "Approved" && (
+                  <Tooltip title="Delete" placement="top">
+                    <IconButtonCustom
+                      icon={<DeleteOutlineOutlinedIcon />}
+                      onClick={() => handleDelete(params.id)}
+                      hoverColor="#FF4C51"
+                    />
+                  </Tooltip>
+                )}
+              </Stack>
+            );
+          },
         };
       }
 
@@ -184,7 +181,7 @@ export default function TableSubmission({ access, accessId, dataTable }) {
                   display: "flex",
                   alignItems: "center",
                   height: "100%",
-                  width: "100%", 
+                  width: "100%",
                 }}
               >
                 <Box
