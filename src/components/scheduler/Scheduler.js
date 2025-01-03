@@ -9,11 +9,11 @@ export default function ComScheduler({ data }) {
   }, [data]);
 
   const handleCellClick = (event, row, day) => {
-    console.log(event);
+    console.log(event, row);
   };
 
   const handleEventClick = (event, item) => {
-    // Do something...
+    console.log(item)
   };
 
   const handleEventsChange = (item) => {
@@ -31,6 +31,7 @@ export default function ComScheduler({ data }) {
       events={schedulerData}
       legacyStyle={false}
       options={{
+        transitionMode: "zoom",
         startWeekOn: "mon",
         defaultMode: "month",
         minWidth: 540,

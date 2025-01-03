@@ -18,6 +18,24 @@ export const getLogbookBySubmissionID = async (submissionId) => {
   }
 };
 
+export const getLogbookMentorship = async () => {
+  try {
+    const token = localStorage.getItem("token");
+    const subHeaders = new Headers({
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    });
+
+    const response = await fetch(`${config.baseURL}/logbook-mentorship`, {
+      headers: subHeaders,
+    });
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    throw error;
+  }
+};
+
 export const submitLogbook = async (logbook) => {
   try {
     const token = localStorage.getItem("token");

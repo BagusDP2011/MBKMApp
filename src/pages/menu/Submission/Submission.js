@@ -307,9 +307,6 @@ function Submission() {
                   <MenuItem value="Studi /Proyek Independen">
                     Studi /Proyek Independen
                   </MenuItem>
-                  <MenuItem value="Membangun Desa/Kuliah Kerja Nyata Tematik">
-                    Membangun Desa/Kuliah Kerja Nyata Tematik
-                  </MenuItem>
                   <MenuItem value="Magang Praktik Kerja">
                     Magang Praktik Kerja
                   </MenuItem>

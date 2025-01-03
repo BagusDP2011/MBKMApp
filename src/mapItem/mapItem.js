@@ -15,7 +15,7 @@ import AccountBoxOutlinedIcon from '@mui/icons-material/AccountBoxOutlined';
 import AttachFileIcon from '@mui/icons-material/AttachFile';
 
 // Page general
-
+import DashboardMentorship from "../pages/menu/Dashboard/DashboardMentorship";
 
 // Page submissions
 import Submission from "../pages/menu/Submission/Submission";
@@ -59,6 +59,7 @@ export const iconsMap = {
   
   export const componentsMap = {
     "<DashboardTU />":  Dashboard,
+    "<DashboardMentorship />":  DashboardMentorship,
     "<SubmissionApproval />" : SubmissionApproval,
     "<SubmissionStatus />" : SubmissionStatus,
     "<SubmissionMentorship />" : SubmissionMentorship,
