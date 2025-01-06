@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Box,
   Avatar,
@@ -20,10 +20,13 @@ import {
   TableHead,
   TableRow,
   FormControl,
-  FormHelperText,
-  InputLabel,
   MenuItem,
   IconButton,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  FormLabel,
+  OutlinedInput,
 } from "@mui/material";
 import {
   Timeline,
@@ -31,7 +34,6 @@ import {
   TimelineSeparator,
   TimelineConnector,
   TimelineContent,
-  TimelineOppositeContent,
   TimelineDot,
 } from "@mui/lab";
 import Swal from "sweetalert2";
@@ -43,8 +45,6 @@ import {
 import pdfIcon from "../../../assets/img/icons8-pdf-48.png";
 import { useParams } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
-import { PDFViewer } from "@react-pdf/renderer";
-import SubmissionPDF from "./SubmissionPDF";
 import { styled } from "@mui/system";
 import PDFViewerComponent from "./PDFViewerComponent";
 import CircularProgress from "@mui/material/CircularProgress";
@@ -53,45 +53,38 @@ import SaveOutlinedIcon from "@mui/icons-material/SaveOutlined";
 import CloseOutlinedIcon from "@mui/icons-material/CloseOutlined";
 import { reAssign } from "../../../service/Submission.Service";
 import { useAlert } from "../../../components/AlertProvider";
+import ComScheduler from "../../../components/scheduler/Scheduler";
+import { DatePicker } from "@mui/x-date-pickers/DatePicker";
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import { LocalizationProvider } from "@mui/x-date-pickers";
+import { DemoContainer } from "@mui/x-date-pickers/internals/demo";
+import AddIcon from "@mui/icons-material/Add";
+import {
+  submitLogbook,
+  getLogbookBySubmissionID,
+} from "../../../service/Logbook.Service";
+import dayjs from "dayjs";
 
 const FormGrid = styled(Grid)(() => ({
   display: "flex",
   flexDirection: "column",
 }));
 
-const revisions = [
-  {
-    RevisionID: 1,
-    RevisionNote:
-      "Tolong di perbaiki lagi file jadwalnya dan Rincian kegiatannya di perjelas",
-    RevisionDate: "2024-11-30T02:05:36.000Z",
-    ApproverName: "KPS",
-  },
-];
-
 const getDotColor = (status, total, index) => {
   if (status === "Rejected") {
-    return "#F44336"; // Merah
+    return "#F44336";
   } else if (status === "Pending") {
-    return "#FFC107"; // Kuning (Warning)
+    return "#FFC107";
   } else if (status === "Approved" && total === index) {
-    return "#4CAF50"; // Hijau
+    return "#4CAF50";
   } else {
-    return "#2196F3"; // Biru
+    return "#2196F3";
   }
-
-  // switch (status) {
-  //   case "Approved":
-  //     return "#4CAF50"; // Hijau
-  //   case "Rejected":
-  //     return "#F44336"; // Merah
-  //   case "Submit":
-  //     return "#2196F3"; // Biru
-  //   default:
-  //     return "#FFC107"; // Kuning (Warning)
 };
 
 export default function DetailSubmission({ menuAccess, accessId }) {
+  const [openModalLogbook, setOpenModalLogBook] = React.useState(false);
+  const [isLoadingLogbook, setIsLoadingLogbook] = React.useState(false);
   const [isLoading, setIsLoading] = React.useState(false);
   const [base64pdf, setBase64pdf] = React.useState("");
   const [tabValue, setTabValue] = React.useState(0);
@@ -100,6 +93,7 @@ export default function DetailSubmission({ menuAccess, accessId }) {
   const [submissionApproval, setSubmissionApproval] = React.useState([]);
   const [submissionAttachment, setSubmissionAttachment] = React.useState([]);
   const [exchangeProgram, setExchangeProgram] = React.useState({});
+  const [logbook, setLogbok] = React.useState([]);
   const showAlert = useAlert();
 
   const [isReAssign, setIsReAssign] = React.useState(false);
@@ -110,15 +104,57 @@ export default function DetailSubmission({ menuAccess, accessId }) {
   const { id } = useParams();
   const navigate = useNavigate();
 
+  const [formLogbook, setFormLogbook] = useState({
+    SubmissionID: "",
+    Label: "",
+    Date: dayjs(),
+  });
+
+  const handleModalOpen = () => {
+    setOpenModalLogBook(true);
+  };
+
+  const handleModalCancel = () => {
+    setOpenModalLogBook(false);
+  };
+
+  const handelSubmitLogbook = async () => {
+    setIsLoadingLogbook(true);
+    await submitLogbook(formLogbook);
+  
+    const logbooks = await getLogbookBySubmissionID(id);
+    setLogbok(
+      logbooks.map((item) => ({
+        id: item.ID,
+        label: item.Label,
+        date: item.Date,
+        color: "#1976d2",
+      }))
+    );
+  
+    setOpenModalLogBook(false);
+    setIsLoadingLogbook(false);
+  };
+  
+
   useEffect(() => {
     const fetchData = async () => {
       try {
         setIsLoading(true);
         const submission = await getSubmissionByID(id);
         const supervisors = await getUserByAccessID(6);
+        const logbooks = await getLogbookBySubmissionID(id);
         setSupervisors(supervisors);
         setSubmission(submission.submission);
         setStudent(submission.student);
+        setLogbok(
+          logbooks.map((item) => ({
+            id: item.ID,
+            label: item.Label,
+            date: item.Date,
+            color: "#1976d2",
+          }))
+        );
         let submitTimeline = {
           AccDescription: submission.student.Name,
           Level: 0,
@@ -136,6 +172,10 @@ export default function DetailSubmission({ menuAccess, accessId }) {
         setSubmissionApproval(updatedSubmissionApproval);
         setExchangeProgram(submission.exchangeProgram);
         setSubmissionAttachment(submission.submissionAttachment);
+        setFormLogbook({
+          ...formLogbook,
+          SubmissionID: submission.submission.SubmissionID,
+        });
 
         if (submission?.exchangeProgram?.Courses.length > 0) {
           const total = submission?.exchangeProgram?.Courses.map((c) =>
@@ -152,6 +192,28 @@ export default function DetailSubmission({ menuAccess, accessId }) {
 
     fetchData();
   }, []);
+
+  const handleDateChange = (newDate) => {
+    setFormLogbook({
+      ...formLogbook,
+      Date: newDate,
+    });
+  };
+
+  const dateFormatted = (date) => {
+    const utcDate = new Date("2025-01-06T03:28:53.453Z");
+    const localDate = utcDate.toLocaleString("en-US", { timeZone: "Asia/Jakarta" });
+    return localDate
+  }
+
+  const handleLabelChange = (e) => {
+    const { name, value } = e.target;
+
+    setFormLogbook({
+      ...formLogbook,
+      Label: value,
+    });
+  };
 
   const handleChange = (event, newValue) => {
     setTabValue(newValue);
@@ -192,7 +254,7 @@ export default function DetailSubmission({ menuAccess, accessId }) {
     const formattedDate = date.toLocaleDateString("en-US", optionsDate);
     const formattedTime = date.toLocaleTimeString("en-US", optionsTime);
 
-    return `${formattedDate}, ${formattedTime}`;
+    return `${formattedDate}`;
   };
 
   const showPdf = (base64) => {
@@ -212,8 +274,11 @@ export default function DetailSubmission({ menuAccess, accessId }) {
       confirmButtonColor: "#3F8CFE",
     }).then(async (result) => {
       if (result.isConfirmed) {
-        await approveSubmission(submissionId);
+        setIsLoading(true);
+        var response = await approveSubmission(submissionId);
+        setIsLoading(false);
         navigate(`/menu/mbkm/daftar%20pengajuan`);
+        showAlert(response.message, "success");
       }
     });
   };
@@ -241,9 +306,11 @@ export default function DetailSubmission({ menuAccess, accessId }) {
     });
 
     if (rejectionNote) {
-      await rejectSubmission(submissionId, rejectionNote);
-
+      setIsLoading(true);
+      var response = await rejectSubmission(submissionId, rejectionNote);
+      setIsLoading(false);
       navigate(`/menu/mbkm/daftar%20pengajuan`);
+      showAlert(response.message, "success");
     }
   };
 
@@ -281,117 +348,168 @@ export default function DetailSubmission({ menuAccess, accessId }) {
   }
 
   return (
-    <Grid container spacing={3}>
-      <Grid item size={4}>
-        <Card
-          sx={{ boxShadow: "none", border: "1px solid rgba(224, 224, 224, 1)" }}
-        >
-          <Box
-            display="flex"
-            flexDirection="column"
-            alignItems="center"
-            marginTop="2rem"
-            px="1rem"
+    <Box>
+      <Grid container spacing={3}>
+        <Grid item size={4}>
+          <Card
+            sx={{
+              boxShadow: "none",
+              border: "1px solid rgba(224, 224, 224, 1)",
+            }}
           >
-            {student.UserPhoto && (
-              <Avatar
-                alt="Seth Hallam"
-                src={`data:image/jpeg;base64,${student.UserPhoto}`}
-                sx={{ width: 80, height: 80, mb: 2 }}
-              />
-            )}
-            <Typography variant="h6">{student.Name}</Typography>
-            <Typography variant="subtitle2" color="primary" fontWeight="medium">
-              {student.NIM}
-            </Typography>
-          </Box>
-          <Divider sx={{ my: 2 }} />
-          <CardContent sx={{ py: 0 }}>
-            <Stack spacing={1}>
-              <Typography variant="subtitle1" fontWeight="medium">
-                Details
+            <Box
+              display="flex"
+              flexDirection="column"
+              alignItems="center"
+              marginTop="2rem"
+              px="1rem"
+            >
+              {student.UserPhoto && (
+                <Avatar
+                  alt="Seth Hallam"
+                  src={`data:image/jpeg;base64,${student.UserPhoto}`}
+                  sx={{ width: 80, height: 80, mb: 2 }}
+                />
+              )}
+              {student.Name && !student.UserPhoto && (
+                <Avatar sx={{ width: 80, height: 80, mb: 2 }}>
+                  {student.Name[0].toUpperCase()}
+                </Avatar>
+              )}
+              <Typography variant="h6" textAlign="center">
+                {student.Name}
               </Typography>
-              <Box sx={{ display: "flex", gap: 1 }}>
-                <Typography variant="body2" fontWeight="medium">
-                  Username:
-                </Typography>
-                <Typography variant="body2" color="#2E263DB2">
-                  Fahrizal
-                </Typography>
-              </Box>
-              <Box sx={{ display: "flex", gap: 1 }}>
-                <Typography variant="body2" fontWeight="medium">
-                  Email:
-                </Typography>
-                <Typography variant="body2" color="#2E263DB2">
-                  {student.Email}
-                </Typography>
-              </Box>
-              <Box sx={{ display: "flex", gap: 1 }}>
-                <Typography variant="body2" fontWeight="medium">
-                  Prodi:
-                </Typography>
-                <Typography variant="body2" color="#2E263DB2">
-                  {student.ProdiName}
-                </Typography>
-              </Box>
-              <Box sx={{ display: "flex", gap: 1 }}>
-                <Typography variant="body2" fontWeight="medium">
-                  Contact:
-                </Typography>
-                <Typography variant="body2" color="#2E263DB2">
-                  +62879912314
-                </Typography>
-              </Box>
-              <Box sx={{ display: "flex", gap: 1 }}>
-                <Typography variant="body2" fontWeight="medium">
-                  Place, Date of Birth:
-                </Typography>
-                <Typography variant="body2" color="#2E263DB2">
-                  Batam, 30 May 1986
-                </Typography>
-              </Box>
-            </Stack>
-          </CardContent>
-
-          {accessId !== 1 && submission.IsApprove === 0 && (
-            <Box display="flex" gap={2} px="1rem" pt="1rem" pb="2rem">
-              <Button
-                sx={{ width: "100%", textTransform: "none" }}
-                variant="outlined"
-                color="error"
-                onClick={() => handleReject(submission.SubmissionID)}
-              >
-                Reject
-              </Button>
-              <Button
-                sx={{ width: "100%", textTransform: "none" }}
-                variant="contained"
+              <Typography
+                variant="subtitle2"
                 color="primary"
-                onClick={() => handleApprove(submission.SubmissionID)}
+                fontWeight="medium"
               >
-                Approve
-              </Button>
+                {student.NIM}
+              </Typography>
             </Box>
-          )}
+            <Divider sx={{ my: 2 }} />
+            <CardContent sx={{ py: 0 }}>
+              <Stack spacing={1}>
+                <Typography variant="subtitle1" fontWeight="medium">
+                  Detail
+                </Typography>
+                <Box sx={{ display: "flex", gap: 1 }}>
+                  <Typography variant="body2" fontWeight="medium">
+                    Username:
+                  </Typography>
+                  <Typography variant="body2" color="#2E263DB2">
+                    {student.Name}
+                  </Typography>
+                </Box>
+                <Box sx={{ display: "flex", gap: 1 }}>
+                  <Typography variant="body2" fontWeight="medium">
+                    Email:
+                  </Typography>
+                  <Typography variant="body2" color="#2E263DB2">
+                    {student.Email}
+                  </Typography>
+                </Box>
+                <Box sx={{ display: "flex", gap: 1 }}>
+                  <Typography variant="body2" fontWeight="medium">
+                    Prodi:
+                  </Typography>
+                  <Typography variant="body2" color="#2E263DB2">
+                    {student.ProdiName}
+                  </Typography>
+                </Box>
+                <Box sx={{ display: "flex", gap: 1 }}>
+                  <Typography variant="body2" fontWeight="medium">
+                    Kontak:
+                  </Typography>
+                  <Typography variant="body2" color="#2E263DB2">
+                    +62879912314
+                  </Typography>
+                </Box>
+                <Box sx={{ display: "flex", gap: 1 }}>
+                  <Typography variant="body2" fontWeight="medium">
+                    Tempat Tanggal Lahir:
+                  </Typography>
+                  <Typography variant="body2" color="#2E263DB2">
+                    Batam, 30 May 1986
+                  </Typography>
+                </Box>
+              </Stack>
+            </CardContent>
 
-          {submission.Status === "Rejected" &&
-            accessId === 1 &&
-            menuAccess.CanEdit && (
-              <Box px="1rem" pt="1rem" pb="2rem">
+            {accessId !== 1 && submission.IsApprove === 0 && (
+              <Box display="flex" gap={2} px="1rem" pt="1rem" pb="2rem">
                 <Button
                   sx={{ width: "100%", textTransform: "none" }}
                   variant="contained"
                   color="primary"
-                  onClick={() => navigate("/menu/mbkm/pengajuan")}
+                  onClick={() => handleApprove(submission.SubmissionID)}
                 >
-                  New Submission
+                  Approve
+                </Button>
+                <Button
+                  sx={{ width: "100%", textTransform: "none" }}
+                  variant="outlined"
+                  color="error"
+                  onClick={() => handleReject(submission.SubmissionID)}
+                >
+                  Reject
                 </Button>
               </Box>
             )}
-        </Card>
 
-        {submission.Status === "Rejected" && (
+            {submission.Status === "Rejected" &&
+              accessId === 1 &&
+              menuAccess.CanEdit && (
+                <Box px="1rem" pt="1rem" pb="2rem">
+                  <Button
+                    sx={{ width: "100%", textTransform: "none" }}
+                    variant="contained"
+                    color="primary"
+                    onClick={() => navigate("/menu/mbkm/pengajuan")}
+                  >
+                    Pengajuan Baru
+                  </Button>
+                </Box>
+              )}
+          </Card>
+
+          {submission.Status === "Rejected" && (
+            <Card
+              sx={{
+                marginTop: "1.5rem",
+                boxShadow: "none",
+                border: "1px solid rgba(224, 224, 224, 1)",
+              }}
+            >
+              <Typography variant="h6" sx={{ margin: "1rem" }}>
+                Catatan Revisi
+              </Typography>
+              <Divider />
+              <CardContent>
+                {/* {revisions.map((item, index) => (
+                <Typography
+                  key={item.RevisionID}
+                  variant="body2"
+                  color="#2E263DB2"
+                >
+                  {(index += 1)}.{item.RevisionNote} - {item.ApproverName}
+                </Typography>
+              ))} */}
+                <Typography
+                  key={submissionApproval[submissionApproval.length - 1].Level}
+                  variant="body2"
+                  color="#2E263DB2"
+                >
+                  {submissionApproval[submissionApproval.length - 1].Note} -{" "}
+                  {
+                    submissionApproval[submissionApproval.length - 1]
+                      .AccDescription
+                  }
+                </Typography>
+              </CardContent>
+            </Card>
+          )}
+
           <Card
             sx={{
               marginTop: "1.5rem",
@@ -400,87 +518,334 @@ export default function DetailSubmission({ menuAccess, accessId }) {
             }}
           >
             <Typography variant="h6" sx={{ margin: "1rem" }}>
-              Revision Note
+              Jalur Persetujuan
             </Typography>
             <Divider />
             <CardContent>
-              {revisions.map((item, index) => (
-                <Typography
-                  key={item.RevisionID}
-                  variant="body2"
-                  color="#2E263DB2"
-                >
-                  {(index += 1)}.{item.RevisionNote} - {item.ApproverName}
-                </Typography>
-              ))}
+              <Timeline position="alternate" sx={{ padding: 0, margin: 0 }}>
+                {submissionApproval.map((item, index) => (
+                  <TimelineItem key={index}>
+                    <TimelineSeparator>
+                      <TimelineDot
+                        sx={{
+                          backgroundColor: getDotColor(
+                            item.ApprovalStatus,
+                            submissionApproval.length - 1,
+                            index
+                          ),
+                        }}
+                      />
+                      {index < submissionApproval.length - 1 && (
+                        <TimelineConnector />
+                      )}
+                    </TimelineSeparator>
+                    <TimelineContent>
+                      <Typography variant="body1">
+                        {item.AccDescription} - {item.ApprovalStatus}
+                      </Typography>
+                      <Typography variant="caption">
+                        {item.ApprovalDate ? formatDate(item.ApprovalDate) : ""}
+                      </Typography>
+                    </TimelineContent>
+                  </TimelineItem>
+                ))}
+              </Timeline>
             </CardContent>
           </Card>
-        )}
+        </Grid>
+        <Grid item size={8}>
+          <Tabs
+            value={tabValue}
+            onChange={handleChange}
+            aria-label="Profile Tabs"
+            sx={{ mb: 2 }}
+          >
+            <Tab label="Ringkasan" />
+            <Tab label="Dokumen" />
+            <Tab label="Pratinjau Dokumen" disabled={true} />
+          </Tabs>
 
-        <Card
-          sx={{
-            marginTop: "1.5rem",
-            boxShadow: "none",
-            border: "1px solid rgba(224, 224, 224, 1)",
-          }}
-        >
-          <Typography variant="h6" sx={{ margin: "1rem" }}>
-            Approval Timeline
-          </Typography>
-          <Divider />
-          <CardContent>
-            <Timeline position="alternate" sx={{ padding: 0, margin: 0 }}>
-              {submissionApproval.map((item, index) => (
-                <TimelineItem key={index}>
-                  <TimelineSeparator>
-                    <TimelineDot
-                      // color={
-                      //   item.ApprovalStatus === "Approved" ||
-                      //   item.ApprovalStatus === "Submit"
-                      //     ? "primary"
-                      //     : "warning"
-                      // }
-
+          {tabValue === 0 && (
+            <>
+              <Card
+                sx={{
+                  marginTop: "1.5rem",
+                  boxShadow: "none",
+                  border: "1px solid rgba(224, 224, 224, 1)",
+                }}
+              >
+                <CardContent>
+                  <Box
+                    sx={{
+                      display: "flex",
+                      flexDirection: "column",
+                      // rowGap: "1rem",
+                      rowGap: 1,
+                    }}
+                  >
+                    <Box
                       sx={{
-                        backgroundColor: getDotColor(
-                          item.ApprovalStatus,
-                          submissionApproval.length - 1,
-                          index
-                        ),
+                        display: "flex",
+                        columnGap: 1,
+                        alignItems: "center",
                       }}
-                    />
-                    {index < submissionApproval.length - 1 && (
-                      <TimelineConnector />
-                    )}
-                  </TimelineSeparator>
-                  <TimelineContent>
-                    <Typography variant="body1">
-                      {item.AccDescription} - {item.ApprovalStatus}
-                    </Typography>
-                    <Typography variant="caption">
-                      {item.ApprovalDate ? formatDate(item.ApprovalDate) : ""}
-                    </Typography>
-                  </TimelineContent>
-                </TimelineItem>
-              ))}
-            </Timeline>
-          </CardContent>
-        </Card>
-      </Grid>
-      <Grid item size={8}>
-        <Tabs
-          value={tabValue}
-          onChange={handleChange}
-          aria-label="Profile Tabs"
-          sx={{ mb: 2 }}
-        >
-          <Tab label="Overview" />
-          <Tab label="Document" />
-          <Tab label="Preview Document" disabled={true} />
-        </Tabs>
+                    >
+                      <Typography variant="subtitle1" fontWeight="medium">
+                        Informasi Kegiatan
+                      </Typography>
+                      <Box
+                        sx={{
+                          backgroundColor: "rgb(22 177 255 / 0.16)",
+                          height: "24px",
+                          borderRadius: "1rem",
+                          display: "flex",
+                          alignItems: "center",
+                          justifyContent: "center",
+                        }}
+                      >
+                        <Typography
+                          variant="subtitle2"
+                          sx={{
+                            color: "#16B1FF",
+                            fontSize: "0.8125rem",
+                            paddingInline: "12px",
+                          }}
+                        >
+                          {submission.ProgramType}
+                        </Typography>
+                      </Box>
+                    </Box>
+                    <Box>
+                      <Typography variant="body2" fontWeight="medium">
+                        Dosen Pembimbing
+                      </Typography>
+                      <Box
+                        sx={{
+                          display: "flex",
+                          alignItems: "center",
+                          justifyContent: "space-between",
+                        }}
+                      >
+                        {!isReAssign && (
+                          <Typography variant="body2" color="#2E263DB2">
+                            {submission.LecturerGuardianName}
+                          </Typography>
+                        )}
+                        {menuAccess.CanEdit &&
+                          !isReAssign &&
+                          accessId !== 1 &&
+                          submission.IsApprove === 0 && (
+                            <Button
+                              sx={{
+                                textTransform: "none",
+                                color: "#2E263DB2",
+                                padding: 0,
+                              }}
+                              onClick={() => setIsReAssign(true)}
+                            >
+                              Re-Assign
+                            </Button>
+                          )}
 
-        {tabValue === 0 && (
-          <>
+                        {isReAssign && accessId !== 1 && (
+                          <Box
+                            sx={{
+                              display: "flex",
+                              width: "100%",
+                              columnGap: 3,
+                            }}
+                          >
+                            <FormGrid size={{ xs: 12, xl: 12, sm: 12 }}>
+                              <FormControl fullWidth size="small">
+                                <Select
+                                  name="LecturerGuardianID"
+                                  value={submission.LecturerGuardianID}
+                                  onChange={handleChangeLecturer}
+                                  required
+                                >
+                                  {supervisors.map((s) => (
+                                    <MenuItem key={s.UserID} value={s.UserID}>
+                                      {s.UserID} - {s.Name}
+                                    </MenuItem>
+                                  ))}
+                                </Select>
+                              </FormControl>
+                            </FormGrid>
+                            <Box sx={{ display: "flex", columnGap: 1 }}>
+                              <Button
+                                sx={{
+                                  maxWidth: "max-content",
+                                  minWidth: "max-content",
+                                  padding: 0,
+                                }}
+                              >
+                                <Avatar
+                                  variant="rounded"
+                                  sx={{
+                                    backgroundColor: "transparent",
+                                    border: "1px solid rgb(118, 118, 118)",
+                                  }}
+                                >
+                                  <IconButton
+                                    color="rgba(224, 224, 224, 1)"
+                                    onClick={() => handleReAssign()}
+                                  >
+                                    <SaveOutlinedIcon />
+                                  </IconButton>
+                                </Avatar>
+                              </Button>
+                              <Button
+                                sx={{
+                                  maxWidth: "max-content",
+                                  minWidth: "max-content",
+                                  padding: 0,
+                                }}
+                                onClick={() => setIsReAssign(false)}
+                              >
+                                <Avatar
+                                  variant="rounded"
+                                  sx={{
+                                    backgroundColor: "transparent",
+                                    border: "1px solid rgb(118, 118, 118)",
+                                  }}
+                                >
+                                  <IconButton color="rgba(224, 224, 224, 1)">
+                                    <CloseOutlinedIcon />
+                                  </IconButton>
+                                </Avatar>
+                              </Button>
+                            </Box>
+                          </Box>
+                        )}
+                      </Box>
+                    </Box>
+                    <Box>
+                      <Typography variant="body2" fontWeight="medium">
+                        Tanggal Kegiatan
+                      </Typography>
+                      <Typography variant="body2" color="#2E263DB2">
+                        {formatDate(submission.StartDate)} -{" "}
+                        {formatDate(submission.EndDate)}
+                      </Typography>
+                    </Box>
+                    <Box>
+                      <Typography variant="body2" fontWeight="medium">
+                        Nama Perusahaan
+                      </Typography>
+                      <Typography variant="body2" color="#2E263DB2">
+                        {submission.InstitutionName}
+                      </Typography>
+                    </Box>
+                    <Box>
+                      <Typography variant="body2" fontWeight="medium">
+                        Posisi
+                      </Typography>
+                      <Typography variant="body2" color="#2E263DB2">
+                        {submission.Position}
+                      </Typography>
+                    </Box>
+                    <Divider />
+                    <Typography variant="subtitle1" fontWeight="medium">
+                      Detail Kegiatan
+                    </Typography>
+                    <Box>
+                      <Typography variant="body2" fontWeight="medium">
+                        Alasan Memilih Program
+                      </Typography>
+                      <Typography variant="body2" color="#2E263DB2">
+                        {submission.Reason}
+                      </Typography>
+                    </Box>
+                    <Box>
+                      <Typography variant="body2" fontWeight="medium">
+                        Judul Program
+                      </Typography>
+                      <Typography variant="body2" color="#2E263DB2">
+                        {submission.Title}
+                      </Typography>
+                    </Box>
+                    <Box>
+                      <Typography variant="body2" fontWeight="medium">
+                        Rincian Kegiatan
+                      </Typography>
+                      <Typography variant="body2" color="#2E263DB2">
+                        {submission.ActivityDetails}
+                      </Typography>
+                    </Box>
+                  </Box>
+                </CardContent>
+              </Card>
+
+              {exchangeProgram?.Courses?.length > 0 && (
+                <Card
+                  sx={{
+                    marginTop: "1.5rem",
+                    boxShadow: "none",
+                    border: "1px solid rgba(224, 224, 224, 1)",
+                  }}
+                >
+                  <CardContent sx={{ paddingBottom: 0 }}>
+                    <Box
+                      sx={{
+                        display: "flex",
+                        columnGap: 1,
+                        alignItems: "center",
+                        justifyContent: "space-between",
+                      }}
+                    >
+                      <Typography variant="subtitle1" fontWeight="medium">
+                        Mata Kuliah
+                      </Typography>
+                    </Box>
+                    <Box>
+                      <Typography
+                        variant="body2"
+                        color="#2E263DB2"
+                        sx={{ mb: ".5rem" }}
+                      >
+                        {exchangeProgram.TypeExchange} -{" "}
+                        {exchangeProgram.StudyProgramObjective}
+                      </Typography>
+                    </Box>
+                  </CardContent>
+                  <TableContainer>
+                    <Table sx={{ minWidth: 650 }} aria-label="simple table">
+                      <TableHead>
+                        <TableRow
+                          sx={{
+                            backgroundColor: "#F6F7FB",
+                            borderBottom: "none",
+                          }}
+                        >
+                          <TableCell>KODE</TableCell>
+                          <TableCell>NAMA MATAKULIAH</TableCell>
+                          <TableCell>JUMLAH SKS</TableCell>
+                        </TableRow>
+                      </TableHead>
+                      <TableBody>
+                        {exchangeProgram.Courses.map((row) => (
+                          <TableRow
+                            key={row.CourseID}
+                            sx={{
+                              "&:last-child td, &:last-child th": { border: 0 },
+                            }}
+                          >
+                            <TableCell component="th" scope="row">
+                              {row.CourseCode}
+                            </TableCell>
+                            <TableCell>{row.CourseName}</TableCell>
+                            <TableCell>{row.Credits}</TableCell>
+                          </TableRow>
+                        ))}
+                      </TableBody>
+                    </Table>
+                  </TableContainer>
+                </Card>
+              )}
+            </>
+          )}
+
+          {tabValue === 1 && (
             <Card
               sx={{
                 marginTop: "1.5rem",
@@ -497,317 +862,173 @@ export default function DetailSubmission({ menuAccess, accessId }) {
                     rowGap: 1,
                   }}
                 >
-                  <Box
-                    sx={{ display: "flex", columnGap: 1, alignItems: "center" }}
-                  >
-                    <Typography variant="subtitle1" fontWeight="medium">
-                      Informasi Kegiatan
-                    </Typography>
-                    <Box
+                  <Typography variant="subtitle1" fontWeight="medium">
+                    Dokumen Kegiatan
+                  </Typography>
+                  {submissionAttachment.map((attch) => (
+                    <Button
+                      key={attch.AttachID}
                       sx={{
-                        backgroundColor: "rgb(22 177 255 / 0.16)",
-                        height: "24px",
-                        borderRadius: "1rem",
-                        display: "flex",
+                        justifyContent: "space-between",
+                        textTransform: "none",
                         alignItems: "center",
-                        justifyContent: "center",
+                        padding: 0,
                       }}
+                      onClick={() => showPdf(attch.Base64)}
                     >
-                      <Typography
-                        variant="subtitle2"
+                      <Box
                         sx={{
-                          color: "#16B1FF",
-                          fontSize: "0.8125rem",
-                          paddingInline: "12px",
+                          display: "flex",
+                          alignItems: "center",
+                          cursor: "pointer",
                         }}
                       >
-                        {submission.ProgramType}
+                        <img alt="pdf" src={pdfIcon} width={30} />
+                        <Tooltip title="Preview" placement="right">
+                          <Typography variant="body2" color="#2E263DB2">
+                            {attch.AttachName}
+                          </Typography>
+                        </Tooltip>
+                      </Box>
+                      <Typography variant="body2" color="#2E263DB2">
+                        {formatFileSize(getBase64FileSize(attch.Base64))}
                       </Typography>
-                    </Box>
-                  </Box>
-                  <Box>
-                    <Typography variant="body2" fontWeight="medium">
-                      Dosen Pembimbing
-                    </Typography>
-                    <Box
-                      sx={{
-                        display: "flex",
-                        alignItems: "center",
-                        justifyContent: "space-between",
-                      }}
-                    >
-                      {!isReAssign && (
-                        <Typography variant="body2" color="#2E263DB2">
-                          {submission.LecturerGuardianName}
-                        </Typography>
-                      )}
-                      {menuAccess.CanEdit &&
-                        !isReAssign &&
-                        accessId !== 1 &&
-                        submission.IsApprove === 0 && (
-                          <Button
-                            sx={{
-                              textTransform: "none",
-                              color: "#2E263DB2",
-                              padding: 0,
-                            }}
-                            onClick={() => setIsReAssign(true)}
-                          >
-                            Re-Assign
-                          </Button>
-                        )}
-
-                      {isReAssign && accessId !== 1 && (
-                        <Box
-                          sx={{ display: "flex", width: "100%", columnGap: 3 }}
-                        >
-                          <FormGrid size={{ xs: 12, xl: 12, sm: 12 }}>
-                            <FormControl fullWidth size="small">
-                              <Select
-                                name="LecturerGuardianID"
-                                value={submission.LecturerGuardianID}
-                                onChange={handleChangeLecturer}
-                                required
-                              >
-                                {supervisors.map((s) => (
-                                  <MenuItem key={s.UserID} value={s.UserID}>
-                                    {s.UserID} - {s.Name}
-                                  </MenuItem>
-                                ))}
-                              </Select>
-                            </FormControl>
-                          </FormGrid>
-                          <Box sx={{ display: "flex", columnGap: 1 }}>
-                            <Button
-                              sx={{
-                                maxWidth: "max-content",
-                                minWidth: "max-content",
-                                padding: 0,
-                              }}
-                            >
-                              <Avatar
-                                variant="rounded"
-                                sx={{
-                                  backgroundColor: "transparent",
-                                  border: "1px solid rgb(118, 118, 118)",
-                                }}
-                              >
-                                <IconButton
-                                  color="rgba(224, 224, 224, 1)"
-                                  onClick={() => handleReAssign()}
-                                >
-                                  <SaveOutlinedIcon />
-                                </IconButton>
-                              </Avatar>
-                            </Button>
-                            <Button
-                              sx={{
-                                maxWidth: "max-content",
-                                minWidth: "max-content",
-                                padding: 0,
-                              }}
-                              onClick={() => setIsReAssign(false)}
-                            >
-                              <Avatar
-                                variant="rounded"
-                                sx={{
-                                  backgroundColor: "transparent",
-                                  border: "1px solid rgb(118, 118, 118)",
-                                }}
-                              >
-                                <IconButton color="rgba(224, 224, 224, 1)">
-                                  <CloseOutlinedIcon />
-                                </IconButton>
-                              </Avatar>
-                            </Button>
-                          </Box>
-                        </Box>
-                      )}
-                    </Box>
-                  </Box>
-                  <Box>
-                    <Typography variant="body2" fontWeight="medium">
-                      Tanggal Kegiatan
-                    </Typography>
-                    <Typography variant="body2" color="#2E263DB2">
-                      {formatDate(submission.StartDate)} -{" "}
-                      {formatDate(submission.EndDate)}
-                    </Typography>
-                  </Box>
-                  <Box>
-                    <Typography variant="body2" fontWeight="medium">
-                      Nama Perusahaan
-                    </Typography>
-                    <Typography variant="body2" color="#2E263DB2">
-                      {submission.InstitutionName}
-                    </Typography>
-                  </Box>
-                  <Box>
-                    <Typography variant="body2" fontWeight="medium">
-                      Posisi
-                    </Typography>
-                    <Typography variant="body2" color="#2E263DB2">
-                      {submission.Position}
-                    </Typography>
-                  </Box>
-                  <Divider />
-                  <Typography variant="subtitle1" fontWeight="medium">
-                    Detail Kegiatan
-                  </Typography>
-                  <Box>
-                    <Typography variant="body2" fontWeight="medium">
-                      Alasan Memilih Program
-                    </Typography>
-                    <Typography variant="body2" color="#2E263DB2">
-                      {submission.Reason}
-                    </Typography>
-                  </Box>
-                  <Box>
-                    <Typography variant="body2" fontWeight="medium">
-                      Judul Program
-                    </Typography>
-                    <Typography variant="body2" color="#2E263DB2">
-                      {submission.Title}
-                    </Typography>
-                  </Box>
-                  <Box>
-                    <Typography variant="body2" fontWeight="medium">
-                      Rincian Kegiatan
-                    </Typography>
-                    <Typography variant="body2" color="#2E263DB2">
-                      {submission.ActivityDetails}
-                    </Typography>
-                  </Box>
+                    </Button>
+                  ))}
                 </Box>
               </CardContent>
             </Card>
+          )}
 
-            {exchangeProgram?.Courses?.length > 0 && (
-              <Card
-                sx={{
-                  marginTop: "1.5rem",
-                  boxShadow: "none",
-                  border: "1px solid rgba(224, 224, 224, 1)",
-                }}
+          {tabValue === 2 && <PDFViewerComponent base64File={base64pdf} />}
+        </Grid>
+      </Grid>
+
+      {logbook && submission.Status === 'Approved' && (
+        <Box
+          sx={{
+            marginTop: "1.5rem",
+            boxShadow: "none",
+            border: "1px solid rgba(224, 224, 224, 1)",
+            textAlign: "center",
+          }}
+        >
+          <Box
+            sx={{ display: "flex", p: "1rem", justifyContent: "space-between" }}
+          >
+            <Typography variant="h6">Logbook Kegiatan</Typography>
+            {menuAccess.CanAdd && (
+              <Button
+                sx={{ textTransform: "none" }}
+                variant="contained"
+                color="primary"
+                onClick={() => handleModalOpen()}
               >
-                <CardContent sx={{ paddingBottom: 0 }}>
-                  <Box
-                    sx={{
-                      display: "flex",
-                      columnGap: 1,
-                      alignItems: "center",
-                      justifyContent: "space-between",
-                    }}
-                  >
-                    <Typography variant="subtitle1" fontWeight="medium">
-                      Mata Kuliah
-                    </Typography>
-                  </Box>
-                  <Box>
-                    <Typography
-                      variant="body2"
-                      color="#2E263DB2"
-                      sx={{ mb: ".5rem" }}
-                    >
-                      {exchangeProgram.TypeExchange} -{" "}
-                      {exchangeProgram.StudyProgramObjective}
-                    </Typography>
-                  </Box>
-                </CardContent>
-                <TableContainer>
-                  <Table sx={{ minWidth: 650 }} aria-label="simple table">
-                    <TableHead>
-                      <TableRow
+                <AddIcon /> Tambah
+              </Button>
+            )}
+          </Box>
+          <Divider />
+          <CardContent>
+            <ComScheduler data={logbook} />
+            <Dialog
+              open={openModalLogbook}
+              aria-labelledby="logout-dialog-title"
+              aria-describedby="logout-dialog-description"
+            >
+              <DialogContent>
+                <Box
+                  sx={{
+                    marginTop: "1.5rem",
+                    boxShadow: "none",
+                    border: "1px solid rgba(224, 224, 224, 1)",
+                    textAlign: "center",
+                  }}
+                >
+                  <Typography variant="h6" sx={{ margin: "1rem" }}>
+                    Logbook Kegiatan
+                  </Typography>
+                  <Divider />
+                  <CardContent>
+                    <Box sx={{ px: "1rem", py: "1.7rem" }}>
+                      <Box sx={{ mb: "1.5rem", textAlign: "left" }}>
+                        {/* <Typography variant="subtitle1" fontWeight="medium">
+                          Logbook Harian
+                        </Typography> */}
+                        <Typography variant="body2" color="#2E263DB2">
+                          Catat aktivitas harian Anda secara singkat dan jelas.
+                        </Typography>
+                      </Box>
+                      <LocalizationProvider dateAdapter={AdapterDayjs}>
+                        <DemoContainer
+                          components={["DatePicker", "DatePicker"]}
+                        >
+                          <DatePicker
+                            sx={{ width: "100%" }}
+                            label="Date"
+                            defaultValue={formLogbook.Date}
+                            onChange={handleDateChange}
+                          />
+                        </DemoContainer>
+                      </LocalizationProvider>
+                      <Box
                         sx={{
-                          backgroundColor: "#F6F7FB",
-                          borderBottom: "none",
+                          mt: "1.5rem",
+                          textAlign: "left",
+                          display: "flex",
+                          flexDirection: "column",
                         }}
                       >
-                        <TableCell>KODE</TableCell>
-                        <TableCell>NAMA MATAKULIAH</TableCell>
-                        <TableCell>JUMLAH SKS</TableCell>
-                      </TableRow>
-                    </TableHead>
-                    <TableBody>
-                      {exchangeProgram.Courses.map((row) => (
-                        <TableRow
-                          key={row.CourseID}
-                          sx={{
-                            "&:last-child td, &:last-child th": { border: 0 },
-                          }}
-                        >
-                          <TableCell component="th" scope="row">
-                            {row.CourseCode}
-                          </TableCell>
-                          <TableCell>{row.CourseName}</TableCell>
-                          <TableCell>{row.Credits}</TableCell>
-                        </TableRow>
-                      ))}
-                    </TableBody>
-                  </Table>
-                </TableContainer>
-              </Card>
-            )}
-          </>
-        )}
-
-        {tabValue === 1 && (
-          <Card
-            sx={{
-              marginTop: "1.5rem",
-              boxShadow: "none",
-              border: "1px solid rgba(224, 224, 224, 1)",
-            }}
-          >
-            <CardContent>
-              <Box
-                sx={{
-                  display: "flex",
-                  flexDirection: "column",
-                  // rowGap: "1rem",
-                  rowGap: 1,
-                }}
-              >
-                <Typography variant="subtitle1" fontWeight="medium">
-                  Dokumen Kegiatan
-                </Typography>
-                {submissionAttachment.map((attch) => (
-                  <Button
-                    key={attch.AttachID}
-                    sx={{
-                      justifyContent: "space-between",
-                      textTransform: "none",
-                      alignItems: "center",
-                      padding: 0,
-                    }}
-                    onClick={() => showPdf(attch.Base64)}
-                  >
-                    <Box
-                      sx={{
-                        display: "flex",
-                        alignItems: "center",
-                        cursor: "pointer",
-                      }}
-                    >
-                      <img alt="pdf" src={pdfIcon} width={30} />
-                      <Tooltip title="Preview" placement="right">
-                        <Typography variant="body2" color="#2E263DB2">
-                          {attch.AttachName}
-                        </Typography>
-                      </Tooltip>
+                        <FormLabel htmlFor="label">Label</FormLabel>
+                        <OutlinedInput
+                          id="label"
+                          name="label"
+                          type="label"
+                          placeholder="Label Kegiatan"
+                          autoComplete="label"
+                          onChange={handleLabelChange}
+                          size="medium"
+                        />
+                      </Box>
                     </Box>
-                    <Typography variant="body2" color="#2E263DB2">
-                      {formatFileSize(getBase64FileSize(attch.Base64))}
-                    </Typography>
-                  </Button>
-                ))}
-              </Box>
-            </CardContent>
-          </Card>
-        )}
+                  </CardContent>
+                </Box>
+              </DialogContent>
+              <DialogActions>
+                {!isLoadingLogbook && (
+                  <Box>
+                    <Button
+                      color="primary"
+                      onClick={() => handelSubmitLogbook()}
+                    >
+                      Simpan
+                    </Button>
+                    <Button color="primary" onClick={() => handleModalCancel()}>
+                      Batal
+                    </Button>
+                  </Box>
+                )}
 
-        {tabValue === 2 && <PDFViewerComponent base64File={base64pdf} />}
-      </Grid>
-    </Grid>
+                {isLoadingLogbook && (
+                  <Stack
+                    direction="row"
+                    sx={{
+                      justifyContent: "center",
+                      alignItems: "center",
+                      columnGap: 1,
+                    }}
+                  >
+                    <CircularProgress />
+                    <Typography variant="body2" color="#2E263DB2">
+                      Loading...
+                    </Typography>
+                  </Stack>
+                )}
+              </DialogActions>
+            </Dialog>
+          </CardContent>
+        </Box>
+      )}
+    </Box>
   );
 }

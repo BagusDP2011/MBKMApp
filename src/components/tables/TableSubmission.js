@@ -6,15 +6,7 @@ import {
   GridToolbarFilterButton,
   GridToolbarExport,
 } from "@mui/x-data-grid";
-import {
-  Box,
-  Avatar,
-  Stack,
-  Button,
-  Tooltip,
-  Typography,
-  IconButton,
-} from "@mui/material";
+import { Box, Stack, Tooltip, Typography, IconButton } from "@mui/material";
 import {
   getSubmission,
   deleteSubmission,
@@ -51,9 +43,6 @@ function CustomToolbar() {
     <GridToolbarContainer sx={{ pb: 1, px: 1.5 }}>
       <GridToolbarColumnsButton />
       <GridToolbarFilterButton />
-      {/* <GridToolbarDensitySelector
-        slotProps={{ tooltip: { title: "Change density" } }}
-      /> */}
       <Box sx={{ flexGrow: 1 }} />
       <GridToolbarExport
         slotProps={{
@@ -81,9 +70,7 @@ export default function TableSubmission({ access, accessId, dataTable }) {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        // const submissions = await getSubmission();
         setSubmissions(dataTable);
-
         const columnData = await getColumn("Submission", accessId);
         setColumns(columnData.column);
         setColumnVisibilityModel(columnData.visibility);
@@ -138,57 +125,39 @@ export default function TableSubmission({ access, accessId, dataTable }) {
       if (col.field === "Actions") {
         return {
           ...col,
-          renderCell: (params) => (
-            <Stack
-              sx={{
-                height: "100%",
-                alignItems: "center",
-                columnGap: 1,
-              }}
-              direction="row"
-            >
-              {access.CanDelete && (
-                <Tooltip title="Delete" placement="top">
-                  {/* <Button onClick={() => handleDelete(params.id)}>
-                    <Avatar
-                      variant="rounded"
-                      sx={{ backgroundColor: "#FF4C51" }}
-                    >
-                      <DeleteOutlineOutlinedIcon />
-                    </Avatar>
-                  </Button> */}
+          renderCell: (params) => {
+            const status = params.row.Status;
+            return (
+              <Stack
+                sx={{
+                  height: "100%",
+                  alignItems: "center",
+                  columnGap: 1,
+                }}
+                direction="row"
+              >
+                <Tooltip title="Detail" placement="top">
                   <IconButtonCustom
-                    icon={<DeleteOutlineOutlinedIcon />}
-                    onClick={() => handleDelete(params.id)}
-                    hoverColor="#FF4C51"
+                    icon={<VisibilityOutlinedIcon />}
+                    onClick={() => navigate(`/menu/mbkm/detail/${params.id}`)}
+                    hoverColor="#3F8CFE"
                   />
                 </Tooltip>
-              )}
-              <Tooltip title="Detail" placement="top">
-                {/* <Button
-                  sx={{
-                    maxWidth: "max-content",
-                    minWidth: "max-content",
-                    padding: 0,
-                  }}
-                  onClick={() => navigate(`/menu/mbkm/detail/${params.id}`)}
-                >
-                  <Avatar variant="rounded" sx={{ backgroundColor: "#3F8CFE" }}>
-                    <VisibilityOutlinedIcon />
-                  </Avatar>
-                </Button> */}
-                <IconButtonCustom
-                  icon={<VisibilityOutlinedIcon />}
-                  onClick={() => navigate(`/menu/mbkm/detail/${params.id}`)}
-                  hoverColor="#3F8CFE"
-                />
-              </Tooltip>
-            </Stack>
-          ),
+                {access.CanDelete && status !== "Approved" && (
+                  <Tooltip title="Delete" placement="top">
+                    <IconButtonCustom
+                      icon={<DeleteOutlineOutlinedIcon />}
+                      onClick={() => handleDelete(params.id)}
+                      hoverColor="#FF4C51"
+                    />
+                  </Tooltip>
+                )}
+              </Stack>
+            );
+          },
         };
       }
 
-      // Tambahkan logika untuk kolom CurrentApproval
       if (col.field === "Status") {
         return {
           ...col,
@@ -199,7 +168,7 @@ export default function TableSubmission({ access, accessId, dataTable }) {
                   return "#56CA00";
                 case "Rejected":
                   return "#FF4C51";
-                case "Processing":
+                case "Pending":
                   return "#16B1FF";
                 default:
                   return "#000000";
@@ -211,8 +180,8 @@ export default function TableSubmission({ access, accessId, dataTable }) {
                 sx={{
                   display: "flex",
                   alignItems: "center",
-                  height: "100%", // Pastikan cell memenuhi tinggi container
-                  width: "100%", // Pastikan cell memenuhi lebar container
+                  height: "100%",
+                  width: "100%",
                 }}
               >
                 <Box
@@ -234,7 +203,7 @@ export default function TableSubmission({ access, accessId, dataTable }) {
                       paddingInline: "12px",
                     }}
                   >
-                    {params.value} {/* Data dari cell */}
+                    {params.value}
                   </Typography>
                 </Box>
               </Box>

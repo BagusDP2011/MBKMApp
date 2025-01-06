@@ -46,6 +46,25 @@ export const getMenuAccessDetail = async (accessId) => {
   }
 };
 
+export const getRedirectMenu = async () => {
+  try {
+    const token = localStorage.getItem("token");
+    const subHeaders = new Headers({
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    });
+  
+    const response = await fetch(`${config.baseURL}/redirect-menu`, {
+      method: "GET",
+      headers: subHeaders,
+    });
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    throw error;
+  }
+};
+
 export const getListRoleDetail = async () => {
   try {
     const response = await fetch(`http://localhost:3001/api/role-detail`);

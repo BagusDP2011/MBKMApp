@@ -95,16 +95,16 @@ const AttachmentSubmission = ({onFilesChange}) => {
           sx={{ fontSize: 35, color: "#c4c4c4", marginBottom: 2 }}
         />
         <Typography variant="subtitle1" sx={{ marginBottom: 1 }}>
-          Drag and Drop files here or{" "}
+          
           <label
             htmlFor="multi-file-input"
             style={{ color: "#1976d2", cursor: "pointer" }}
           >
-            Choose files
+            Pilih berkas
           </label>
         </Typography>
         <Typography variant="body2" color="#2E263DB2">
-          Only PDF files with a maximum size of 1 MB are allowed to upload.
+          Hanya dapat mengupload berkas PDF dengan batasan kurang dari 1 MB.
         </Typography>
 
         <input

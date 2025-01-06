@@ -14,6 +14,7 @@ import { styled } from "@mui/material/styles";
 import ForgotPassword from "./ForgotPassword";
 import { GoogleIcon } from "./CustomIcons";
 import { login } from "../../service/Auth.Service";
+import { getRedirectMenu } from "../../service/Static.Service";
 import { AuthContext } from "../../service/AuthContext";
 import { useNavigate } from "react-router-dom";
 import { useAlert } from "../../components/AlertProvider";
@@ -93,13 +94,11 @@ export default function SignIn(props) {
     }
     const data = new FormData(event.currentTarget);
     try {
-      console.log(data.get("password"));
       const token = await login({
         user: data.get("user"),
         email: data.get("email"),
         password: data.get("password"),
       });
-      console.log(token);
       if (token) {
         loginContext(token);
         Swal.fire({
@@ -107,7 +106,8 @@ export default function SignIn(props) {
           text: "Login berhasil!",
           icon: "success",
         });
-        navigate("/menu");
+        let redirectMenu = await getRedirectMenu();
+        navigate(redirectMenu.Path);
       } else {
         console.error("Login failed, no token returned");
       }
@@ -124,7 +124,6 @@ export default function SignIn(props) {
   const validateInputs = () => {
     const user = document.getElementById("user");
     const password = document.getElementById("password");
-    console.log(user.value, password.value);
 
     let isValid = true;
 

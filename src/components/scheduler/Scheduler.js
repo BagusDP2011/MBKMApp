@@ -1,0 +1,51 @@
+import React, { useState, useEffect } from "react";
+import Scheduler from "react-mui-scheduler";
+
+export default function ComScheduler({ data }) {
+  const [schedulerData, setSchedulerData] = useState(data);
+
+  useEffect(() => {
+    setSchedulerData([...data]);
+  }, [data]);
+
+  const handleCellClick = (event, row, day) => {
+    console.log(event, row);
+  };
+
+  const handleEventClick = (event, item) => {
+    console.log(item)
+  };
+
+  const handleEventsChange = (item) => {
+    // Do something...
+  };
+
+  const handleAlertCloseButtonClicked = (item) => {
+    // Do something...
+  };
+
+  return (
+    <Scheduler
+      key={JSON.stringify(schedulerData)}
+      locale="en"
+      events={schedulerData}
+      legacyStyle={false}
+      options={{
+        transitionMode: "zoom",
+        startWeekOn: "mon",
+        defaultMode: "month",
+        minWidth: 540,
+        maxWidth: 540,
+        minHeight: 540,
+        maxHeight: 540,
+      }}
+      toolbarProps={{
+        showDatePicker: true,
+      }}
+      onEventsChange={handleEventsChange}
+      onCellClick={handleCellClick}
+      onTaskClick={handleEventClick}
+      onAlertCloseButtonClicked={handleAlertCloseButtonClicked}
+    />
+  );
+}

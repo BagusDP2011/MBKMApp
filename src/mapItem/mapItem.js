@@ -15,7 +15,7 @@ import AccountBoxOutlinedIcon from '@mui/icons-material/AccountBoxOutlined';
 import AttachFileIcon from '@mui/icons-material/AttachFile';
 
 // Page general
-
+import DashboardMentorship from "../pages/menu/Dashboard/DashboardMentorship";
 
 // Page submissions
 import Submission from "../pages/menu/Submission/Submission";
@@ -23,6 +23,7 @@ import PengajuanMHS from "../pages/menu/PengajuanMHS";
 import DetailSubmission from "../pages/menu/Submission/DetailSubmission";
 import AttachmentSubmission from "../pages/menu/Submission/AttachmentSubmission";
 import SubmissionInformation from "../pages/menu/Submission/SubmissionInformation";
+import SubmissionMentorship from "../pages/menu/Submission/SubmissionMentorship";
 
 // Page profile
 import Profile from "../pages/menu/Profile/Profile";
@@ -32,12 +33,10 @@ import ProfileEditContact from "../pages/menu/Profile/ProfileEditContact";
 import ProfileEditPrivate from "../pages/menu/Profile/ProfileEditPrivate";
 import ProfileEmergency from "../pages/menu/Profile/ProfileEmergency";
 import ProfileSocialMedia from "../pages/menu/Profile/ProfileSocialMedia";
-import FiberManualRecordOutlinedIcon from '@mui/icons-material/FiberManualRecordOutlined';
 import HttpsOutlinedIcon from '@mui/icons-material/HttpsOutlined';
 import RolePermissions from "../pages/menu/RolePermissions/RolePermissions";
 import SubmissionStatus from "../pages/menu/Submission/SubmissionStatus";
-import Dashboard from "../pages/menu/Dashboard/DashboardTU";
-import DashboardTU from "../pages/menu/Dashboard/DashboardTU";
+import Dashboard from "../pages/menu/Dashboard/Dashboard";
 import InformasiMHS from '../pages/menu/Dashboard/InformasiMHS'
 
 export const iconsMap = {
@@ -59,9 +58,11 @@ export const iconsMap = {
   };
   
   export const componentsMap = {
-    "<DashboardTU />":  DashboardTU,
+    "<DashboardTU />":  Dashboard,
+    "<DashboardMentorship />":  DashboardMentorship,
     "<SubmissionApproval />" : SubmissionApproval,
     "<SubmissionStatus />" : SubmissionStatus,
+    "<SubmissionMentorship />" : SubmissionMentorship,
     "<Submission />" : Submission,
     "<PengajuanMHS />" : PengajuanMHS,
     "<DetailSubmission />" : DetailSubmission,
