@@ -121,6 +121,7 @@ export default function DetailSubmission({ menuAccess, accessId }) {
   const handelSubmitLogbook = async () => {
     setIsLoadingLogbook(true);
     await submitLogbook(formLogbook);
+  
     const logbooks = await getLogbookBySubmissionID(id);
     setLogbok(
       logbooks.map((item) => ({
@@ -130,9 +131,11 @@ export default function DetailSubmission({ menuAccess, accessId }) {
         color: "#1976d2",
       }))
     );
+  
     setOpenModalLogBook(false);
     setIsLoadingLogbook(false);
   };
+  
 
   useEffect(() => {
     const fetchData = async () => {
@@ -197,6 +200,12 @@ export default function DetailSubmission({ menuAccess, accessId }) {
     });
   };
 
+  const dateFormatted = (date) => {
+    const utcDate = new Date("2025-01-06T03:28:53.453Z");
+    const localDate = utcDate.toLocaleString("en-US", { timeZone: "Asia/Jakarta" });
+    return localDate
+  }
+
   const handleLabelChange = (e) => {
     const { name, value } = e.target;
 
@@ -245,7 +254,7 @@ export default function DetailSubmission({ menuAccess, accessId }) {
     const formattedDate = date.toLocaleDateString("en-US", optionsDate);
     const formattedTime = date.toLocaleTimeString("en-US", optionsTime);
 
-    return `${formattedDate}, ${formattedTime}`;
+    return `${formattedDate}`;
   };
 
   const showPdf = (base64) => {
@@ -265,8 +274,11 @@ export default function DetailSubmission({ menuAccess, accessId }) {
       confirmButtonColor: "#3F8CFE",
     }).then(async (result) => {
       if (result.isConfirmed) {
-        await approveSubmission(submissionId);
+        setIsLoading(true);
+        var response = await approveSubmission(submissionId);
+        setIsLoading(false);
         navigate(`/menu/mbkm/daftar%20pengajuan`);
+        showAlert(response.message, "success");
       }
     });
   };
@@ -294,9 +306,11 @@ export default function DetailSubmission({ menuAccess, accessId }) {
     });
 
     if (rejectionNote) {
-      await rejectSubmission(submissionId, rejectionNote);
-
+      setIsLoading(true);
+      var response = await rejectSubmission(submissionId, rejectionNote);
+      setIsLoading(false);
       navigate(`/menu/mbkm/daftar%20pengajuan`);
+      showAlert(response.message, "success");
     }
   };
 
@@ -938,12 +952,11 @@ export default function DetailSubmission({ menuAccess, accessId }) {
                   <CardContent>
                     <Box sx={{ px: "1rem", py: "1.7rem" }}>
                       <Box sx={{ mb: "1.5rem", textAlign: "left" }}>
-                        <Typography variant="subtitle1" fontWeight="medium">
-                          Data Diri
-                        </Typography>
+                        {/* <Typography variant="subtitle1" fontWeight="medium">
+                          Logbook Harian
+                        </Typography> */}
                         <Typography variant="body2" color="#2E263DB2">
-                          Isi data diri Anda di bawah ini untuk melengkapi
-                          profil Anda.
+                          Catat aktivitas harian Anda secara singkat dan jelas.
                         </Typography>
                       </Box>
                       <LocalizationProvider dateAdapter={AdapterDayjs}>

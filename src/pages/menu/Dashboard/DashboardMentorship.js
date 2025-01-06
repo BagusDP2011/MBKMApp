@@ -51,13 +51,13 @@ const stats = [
     backColor: "#FFB400",
   },
   {
-    label: "Kuliah Kerja Nyata Tematik",
+    label: "Magang Praktik Kerja",
     value: 0,
     icon: <HomeWorkOutlinedIcon />,
     backColor: "#8C57FF",
   },
   {
-    label: "Magang Praktik Kerja",
+    label: "Asistensi Mengajar",
     value: 0,
     icon: <WorkOutlineOutlinedIcon />,
     backColor: "#2196F3",
@@ -128,7 +128,7 @@ const DashboardMentorship = () => {
             id: item.ID,
             label: item.Label,
             date: item.Date,
-            color: "#1976d2",
+            color: item.Color,
           }))
         );
 
@@ -190,7 +190,7 @@ const DashboardMentorship = () => {
                 <Box sx={{ display: "flex" }}>
                   <Box sx={{ height: 340, p: 3 }}>
                     <Typography variant="h6" fontWeight="bold">
-                      Daftar Bimbingan
+                      Tipe Kegiatan
                     </Typography>
                     <BarChart
                       xAxis={[

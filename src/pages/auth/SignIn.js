@@ -14,6 +14,7 @@ import { styled } from "@mui/material/styles";
 import ForgotPassword from "./ForgotPassword";
 import { GoogleIcon } from "./CustomIcons";
 import { login } from "../../service/Auth.Service";
+import { getRedirectMenu } from "../../service/Static.Service";
 import { AuthContext } from "../../service/AuthContext";
 import { useNavigate } from "react-router-dom";
 import { useAlert } from "../../components/AlertProvider";
@@ -105,7 +106,8 @@ export default function SignIn(props) {
           text: "Login berhasil!",
           icon: "success",
         });
-        navigate("/menu");
+        let redirectMenu = await getRedirectMenu();
+        navigate(redirectMenu.Path);
       } else {
         console.error("Login failed, no token returned");
       }

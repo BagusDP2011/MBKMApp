@@ -32,15 +32,6 @@ export default class SubmissionInformation extends PureComponent {
         langsung oleh peneliti di lembaga riset/pusat studi, dan Meningkatkan ekosistem dan kualitas riset di laboratorium dan lembaga riset
         Indonesia.`,
       },
-
-      {
-        id: 2,
-        image: Gb2,
-        description: `Tujuan program proyek kemanusiaan adalah menyiapkan mahasiswa unggul yang menjunjung tinggi nilai kemanusiaan
-        dalam menjalankan tugas berdasarkan agama, moral, dan etika serta melatih mahasiswa memiliki kepekaan sosial untuk menggali dan menyelami
-        permasalahan.`,
-      },
-
       {
         id: 3,
         image: Gb3,
@@ -88,6 +79,14 @@ export default class SubmissionInformation extends PureComponent {
         maupun pengembangan kurikulum untuk memperkaya capaian pembelajaran lulusan yang
         dapat berbentuk mata kuliah pilihan.`,
       },
+      {
+        id: 2,
+        image: Gb2,
+        description: `Tujuan program proyek kemanusiaan adalah menyiapkan mahasiswa unggul yang menjunjung tinggi nilai kemanusiaan
+        dalam menjalankan tugas berdasarkan agama, moral, dan etika serta melatih mahasiswa memiliki kepekaan sosial untuk menggali dan menyelami
+        permasalahan.`,
+      },
+
     ];
     return (
       <Box>

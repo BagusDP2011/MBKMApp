@@ -295,9 +295,6 @@ function Submission() {
                   onChange={handleChange}
                   required
                 >
-                  <MenuItem value="Penilitian /Riset">
-                    Penilitian /Riset
-                  </MenuItem>
                   <MenuItem value="Proyek Kemanusiaan">
                     Proyek Kemanusiaan
                   </MenuItem>
