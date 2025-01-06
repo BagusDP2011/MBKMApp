@@ -1,4 +1,5 @@
 import React from "react";
+import Slider from "react-slick";
 import {
   Typography,
   Box,
@@ -12,19 +13,25 @@ import {
   Avatar,
 } from "@mui/material";
 import Navbar from "./../components/Navbar";
-import vidiofile from "./../assets/vidio/1130.mp4";
 import KampusMerdekaLogo from "./../assets/img/KampusMerdekaBelajar.png";
-import gambarJur1 from "./../assets/jur/gambarJur1.png";
-import gambarJur2 from "./../assets/jur/gambarJur2.png";
-import gambarJur3 from "./../assets/jur/gambarJur3.png";
-import gambarJur4 from "./../assets/jur/gambarJur4.png";
-import gambarJur5 from "./../assets/jur/gambarJur5.png";
-import gambarJur6 from "./../assets/jur/gambarJur6.png";
-import gambarJur7 from "./../assets/jur/gambarJur7.png";
-import gambarJur8 from "./../assets/jur/gambarJur8.png";
+import gambar1 from "./../assets/img/poltek.jpeg";
+import gambar5 from "./../assets/img/MBKM4.jpg";
+import gambar6 from "./../assets/img/MBKM5.jpg";
+import gambar7 from "./../assets/img/MBKM6.png";
+import gambar8 from "./../assets/img/MBKM7.jpg";
+import gambar9 from "./../assets/img/MBKM8.png";
+import gambarJur1 from "./../assets/jur/gambarjur1.png";
+import gambarJur2 from "./../assets/jur/gambarjur2.png";
+import gambarJur3 from "./../assets/jur/gambarjur3.png";
+import gambarJur4 from "./../assets/jur/gambarjur4.png";
+import gambarJur5 from "./../assets/jur/gambarjur5.png";
+import gambarJur6 from "./../assets/jur/gambarjur6.png";
+import gambarJur7 from "./../assets/jur/gambarjur7.png";
+import gambarJur8 from "./../assets/jur/gambarjur8.png";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 
+const carouselImages = [gambar1, gambar5, gambar6, gambar7, gambar8, gambar9];
 const announcements = [
   {
     date: "19 November 2024",
@@ -41,53 +48,57 @@ const announcements = [
 ];
 
 function SilamKW() {
+  const carouselSettings = {
+    dots: true,
+    infinite: true,
+    speed: 500,
+    slidesToShow: 1,
+    slidesToScroll: 1,
+    autoplay: true,
+    autoplaySpeed: 3000,
+  };
+
   return (
     <div className="App">
       <Navbar />
-      {/* Video sebagai latar belakang */}
-      <Box
-        sx={{
-          position: "relative",
-          width: "100%",
-          height: "800px",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-        }}
-      >
-        <video
-          src={vidiofile} // Menggunakan video sebagai background
-          type="video/mp4"
-          autoPlay
-          loop
-          muted
-          style={{
-            position: "absolute",
-            width: "100%",
-            height: "100%",
-            objectFit: "cover",
-            zIndex: -1, // Agar video di belakang konten
-          }}
-        />
-        <Box
-          sx={{
-            backgroundColor: "rgba(0, 0, 0, 0.5)",
-            padding: 3,
-            borderRadius: 2,
-            textAlign: "center",
-          }}
-        >
-          <Typography
-            variant="h3"
-            sx={{ color: "#fff", fontWeight: "bold", mb: 1 }}
+
+      {/* Carousel sebagai latar belakang */}
+      <Slider {...carouselSettings} style={{ width: "100%", height: "100%" }}>
+        {carouselImages.map((image, index) => (
+          <Box
+            key={index}
+            sx={{
+              width: "100%",
+              height: "800px",
+              backgroundImage: `url(${image})`,
+              backgroundSize: "cover",
+              backgroundPosition: "center",
+              position: "relative", // Agar overlay dapat diatur
+            }}
           >
-            Merdeka Belajar Kampus Merdeka
-          </Typography>
-          <Typography variant="h4" sx={{ color: "#fff", fontWeight: "medium" }}>
-            Teknik Informatika
-          </Typography>
-        </Box>
-      </Box>
+            {/* Overlay Teks */}
+            <Box
+              sx={{
+                position: "absolute", // Agar overlay tetap di atas gambar
+                top: "50%", // Posisi vertikal di tengah
+                left: "50%", // Posisi horizontal di tengah
+                transform: "translate(-50%, -50%)", // Mengatur posisi tepat di tengah
+                color: "white", // Warna teks
+                textAlign: "center", // Meratakan teks di tengah
+                fontWeight: "bold", // Menebalkan teks
+                fontSize: "24px", // Ukuran font
+                backgroundColor: "rgba(0, 0, 0, 0.5)", // Transparansi latar belakang
+                padding: "10px 20px", // Memberikan padding
+                borderRadius: "5px", // Memberikan border-radius untuk efek rounded
+              }}
+            >
+              <Typography variant="h4">
+                Merdeka Belajar Kampus Merdeka Teknik Informatika
+              </Typography>
+            </Box>
+          </Box>
+        ))}
+      </Slider>
 
       {/* Card Pengumuman */}
       <Container sx={{ mt: 10 }}>
@@ -187,8 +198,7 @@ function SilamKW() {
           marginLeft: 10,
         }}
       >
-        {[
-          // Daftar program jurusan
+        {[ // Daftar program jurusan
           {
             title: "D3 Informatika",
             description:

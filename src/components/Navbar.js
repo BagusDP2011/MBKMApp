@@ -9,7 +9,7 @@ import {
   MenuItem,
 } from "@mui/material";
 import PolibatamLogo from "../assets/img/polibatam-white.png";
-import MBKM from "../assets/img/KampusMerdekaBelajar.png";
+import MBKM from "../assets/img/image.png";
 import { useNavigate } from "react-router-dom";
 import DescriptionIcon from "@mui/icons-material/Description";
 
