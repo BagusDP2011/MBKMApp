@@ -20,16 +20,16 @@ import gambar6 from "./../assets/img/MBKM5.jpg";
 import gambar7 from "./../assets/img/MBKM6.png";
 import gambar8 from "./../assets/img/MBKM7.jpg";
 import gambar9 from "./../assets/img/MBKM8.png";
-import gambarJur1 from "./../assets/jur/gambarjur1.png";
-import gambarJur2 from "./../assets/jur/gambarjur2.png";
-import gambarJur3 from "./../assets/jur/gambarjur3.png";
-import gambarJur4 from "./../assets/jur/gambarjur4.png";
-import gambarJur5 from "./../assets/jur/gambarjur5.png";
-import gambarJur6 from "./../assets/jur/gambarjur6.png";
-import gambarJur7 from "./../assets/jur/gambarjur7.png";
-import gambarJur8 from "./../assets/jur/gambarjur8.png";
+import gambarJur1 from "./../assets/jur/gambarJur1.png";
+import gambarJur2 from "./../assets/jur/gambarJur2.png";
+import gambarJur3 from "./../assets/jur/gambarJur3.png";
+import gambarJur4 from "./../assets/jur/gambarJur4.png";
+import gambarJur5 from "./../assets/jur/gambarJur5.png";
+import gambarJur6 from "./../assets/jur/gambarJur6.png";
+import gambarJur7 from "./../assets/jur/gambarJur7.png";
+import gambarJur8 from "./../assets/jur/gambarJur8.png";
 import "slick-carousel/slick/slick.css";
-import "slick-carousel/slick/slick-theme.css";
+import "slick-carousel/slick/slick-theme.css"; 
 
 const carouselImages = [gambar1, gambar5, gambar6, gambar7, gambar8, gambar9];
 const announcements = [
