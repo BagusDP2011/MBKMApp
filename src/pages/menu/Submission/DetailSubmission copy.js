@@ -28,8 +28,6 @@ import {
   FormLabel,
   OutlinedInput,
   Paper,
-  TableSortLabel,
-  TablePagination,
 } from "@mui/material";
 import {
   Timeline,
@@ -104,13 +102,6 @@ export default function DetailSubmission({ menuAccess, accessId }) {
 
   const [totalCredits, setTotalCredits] = React.useState(0);
 
-  
-  const [order, setOrder] = useState("desc"); // Sorting order
-  const [orderBy, setOrderBy] = useState("date"); // Default sort column
-  const [page, setPage] = useState(0); // Current page
-  const [rowsPerPage, setRowsPerPage] = useState(5); // Rows per page
-
-
   const { id } = useParams();
   const navigate = useNavigate();
 
@@ -131,7 +122,7 @@ export default function DetailSubmission({ menuAccess, accessId }) {
   const handelSubmitLogbook = async () => {
     setIsLoadingLogbook(true);
     await submitLogbook(formLogbook);
-
+  
     const logbooks = await getLogbookBySubmissionID(id);
     setLogbok(
       logbooks.map((item) => ({
@@ -141,10 +132,11 @@ export default function DetailSubmission({ menuAccess, accessId }) {
         color: "#1976d2",
       }))
     );
-
+  
     setOpenModalLogBook(false);
     setIsLoadingLogbook(false);
   };
+  
 
   useEffect(() => {
     const fetchData = async () => {
@@ -211,11 +203,9 @@ export default function DetailSubmission({ menuAccess, accessId }) {
 
   const dateFormatted = (date) => {
     const utcDate = new Date("2025-01-06T03:28:53.453Z");
-    const localDate = utcDate.toLocaleString("en-US", {
-      timeZone: "Asia/Jakarta",
-    });
-    return localDate;
-  };
+    const localDate = utcDate.toLocaleString("en-US", { timeZone: "Asia/Jakarta" });
+    return localDate
+  }
 
   const handleLabelChange = (e) => {
     const { name, value } = e.target;
@@ -357,39 +347,6 @@ export default function DetailSubmission({ menuAccess, accessId }) {
       </Stack>
     );
   }
-
-  // Data untuk pagination logbook
-  const handleSort = (property) => {
-    const isAsc = orderBy === property && order === "asc";
-    setOrder(isAsc ? "desc" : "asc");
-    setOrderBy(property);
-  };
-
-  // Pagination handlers
-  const handleChangePage = (event, newPage) => {
-    setPage(newPage);
-  };
-
-  const handleChangeRowsPerPage = (event) => {
-    setRowsPerPage(parseInt(event.target.value, 10));
-    setPage(0);
-  };
-
-  // Sort function
-  const sortedLogbook = [...logbook].sort((a, b) => {
-    if (orderBy === "Date") {
-      return (new Date(b.date) - new Date(a.date)) * (order === "asc" ? 1 : -1);
-    }
-    return a.label.localeCompare(b.label) * (order === "asc" ? 1 : -1);
-  });
-  
-
-  // Paginated data
-  const paginatedLogbook = sortedLogbook.slice(
-    page * rowsPerPage,
-    page * rowsPerPage + rowsPerPage
-  );
-  // End of pagination logbook
 
   return (
     <Box>
@@ -948,7 +905,7 @@ export default function DetailSubmission({ menuAccess, accessId }) {
         </Grid>
       </Grid>
 
-      {logbook && submission.Status === "Approved" && (
+      {logbook && submission.Status === 'Approved' && (
         <Box
           sx={{
             marginTop: "1.5rem",
@@ -1069,58 +1026,23 @@ export default function DetailSubmission({ menuAccess, accessId }) {
           </CardContent>
 
           {/* Table for Logbook Data */}
-          <TableContainer component={Paper}>
+          <TableContainer component={Paper} sx={{ marginTop: "1rem" }}>
             <Table>
               <TableHead>
                 <TableRow>
-                  {/* Sortable Date Column */}
-                  <TableCell sx={{ width: "25%", fontWeight: "bold" }}>
-                    <TableSortLabel
-                      active={orderBy === "date"}
-                      direction={orderBy === "date" ? order : "asc"}
-                      onClick={() => handleSort("date")}
-                    >
-                      Date
-                    </TableSortLabel>
-                  </TableCell>
-
-                  {/* Sortable Label Column */}
-                  <TableCell sx={{ width: "75%", fontWeight: "bold" }}>
-                    <TableSortLabel
-                      active={orderBy === "label"}
-                      direction={orderBy === "label" ? order : "asc"}
-                      onClick={() => handleSort("label")}
-                    >
-                      Label
-                    </TableSortLabel>
-                  </TableCell>
+                  <TableCell><strong>Date</strong></TableCell>
+                  <TableCell><strong>Label</strong></TableCell>
                 </TableRow>
               </TableHead>
-
               <TableBody>
-                {paginatedLogbook.map((entry, index) => (
+                {logbook.map((entry, index) => (
                   <TableRow key={index}>
-                    <TableCell sx={{ fontSize: "0.875rem" }}>
-                      {entry.date}
-                    </TableCell>
-                    <TableCell sx={{ fontSize: "0.875rem" }}>
-                      {entry.label}
-                    </TableCell>
+                    <TableCell>{entry.Date}</TableCell>
+                    <TableCell>{entry.Label}</TableCell>
                   </TableRow>
                 ))}
               </TableBody>
             </Table>
-
-            {/* Pagination Controls */}
-            <TablePagination
-              rowsPerPageOptions={[5, 10, 25]}
-              component="div"
-              count={logbook.length}
-              rowsPerPage={rowsPerPage}
-              page={page}
-              onPageChange={handleChangePage}
-              onRowsPerPageChange={handleChangeRowsPerPage}
-            />
           </TableContainer>
         </Box>
       )}

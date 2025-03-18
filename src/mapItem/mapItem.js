@@ -39,6 +39,9 @@ import SubmissionStatus from "../pages/menu/Submission/SubmissionStatus";
 import Dashboard from "../pages/menu/Dashboard/Dashboard";
 import InformasiMHS from '../pages/menu/Dashboard/InformasiMHS'
 
+//Page Logbook
+import Logbook from "../pages/menu/Logbook/Logbook";
+
 export const iconsMap = {
     "<SegmentOutlinedIcon />" : <SegmentOutlinedIcon sx={{fontSize:'1.7rem'}}/>,
     "<DashboardOutlinedIcon />" : <DashboardOutlinedIcon sx={{fontSize:'1.7rem'}}/>,
@@ -78,4 +81,5 @@ export const iconsMap = {
     "<Dashboard />" : Dashboard,
     "<RolePermissions />" : RolePermissions,
     "<InformasiMHS />": InformasiMHS,
+    // "<Logbook />" : Logbook
   };
