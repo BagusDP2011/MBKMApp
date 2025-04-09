@@ -81,5 +81,5 @@ export const iconsMap = {
     "<Dashboard />" : Dashboard,
     "<RolePermissions />" : RolePermissions,
     "<InformasiMHS />": InformasiMHS,
-    // "<Logbook />" : Logbook
+    "<Logbook />" : Logbook
   };
