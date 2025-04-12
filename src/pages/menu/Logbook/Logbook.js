@@ -15,8 +15,17 @@ import {
 } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
 import VisibilityIcon from "@mui/icons-material/Visibility";
+import AttachmentSubmission from "../Submission/AttachmentSubmission";
+import { submit } from "../../../service/Submission.Service";
+import { useAlert } from "../../../components/AlertProvider";
 
 export default function DocumentUpload() {
+    const showAlert = useAlert();
+  
+    const [formSubmission, setFormSubmission] = useState({
+      Attachment: [],
+    });
+
   const [documents, setDocuments] = useState([
     {
       fileName: "Dok Assesmen.pdf",
@@ -35,15 +44,30 @@ export default function DocumentUpload() {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
 
-  const handleUpload = () => {
-    setDocuments([...documents, form]);
-    setForm({ fileName: "", fileType: "", link: "" });
-  };
-
   const handleDelete = (index) => {
     const updated = documents.filter((_, i) => i !== index);
     setDocuments(updated);
   };
+
+  const handleFilesChange = (updatedFiles) => {
+    setFormSubmission((prev) => ({
+      ...prev,
+      Attachment: updatedFiles,
+    }));
+  };
+
+    const handleSubmit = async (e) => {
+      e.preventDefault();
+      try {
+        setDocuments([...documents, form]);
+        setForm({ fileName: "", fileType: "", link: "" });
+        await submit(formSubmission);
+        showAlert("Submission has been created", "success");
+        console.log("sukses kirim data");
+      } catch (error) {
+        showAlert(error.message, "error");
+      }
+    };
 
   return (
     <Box className="max-w-4xl mx-auto p-4">
@@ -94,9 +118,11 @@ export default function DocumentUpload() {
         </Typography>
       </Box>
 
+      <AttachmentSubmission onFilesChange={handleFilesChange} />
+
       <Box className="max-w-md mx-auto">
         <Typography variant="caption">
-          ( Maksimal total ukuran file : 5 MB )<br />( Jenis file yang diijinkan
+          ( Maksimal total ukuran file : 1 MB )<br />( Jenis file yang diijinkan
           : <strong>pdf, jpg, jpeg, png, doc, docx</strong>)
         </Typography>
         <TextField
@@ -124,7 +150,7 @@ export default function DocumentUpload() {
           onChange={handleChange}
         />
         <Box className="mt-4 text-center item-right">
-          <Button variant="contained" color="primary" onClick={handleUpload}>
+          <Button variant="contained" color="primary" onClick={handleSubmit}>
             Upload
           </Button>
         </Box>

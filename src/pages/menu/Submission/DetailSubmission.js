@@ -118,6 +118,7 @@ export default function DetailSubmission({ menuAccess, accessId }) {
     SubmissionID: "",
     Label: "",
     Date: dayjs(),
+    Deskripsi: "",
   });
 
   const handleModalOpen = () => {
@@ -138,6 +139,7 @@ export default function DetailSubmission({ menuAccess, accessId }) {
         id: item.ID,
         label: item.Label,
         date: item.Date,
+        deskripsi: item.Deskripsi,
         color: "#1976d2",
       }))
     );
@@ -161,6 +163,7 @@ export default function DetailSubmission({ menuAccess, accessId }) {
             id: item.ID,
             label: item.Label,
             date: item.Date,
+            deskripsi: item.Deskripsi,
             color: "#1976d2",
           }))
         );
@@ -223,6 +226,15 @@ export default function DetailSubmission({ menuAccess, accessId }) {
     setFormLogbook({
       ...formLogbook,
       Label: value,
+    });
+  };
+
+  const handleDescChange = (e) => {
+    const { name, value } = e.target;
+
+    setFormLogbook({
+      ...formLogbook,
+      Deskripsi: value,
     });
   };
 
@@ -377,7 +389,7 @@ export default function DetailSubmission({ menuAccess, accessId }) {
 
   // Sort function
   const sortedLogbook = [...logbook].sort((a, b) => {
-    if (orderBy === "Date") {
+    if (orderBy === "date") {
       return (new Date(b.date) - new Date(a.date)) * (order === "asc" ? 1 : -1);
     }
     return a.label.localeCompare(b.label) * (order === "asc" ? 1 : -1);
@@ -1031,6 +1043,25 @@ export default function DetailSubmission({ menuAccess, accessId }) {
                           size="medium"
                         />
                       </Box>
+                      <Box
+                        sx={{
+                          mt: "1.5rem",
+                          textAlign: "left",
+                          display: "flex",
+                          flexDirection: "column",
+                        }}
+                      >
+                        <FormLabel htmlFor="deskripsi">Deskripsi</FormLabel>
+                        <OutlinedInput
+                          id="deskripsi"
+                          name="deskripsi"
+                          type="deskripsi"
+                          placeholder="Deskripsi Kegiatan"
+                          autoComplete="deskripsi"
+                          onChange={handleDescChange}
+                          size="medium"
+                        />
+                      </Box>
                     </Box>
                   </CardContent>
                 </Box>
@@ -1085,13 +1116,22 @@ export default function DetailSubmission({ menuAccess, accessId }) {
                   </TableCell>
 
                   {/* Sortable Label Column */}
-                  <TableCell sx={{ width: "75%", fontWeight: "bold" }}>
+                  <TableCell sx={{ width: "25%", fontWeight: "bold" }}>
                     <TableSortLabel
                       active={orderBy === "label"}
                       direction={orderBy === "label" ? order : "asc"}
                       onClick={() => handleSort("label")}
                     >
                       Label
+                    </TableSortLabel>
+                  </TableCell>
+                  <TableCell sx={{ width: "50%", fontWeight: "bold" }}>
+                    <TableSortLabel
+                      active={orderBy === "deskripsi"}
+                      direction={orderBy === "deskripsi" ? order : "asc"}
+                      onClick={() => handleSort("deskripsi")}
+                    >
+                      Deskripsi
                     </TableSortLabel>
                   </TableCell>
                 </TableRow>
@@ -1105,6 +1145,9 @@ export default function DetailSubmission({ menuAccess, accessId }) {
                     </TableCell>
                     <TableCell sx={{ fontSize: "0.875rem" }}>
                       {entry.label}
+                    </TableCell>
+                    <TableCell sx={{ fontSize: "0.875rem" }}>
+                      {entry.deskripsi}
                     </TableCell>
                   </TableRow>
                 ))}
