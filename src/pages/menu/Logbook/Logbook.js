@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Box,
   Button,
@@ -16,37 +16,69 @@ import {
 import DeleteIcon from "@mui/icons-material/Delete";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import AttachmentSubmission from "../Submission/AttachmentSubmission";
-import { submit } from "../../../service/Submission.Service";
 import { useAlert } from "../../../components/AlertProvider";
+import { useNavigate } from "react-router-dom";
+import axios from "axios";
+import { jwtDecode } from "jwt-decode";
+import Dialog from "../../../utils/Dialog";
+
+import { getSubmissionByUserId } from "../../../service/Submission.Service"
 
 export default function DocumentUpload() {
-    const showAlert = useAlert();
-  
-    const [formSubmission, setFormSubmission] = useState({
-      Attachment: [],
-    });
-
-  const [documents, setDocuments] = useState([
-    {
-      fileName: "Dok Assesmen.pdf",
-      fileType: "pdf",
-      link: "shorturl.at/iHL89",
-    },
-  ]);
-
-  const [form, setForm] = useState({
-    fileName: "Dok Assesmen.pdf",
-    fileType: "pdf",
-    link: "shorturl.at/iHL89",
+  const showAlert = useAlert();
+  const navigate = useNavigate()
+  const [mySubmissionId, getMySubmissionId] = useState([]);
+  const [error, setError] = useState(null);
+  const [message, setMessage] = useState(null);
+  const MAX_FILE_SIZE = 1048576;
+  const [formSubmission, setFormSubmission] = useState({
+    Attachment: [],
   });
+  const [files, setFiles] = useState([]);
+  const [finalReportList, setFinalReportList] = useState([]);
+  const token = localStorage.getItem("token");
+  const decodedPayload = jwtDecode(token);
+  const [resSuccess, setResSuccess] = useState(false);
+  const [form, setForm] = useState({
+    files: [],
+    fileName: "",
+    fileType: "",
+    link: "",
+  });
+
+  useEffect(() => {
+    const fetchRequest = async () => {
+      if (!mySubmissionId || !token) return;
+      try {
+        const data = await axios.get('http://localhost:3001/api/logbook/get-final-report', {
+          params: {SubmissionID : mySubmissionId },
+          headers: {
+            'Authorization': `Bearer ${token}`,
+          }
+        });
+        setFinalReportList(data.data.result)
+        if (data.data.message) {
+          setMessage('Belum ada dokumen yg di upload.')
+        }
+
+      } catch (error) {
+        console.log(error)
+      }
+    }
+    fetchRequest()
+  }, [resSuccess, mySubmissionId, token])
 
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
 
   const handleDelete = (index) => {
-    const updated = documents.filter((_, i) => i !== index);
-    setDocuments(updated);
+    const updated = files.filter((_, i) => i !== index);
+    setFiles(updated);
+    setFormSubmission((prev) => ({
+      ...prev,
+      Attachment: updated,
+    }));
   };
 
   const handleFilesChange = (updatedFiles) => {
@@ -56,18 +88,152 @@ export default function DocumentUpload() {
     }));
   };
 
-    const handleSubmit = async (e) => {
-      e.preventDefault();
-      try {
-        setDocuments([...documents, form]);
-        setForm({ fileName: "", fileType: "", link: "" });
-        await submit(formSubmission);
-        showAlert("Submission has been created", "success");
-        console.log("sukses kirim data");
-      } catch (error) {
-        showAlert(error.message, "error");
+  const handleFileUpload = (event) => {
+    const selectedFiles = Array.from(event.target.files);
+    let errorMessage = null;
+
+    const readFileAsBase64 = (file) =>
+      new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = () => resolve(reader.result);
+        reader.onerror = () => reject(reader.error);
+        reader.readAsDataURL(file);
+      });
+
+    const processFiles = async () => {
+      const validFiles = [];
+      for (const file of selectedFiles) {
+        const isPDF = file.type === "application/pdf";
+        if (!isPDF) {
+          errorMessage = `${file.name} bukan file PDF yang valid.`;
+          break;
+        } else if (file.size > MAX_FILE_SIZE) {
+          errorMessage = `${file.name} melebihi ukuran maksimal 1 MB.`;
+          break;
+        } else {
+          try {
+            const base64 = await readFileAsBase64(file);
+            validFiles.push({
+              name: file.name,
+              size: file.size,
+              base64,
+            });
+          } catch (err) {
+            errorMessage = `Gagal memproses ${file.name}.`;
+            break;
+          }
+        }
+      }
+
+      if (errorMessage) {
+        setError(errorMessage);
+      } else {
+        setError(null);
+        const updatedFiles = [...files, ...validFiles];
+        setFiles(updatedFiles);
+        handleFilesChange(updatedFiles);
       }
     };
+
+    processFiles();
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+
+    if (!mySubmissionId) {
+      setError('Anda belum melakukan pengajuan!');
+      return;
+    }
+    if (formSubmission.Attachment.length === 0) {
+      setError('Tidak ada file yang dipilih.');
+      return;
+    }
+
+    const formData = new FormData();
+    formSubmission.Attachment.forEach((file) => {
+      formData.append('Attachment[]', file.base64);
+      formData.append('submissionID', mySubmissionId);
+      formData.append('filename', file.name);
+    });
+
+    try {
+
+      const response = await axios.post(
+        `http://localhost:3001/api/logbook/upload-final-report`,
+        formData,
+        {
+          headers: {
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json',
+          },
+        }
+      );
+
+      if (response.status === 200) {
+        setResSuccess(!resSuccess);
+        showAlert("Submission Final has been created", "success");
+      } else {
+        showAlert("Failed Upload File Final Report", "error");
+        setError('Gagal mengupload file.');
+      }
+    } catch (error) {
+      console.error(error);
+      setError('Terjadi kesalahan saat mengupload file.');
+    }
+  };
+  console.log("token:", token)
+  console.log("mySubmissionId:", mySubmissionId)
+  useEffect(() => {
+    const fetchRequest = async () => {
+      try {
+        const data = await getSubmissionByUserId(decodedPayload.id)
+        getMySubmissionId(data[0].SubmissionID)
+      } catch (error) {
+        console.log(error)
+      }
+    }
+    fetchRequest()
+  }, [])
+
+  const deleteFinalReport = async (id) => {
+    const result = await Dialog.fire({
+      title: 'Anda yakin?',
+      text: 'File yg di hapus tidak bisa di kembalikan!',
+    });
+    if (result.isConfirmed) {
+      try {
+        const token = localStorage.getItem("token");
+
+        const response = await axios.delete(
+          `http://localhost:3001/api/logbook/delete-final-report/${id}`,
+          {
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+        if (response.status === 200) {
+          setResSuccess(!resSuccess);
+          showAlert(" Final report has been deletes", "success");
+        } else {
+          showAlert("Failed delete File Final Report", "error");
+          setError('Gagal mengupload file.');
+        }
+        return response.data;
+      } catch (error) {
+        throw error;
+      }
+    }
+  };
+
+  const handleOpenPDF = (base64Data) => {
+    sessionStorage.setItem('pdfData', base64Data);
+    navigate(`./final-report-viewer`);
+  };
+
 
   return (
     <Box className="max-w-4xl mx-auto p-4">
@@ -81,39 +247,40 @@ export default function DocumentUpload() {
               <TableCell>No</TableCell>
               <TableCell>File</TableCell>
               <TableCell>Jenis Dokumen</TableCell>
-              <TableCell>Tautan Dokumen</TableCell>
               <TableCell>Aksi</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
-            {documents.map((doc, index) => (
-              <TableRow key={index}>
-                <TableCell>{index + 1}</TableCell>
-                <TableCell>{doc.fileName}</TableCell>
-                <TableCell>{doc.fileType}</TableCell>
-                <TableCell>{doc.link}</TableCell>
-                <TableCell>
-                  <IconButton>
-                    <VisibilityIcon />
-                  </IconButton>
-                  <IconButton onClick={() => handleDelete(index)}>
-                    <DeleteIcon />
-                  </IconButton>
+            {finalReportList?.length > 0 ? (
+              finalReportList?.map((doc, index) => (
+                <TableRow key={index}>
+                  <TableCell>{index + 1}</TableCell>
+                  <TableCell>{doc.AttachmentName}</TableCell>
+                  <TableCell>{doc.AttachType}</TableCell>
+                  <TableCell>{doc.link}</TableCell>
+                  <TableCell>
+                    <IconButton onClick={() => handleOpenPDF(doc.base64)}>
+                      <VisibilityIcon />
+                    </IconButton>
+                    <IconButton onClick={() => deleteFinalReport(doc.LAAttachmentID)}>
+                      <DeleteIcon />
+                    </IconButton>
+                  </TableCell>
+                </TableRow>
+              ))
+            ) : (
+              <TableRow>
+                <TableCell colSpan={5} align="center" style={{ textAlign: 'center', padding: '20px' }}>
+                  {message}
                 </TableCell>
               </TableRow>
-            ))}
+            )}
           </TableBody>
         </Table>
       </TableContainer>
 
-      <br />
       <Box className="mt-5">
-        <Typography
-          variant="subtitle1"
-          align="center"
-          fontWeight="bold"
-          gutterBottom
-        >
+        <Typography variant="subtitle1" align="center" fontWeight="bold" gutterBottom>
           Upload Dokumen
         </Typography>
       </Box>
@@ -122,8 +289,8 @@ export default function DocumentUpload() {
 
       <Box className="max-w-md mx-auto">
         <Typography variant="caption">
-          ( Maksimal total ukuran file : 1 MB )<br />( Jenis file yang diijinkan
-          : <strong>pdf, jpg, jpeg, png, doc, docx</strong>)
+          ( Maksimal total ukuran file: 1 MB )<br />
+          ( Jenis file yang diijinkan: <strong>pdf</strong> )
         </Typography>
         <TextField
           fullWidth
@@ -156,11 +323,7 @@ export default function DocumentUpload() {
         </Box>
       </Box>
 
-      {/* <Box className="text-right mt-6">
-        <Button variant="contained" color="primary">
-          Next
-        </Button>
-      </Box> */}
+      {error && <Typography color="error">{error}</Typography>}
     </Box>
   );
 }

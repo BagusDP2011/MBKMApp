@@ -19,6 +19,25 @@ export const getSubmission = async () => {
   }
 };
 
+export const getSubmissionByUserId = async (UserID) => {
+  try {
+    const token = localStorage.getItem("token");
+    const subHeaders = new Headers({
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    });
+
+    const response = await fetch(
+      `${config.baseURL}/pending-submission`,
+      { headers: subHeaders }
+    );
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    throw error;
+  }
+};
+
 export const getSubmissionStatus = async () => {
   try {
     const token = localStorage.getItem("token");
@@ -139,6 +158,7 @@ export const deleteSubmission = async (submissionId) => {
 };
 
 export const submit = async (submission) => {
+  console.log(submission)
   try {
     const token = localStorage.getItem("token");
     const subHeaders = new Headers({
