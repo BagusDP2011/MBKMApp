@@ -229,12 +229,25 @@ export default function DocumentUpload() {
     }
   };
 
-  const handleOpenPDF = (base64Data) => {
-    sessionStorage.setItem('pdfData', base64Data);
-    navigate(`./final-report-viewer`);
+  const bufferToBase64 = (buffer) => {
+    let binary = '';
+    const bytes = new Uint8Array(buffer);
+    const len = bytes.byteLength;
+    for (let i = 0; i < len; i++) {
+      binary += String.fromCharCode(bytes[i]);
+    }
+    return window.btoa(binary);
   };
 
-
+  const handleOpenPDF = (doc) => {
+    const base64String = bufferToBase64(doc.Base64.data);
+  
+    const pdfWindow = window.open();
+    pdfWindow.document.write(
+      `<iframe width='100%' height='100%' src='data:application/pdf;base64,${base64String}'></iframe>`
+    );
+  };
+  
   return (
     <Box className="max-w-4xl mx-auto p-4">
       <Typography variant="subtitle1" fontWeight="bold" gutterBottom>
@@ -259,7 +272,7 @@ export default function DocumentUpload() {
                   <TableCell>{doc.AttachType}</TableCell>
                   <TableCell>{doc.link}</TableCell>
                   <TableCell>
-                    <IconButton onClick={() => handleOpenPDF(doc.base64)}>
+                    <IconButton onClick={() => handleOpenPDF(doc)}>
                       <VisibilityIcon />
                     </IconButton>
                     <IconButton onClick={() => deleteFinalReport(doc.LAAttachmentID)}>
