@@ -38,7 +38,7 @@ const Card = styled(MuiCard)(({ theme }) => ({
   padding: theme.spacing(4),
   gap: theme.spacing(2),
   margin: "auto",
-  maxWidth: "450px",
+  maxWidth: "500px",
   borderRadius: theme.shape.borderRadius * 2,
   backgroundColor: "#0D47A1",
   boxShadow: "0px 10px 30px rgba(0, 0, 0, 0.3)",
@@ -54,6 +54,9 @@ const RegistrationForm = () => {
     password: "",
     accountType: "personal",
     prodiId: "1",
+    kontak: "",
+    tempattanggallahir: "",
+
   });
 
   const navigate = useNavigate();
@@ -65,12 +68,13 @@ const RegistrationForm = () => {
 
   const handleSubmit = async () => {
     try {
+      console.log(formData)
       const response = await axios.post(
         "http://localhost:3001/api/register",
         formData
       );
       alert("Registration successful! Redirecting to login page.");
-      navigate("/signin");
+      // navigate("/signin");
     } catch (error) {
       alert("Registration failed: " + error.message);
     }
@@ -85,7 +89,7 @@ const RegistrationForm = () => {
           justifyContent: "right",
           alignItems: "right",
           // backgroundColor: "#282c34",
-          padding: "10px",
+          padding: "5px",
         }}
       >
         {/* Tombol Kembali */}
@@ -283,6 +287,60 @@ const RegistrationForm = () => {
               <MenuItem value="7">S2 Rekayasa/ Teknik Komputer</MenuItem>
               <MenuItem value="8">D4 Teknologi Permainan</MenuItem>
             </Select>
+        <FormLabel component="legend" sx={{ color: "white" }}>
+            Kontak
+          </FormLabel>
+          <TextField
+            label="Kontak"
+            name="kontak"
+            variant="outlined"
+            fullWidth
+            value={formData.kontak}
+            onChange={handleChange}
+            sx={{
+              "& .MuiOutlinedInput-root": {
+                "& fieldset": { borderColor: "white" },
+                "&:hover fieldset": { borderColor: "#BBDEFB" },
+                "&.Mui-focused fieldset": { borderColor: "white" },
+              },
+              "& .MuiInputBase-input": {
+                color: "white",
+              },
+              "& .MuiInputLabel-root": {
+                color: "white",
+              },
+              "& .MuiInputLabel-root.Mui-focused": {
+                color: "white",
+              },
+            }}
+          />
+          <FormLabel component="legend" sx={{ color: "white" }}>
+            Tempat Tanggal lahir
+          </FormLabel>
+          <TextField
+            label="Tempat Tanggal lahir"
+            name="tempattanggallahir"
+            variant="outlined"
+            fullWidth
+            value={formData.tempattanggallahir}
+            onChange={handleChange}
+            sx={{
+              "& .MuiOutlinedInput-root": {
+                "& fieldset": { borderColor: "white" },
+                "&:hover fieldset": { borderColor: "#BBDEFB" },
+                "&.Mui-focused fieldset": { borderColor: "white" },
+              },
+              "& .MuiInputBase-input": {
+                color: "white",
+              },
+              "& .MuiInputLabel-root": {
+                color: "white",
+              },
+              "& .MuiInputLabel-root.Mui-focused": {
+                color: "white",
+              },
+            }}
+          />
           </FormControl>
         </FormControl>
 

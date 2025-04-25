@@ -478,7 +478,7 @@ export default function DetailSubmission({ menuAccess, accessId }) {
                     Kontak:
                   </Typography>
                   <Typography variant="body2" color="#2E263DB2">
-                    +62879912314
+                    {student.Kontak}
                   </Typography>
                 </Box>
                 <Box sx={{ display: "flex", gap: 1 }}>
@@ -486,7 +486,7 @@ export default function DetailSubmission({ menuAccess, accessId }) {
                     Tempat Tanggal Lahir:
                   </Typography>
                   <Typography variant="body2" color="#2E263DB2">
-                    Batam, 30 May 1986
+                    {student.TempatTanggalLahir}
                   </Typography>
                 </Box>
               </Stack>
