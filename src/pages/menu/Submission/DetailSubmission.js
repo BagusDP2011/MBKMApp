@@ -62,6 +62,8 @@ import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { LocalizationProvider } from "@mui/x-date-pickers";
 import { DemoContainer } from "@mui/x-date-pickers/internals/demo";
 import AddIcon from "@mui/icons-material/Add";
+import axios from "axios";
+
 import {
   submitLogbook,
   getLogbookBySubmissionID,
@@ -104,15 +106,42 @@ export default function DetailSubmission({ menuAccess, accessId }) {
 
   const [totalCredits, setTotalCredits] = React.useState(0);
 
-  
+
   const [order, setOrder] = useState("desc"); // Sorting order
   const [orderBy, setOrderBy] = useState("date"); // Default sort column
   const [page, setPage] = useState(0); // Current page
   const [rowsPerPage, setRowsPerPage] = useState(5); // Rows per page
-
-
+  const [finalReportList, setFinalReportList] = useState([]);
+  const [message, setMessage] = useState(null);
+  
+  const token = localStorage.getItem("token");
+  console.log(finalReportList)
   const { id } = useParams();
+
   const navigate = useNavigate();
+
+  useEffect(() => {
+    const fetchRequest = async () => {
+      if (!id) return;
+      try {
+        const data = await axios.get('http://localhost:3001/api/logbook/get-final-report', {
+          params: { SubmissionID: id },
+          headers: {
+            'Authorization': `Bearer ${token}`,
+          }
+        });
+        setFinalReportList(data.data.result)
+        if (data.data.message) {
+          setMessage('Belum ada dokumen yg di upload.')
+        }
+
+      } catch (error) {
+        console.log(error)
+      }
+    }
+    fetchRequest()
+  }, [token])
+
 
   const [formLogbook, setFormLogbook] = useState({
     SubmissionID: "",
@@ -342,8 +371,8 @@ export default function DetailSubmission({ menuAccess, accessId }) {
     const padding = base64String.endsWith("==")
       ? 2
       : base64String.endsWith("=")
-      ? 1
-      : 0;
+        ? 1
+        : 0;
     const sizeInBytes = (stringLength * 3) / 4 - padding;
     return sizeInBytes;
   }
@@ -394,7 +423,7 @@ export default function DetailSubmission({ menuAccess, accessId }) {
     }
     return a.label.localeCompare(b.label) * (order === "asc" ? 1 : -1);
   });
-  
+
 
   // Paginated data
   const paginatedLogbook = sortedLogbook.slice(
@@ -921,7 +950,7 @@ export default function DetailSubmission({ menuAccess, accessId }) {
                   <Typography variant="subtitle1" fontWeight="medium">
                     Dokumen Kegiatan
                   </Typography>
-                  {submissionAttachment.map((attch) => (
+                  { submissionAttachment?.length > 0 ? submissionAttachment.map((attch) => (
                     <Button
                       key={attch.AttachID}
                       sx={{
@@ -950,7 +979,69 @@ export default function DetailSubmission({ menuAccess, accessId }) {
                         {formatFileSize(getBase64FileSize(attch.Base64))}
                       </Typography>
                     </Button>
-                  ))}
+                  )): (
+                    <Typography variant="body2" color="#2E263DB2">
+                            Belum ada file yg di upload.
+                          </Typography>
+                  )}
+                </Box>
+              </CardContent>
+            </Card>
+          )}
+          {tabValue === 1 && (
+            <Card
+              sx={{
+                marginTop: "1.5rem",
+                boxShadow: "none",
+                border: "1px solid rgba(224, 224, 224, 1)",
+              }}
+            >
+              <CardContent>
+                <Box
+                  sx={{
+                    display: "flex",
+                    flexDirection: "column",
+                    // rowGap: "1rem",
+                    rowGap: 1,
+                  }}
+                >
+                  <Typography variant="subtitle1" fontWeight="medium">
+                    Dokumen Laporan Akhir
+                  </Typography>
+                  {finalReportList?.length > 0 ?  finalReportList?.map((attch) => (
+                    <Button
+                      key={attch.SubmissionID}
+                      sx={{
+                        justifyContent: "space-between",
+                        textTransform: "none",
+                        alignItems: "center",
+                        padding: 0,
+                      }}
+                      onClick={() => showPdf(attch.Base64)}
+                    >
+                      <Box
+                        sx={{
+                          display: "flex",
+                          alignItems: "center",
+                          cursor: "pointer",
+                        }}
+                      >
+                        <img alt="pdf" src={pdfIcon} width={30} />
+                        <Tooltip title="Preview" placement="right">
+                          <Typography variant="body2" color="#2E263DB2">
+                            {attch?.AttachmentName}
+                          </Typography>
+                        </Tooltip>
+                      </Box>
+                      <Typography variant="body2" color="#2E263DB2">
+                        {formatFileSize(getBase64FileSize(attch.Base64))}
+                      </Typography>
+                    </Button>
+                  )): (
+                    <Typography variant="body2" color="#2E263DB2">
+                            Belum ada file yg di upload.
+                          </Typography>
+                  )}
                 </Box>
               </CardContent>
             </Card>
