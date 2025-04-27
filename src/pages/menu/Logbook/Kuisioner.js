@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { Outlet } from "react-router-dom";
 import { Navigate } from "react-router-dom";
 import {
@@ -19,19 +19,87 @@ import {
   TableHead,
   TableRow,
 } from "@mui/material";
+import { decodeToken } from "../../../service/Auth.Service";
+import axios from "axios";
+import { useAlert } from "../../../components/AlertProvider";
 
-export default function Logbook() {
+export default function Kuisioner() {
+  const [user, setUser] = useState({});
+  const [redirect, setRedirect] = useState(false);
+
   const token = localStorage.getItem("token");
+  const showAlert = useAlert();
 
-  if (!token) {
-    return <Navigate to="/signin" />;
-  }
   const parameters = [
     "Program bermanfaat bagi pengembangan diri (Softskill dan hardskill)",
     "Ilmu yang diperoleh di kampus dapat diimplementasikan pada kegiatan Merdeka Belajar",
     "Mendapat pengalaman dan ilmu baru yang belum diperoleh saat belajar di kampus",
     "Pengelolaan program Merdeka Belajar efektif",
   ];
+
+  const [feedback, setFeedback] = useState({
+    userId: user.id,
+    kesan: "",
+    kendala: "",
+    masukan: "",
+    evaluasi: Array(parameters.length).fill(""), // Inisialisasi array untuk evaluasi
+  });
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFeedback((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+  };
+
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    if (!token) {
+      setRedirect(true);
+      return;
+    }
+
+    setUser(decodeToken());
+  }, []);
+
+  if (redirect) {
+    return <Navigate to="/signin" />;
+  }
+
+  const handleSubmit = async () => {
+    const dataToSend = {
+      userId: user.id || null,
+      evaluasi: JSON.stringify(feedback.evaluasi) || null,
+      kesan: feedback.kesan || null,
+      kendala: feedback.kendala || null,
+      masukan: feedback.masukan || null,
+    };
+
+    console.log(dataToSend);
+
+    try {
+      const response = await axios.post(
+        `http://localhost:3001/api/kuisioner`,
+        dataToSend,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
+        }
+      );
+      if (response.status === 200) {
+        showAlert("Feedback successfully submitted");
+      } else {
+        showAlert("Error occurred while submitting feedback");
+      }
+    } catch (error) {
+      console.error(error);
+      showAlert("Error occurred while submitting feedback");
+    }
+  };
+
   return (
     <Box sx={{ display: "flex" }}>
       <Outlet />
@@ -50,13 +118,13 @@ export default function Logbook() {
             </Typography>
             <Grid container spacing={2}>
               <Grid item xs={12} sm={6}>
-                <b>Nama</b>: Anjani Maitri
+                <b>Nama</b>: {user.name || ""}
               </Grid>
               <Grid item xs={12} sm={6}>
-                <b>NIM</b>: 3312010222
+                <b>NIM</b>: {user.id || ""}
               </Grid>
               <Grid item xs={12} sm={6}>
-                <b>Program Studi</b>: Teknik Informatika
+                <b>Program Studi</b>: {user.prodiName || ""}
               </Grid>
               <Grid item xs={12} sm={6}>
                 <b>Jenis Program</b>: Pertukaran Pelajar
@@ -88,24 +156,24 @@ export default function Logbook() {
                     <TableCell>No</TableCell>
                     <TableCell>Parameter</TableCell>
                     <TableCell align="center">
-                      Sangat Setuju
+                      Tidak Setuju
                       <br />
-                      (-4)
-                    </TableCell>
-                    <TableCell align="center">
-                      Setuju
-                      <br />
-                      (-3)
+                      (1)
                     </TableCell>
                     <TableCell align="center">
                       Kurang Setuju
                       <br />
-                      (-2)
+                      (2)
                     </TableCell>
                     <TableCell align="center">
-                      Tidak Setuju
+                      Setuju
                       <br />
-                      (-1)
+                      (3)
+                    </TableCell>
+                    <TableCell align="center">
+                      Sangat Setuju
+                      <br />
+                      (4)
                     </TableCell>
                   </TableRow>
                 </TableHead>
@@ -116,9 +184,21 @@ export default function Logbook() {
                       <TableCell>{param}</TableCell>
                       {[...Array(4)].map((_, i) => (
                         <TableCell align="center" key={i}>
-                          <RadioGroup row name={`param${index}`}>
+                          <RadioGroup
+                            row
+                            name={`evaluasi_${index}`} // Nama unik untuk setiap parameter
+                            value={feedback.evaluasi[index]}
+                            onChange={(e) => {
+                              const newEvaluasi = [...feedback.evaluasi];
+                              newEvaluasi[index] = e.target.value; // Update nilai evaluasi untuk parameter tertentu
+                              setFeedback((prev) => ({
+                                ...prev,
+                                evaluasi: newEvaluasi,
+                              }));
+                            }}
+                          >
                             <FormControlLabel
-                              value={`opt${i}`}
+                              value={`${i + 1}`}
                               control={<Radio size="small" />}
                               label=""
                             />
@@ -139,12 +219,15 @@ export default function Logbook() {
             </Typography>
 
             <Box mb={2}>
-              <FormLabel component="legend">
+              <FormLabel component="legend" for="kesan">
                 1. Kesan terhadap program Merdeka Belajar:
               </FormLabel>
               <TextField
                 fullWidth
-                defaultValue="Bagus, karena dengan program ini mahasiswa jadi banyak memiliki peluang untuk mengikuti kegiatan."
+                value={feedback.kesan}
+                name="kesan"
+                id="kesan"
+                onChange={handleChange}
                 variant="outlined"
                 size="small"
                 margin="dense"
@@ -152,12 +235,15 @@ export default function Logbook() {
             </Box>
 
             <Box mb={2}>
-              <FormLabel component="legend">
+              <FormLabel component="legend" for="kendala">
                 2. Kendala ketika mengikuti program Merdeka Belajar:
               </FormLabel>
               <TextField
                 fullWidth
-                defaultValue="Tidak ada."
+                value={feedback.kendala}
+                name="kendala"
+                id="kendala"
+                onChange={handleChange}
                 variant="outlined"
                 size="small"
                 margin="dense"
@@ -165,12 +251,15 @@ export default function Logbook() {
             </Box>
 
             <Box mb={2}>
-              <FormLabel component="legend">
+              <FormLabel component="legend" for="masukan">
                 3. Masukan untuk pengelolaan program Merdeka Belajar:
               </FormLabel>
               <TextField
                 fullWidth
-                defaultValue="Tidak ada."
+                value={feedback.masukan}
+                name="masukan"
+                id="masukan"
+                onChange={handleChange}
                 variant="outlined"
                 size="small"
                 margin="dense"
@@ -179,7 +268,7 @@ export default function Logbook() {
           </Box>
 
           <Box textAlign="right">
-            <Button variant="contained" color="success">
+            <Button variant="contained" color="success" onClick={handleSubmit}>
               Simpan
             </Button>
           </Box>

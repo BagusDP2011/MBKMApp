@@ -158,6 +158,7 @@ export default function DetailSubmission({ menuAccess, accessId }) {
         setSupervisors(supervisors);
         setSubmission(submission.submission);
         setStudent(submission.student);
+        console.log(student);
         setLogbok(
           logbooks.map((item) => ({
             id: item.ID,

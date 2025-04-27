@@ -13,6 +13,7 @@ import EmergencyOutlinedIcon from '@mui/icons-material/EmergencyOutlined';
 import ConnectWithoutContactOutlinedIcon from '@mui/icons-material/ConnectWithoutContactOutlined';
 import AccountBoxOutlinedIcon from '@mui/icons-material/AccountBoxOutlined';
 import AttachFileIcon from '@mui/icons-material/AttachFile';
+import MenuBookIcon from '@mui/icons-material/MenuBook';
 
 // Page general
 import DashboardMentorship from "../pages/menu/Dashboard/DashboardMentorship";
@@ -42,6 +43,10 @@ import InformasiMHS from '../pages/menu/Dashboard/InformasiMHS'
 //Page Logbook
 import Logbook from "../pages/menu/Logbook/Logbook";
 
+//Page Laporan Akhir
+import Kuisioner from "../pages/menu/Logbook/Kuisioner";
+import LaporanAkhirStatus from "../pages/menu/Logbook/LaporanAkhirStatus";
+
 export const iconsMap = {
     "<SegmentOutlinedIcon />" : <SegmentOutlinedIcon sx={{fontSize:'1.7rem'}}/>,
     "<DashboardOutlinedIcon />" : <DashboardOutlinedIcon sx={{fontSize:'1.7rem'}}/>,
@@ -58,6 +63,7 @@ export const iconsMap = {
     "<AccountBoxOutlinedIcon />" : <AccountBoxOutlinedIcon sx={{fontSize:'1.7rem'}}/>,
     "<HttpsOutlinedIcon />" : <HttpsOutlinedIcon sx={{fontSize:'1.7rem'}}/>,
     // "<FiberManualRecordOutlinedIcon />" : <FiberManualRecordOutlinedIcon sx={{fontSize:'1.2rem'}}/>,
+    "<MenuBookIcon />" : <MenuBookIcon sx={{fontSize:'1.7rem'}}/>,
   };
   
   export const componentsMap = {
@@ -81,5 +87,7 @@ export const iconsMap = {
     "<Dashboard />" : Dashboard,
     "<RolePermissions />" : RolePermissions,
     "<InformasiMHS />": InformasiMHS,
-    "<Logbook />" : Logbook
+    "<Logbook />" : Logbook,
+    "<Kuisioner />" : Kuisioner,
+    "<LaporanAkhirStatus />" : LaporanAkhirStatus,
   };

@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 import TableSubmission from "../../../components/tables/TableSubmission";
-import { Stack, Typography, Card, Avatar, Divider, Box } from "@mui/material";
+import { Stack, Typography } from "@mui/material";
 import { getSubmissionMentorship } from "../../../service/Submission.Service";
 import PeopleAltOutlinedIcon from "@mui/icons-material/PeopleAltOutlined";
 import BusinessCenterOutlinedIcon from "@mui/icons-material/BusinessCenterOutlined";
