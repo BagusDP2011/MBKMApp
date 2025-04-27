@@ -16,6 +16,7 @@ import {
 import DeleteIcon from "@mui/icons-material/Delete";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import AttachmentSubmission from "../Submission/AttachmentSubmission";
+import pdfIcon from "../../../assets/img/icons8-pdf-48.png";
 import { useAlert } from "../../../components/AlertProvider";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
@@ -45,13 +46,13 @@ export default function DocumentUpload() {
     fileType: "",
     link: "",
   });
-
+console.log('mySubmissionId', mySubmissionId)
   useEffect(() => {
     const fetchRequest = async () => {
       if (!mySubmissionId || !token) return;
       try {
         const data = await axios.get('http://localhost:3001/api/logbook/get-final-report', {
-          params: {SubmissionID : mySubmissionId },
+          params: { SubmissionID: mySubmissionId },
           headers: {
             'Authorization': `Bearer ${token}`,
           }
@@ -142,7 +143,7 @@ export default function DocumentUpload() {
     e.preventDefault();
 
 
-    if (!mySubmissionId) {
+    if (mySubmissionId == 0) {
       setError('Anda belum melakukan pengajuan!');
       return;
     }
@@ -183,13 +184,12 @@ export default function DocumentUpload() {
       setError('Terjadi kesalahan saat mengupload file.');
     }
   };
-  console.log("token:", token)
-  console.log("mySubmissionId:", mySubmissionId)
   useEffect(() => {
     const fetchRequest = async () => {
       try {
         const data = await getSubmissionByUserId(decodedPayload.id)
         getMySubmissionId(data[0].SubmissionID)
+        console.log(data)
       } catch (error) {
         console.log(error)
       }
@@ -229,25 +229,15 @@ export default function DocumentUpload() {
     }
   };
 
-  const bufferToBase64 = (buffer) => {
-    let binary = '';
-    const bytes = new Uint8Array(buffer);
-    const len = bytes.byteLength;
-    for (let i = 0; i < len; i++) {
-      binary += String.fromCharCode(bytes[i]);
-    }
-    return window.btoa(binary);
-  };
-
   const handleOpenPDF = (doc) => {
-    const base64String = bufferToBase64(doc.Base64.data);
-  
+    const base64String = doc.Base64;
+
     const pdfWindow = window.open();
     pdfWindow.document.write(
       `<iframe width='100%' height='100%' src='data:application/pdf;base64,${base64String}'></iframe>`
     );
   };
-  
+
   return (
     <Box className="max-w-4xl mx-auto p-4">
       <Typography variant="subtitle1" fontWeight="bold" gutterBottom>
@@ -268,7 +258,12 @@ export default function DocumentUpload() {
               finalReportList?.map((doc, index) => (
                 <TableRow key={index}>
                   <TableCell>{index + 1}</TableCell>
-                  <TableCell>{doc.AttachmentName}</TableCell>
+                  <TableCell>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                      <img alt="pdf" src={pdfIcon} width={30} />
+                      {doc.AttachmentName}
+                    </div>
+                  </TableCell>
                   <TableCell>{doc.AttachType}</TableCell>
                   <TableCell>{doc.link}</TableCell>
                   <TableCell>
