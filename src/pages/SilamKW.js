@@ -48,6 +48,9 @@ const announcements = [
 ];
 
 function SilamKW() {
+  localStorage.removeItem('token'); 
+  sessionStorage.removeItem('token');
+
   const carouselSettings = {
     dots: true,
     infinite: true,
