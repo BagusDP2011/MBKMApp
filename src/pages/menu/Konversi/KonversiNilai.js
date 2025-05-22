@@ -29,7 +29,7 @@ const stats = [
   },
 ];
 
-export default function LaporanAkhirStatus({ menuAccess, accessId }) {
+export default function KonversiNilai({ menuAccess, accessId }) {
   const [submissions, setSubmissions] = React.useState([]);
 
   useEffect(() => {

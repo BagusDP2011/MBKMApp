@@ -1,4 +1,5 @@
 import config from "../config";
+import { decodeToken } from "./Auth.Service";
 
 export const getLogbookBySubmissionID = async (submissionId) => {
   try {
@@ -61,6 +62,26 @@ export const submitLogbook = async (logbook) => {
       .catch((error) => {
         console.error("Error:", error);
       });
+  } catch (error) {
+    throw error;
+  }
+};
+
+export const getKuisioner = async (userId) => {
+  try {
+    const token = localStorage.getItem("token");
+
+    const response = await fetch(`${config.baseURL}/kuisioner-get`, {
+      method: "POST", // change to POST
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify({ userId }), // send both values
+    });
+
+    const data = await response.json();
+    return data;
   } catch (error) {
     throw error;
   }
