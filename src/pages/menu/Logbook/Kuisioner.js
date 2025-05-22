@@ -184,25 +184,27 @@ export default function Kuisioner() {
                       <TableCell>{param}</TableCell>
                       {[...Array(4)].map((_, i) => (
                         <TableCell align="center" key={i}>
-                          <RadioGroup
-                            row
-                            name={`evaluasi_${index}`} // Nama unik untuk setiap parameter
-                            value={feedback.evaluasi[index]}
-                            onChange={(e) => {
-                              const newEvaluasi = [...feedback.evaluasi];
-                              newEvaluasi[index] = e.target.value; // Update nilai evaluasi untuk parameter tertentu
-                              setFeedback((prev) => ({
-                                ...prev,
-                                evaluasi: newEvaluasi,
-                              }));
-                            }}
-                          >
-                            <FormControlLabel
-                              value={`${i + 1}`}
-                              control={<Radio size="small" />}
-                              label=""
-                            />
-                          </RadioGroup>
+                          <Box display="flex" justifyContent="center" ml={4}>
+                            <RadioGroup
+                              row
+                              name={`evaluasi_${index}`} // Nama unik untuk setiap parameter
+                              value={feedback.evaluasi[index]}
+                              onChange={(e) => {
+                                const newEvaluasi = [...feedback.evaluasi];
+                                newEvaluasi[index] = e.target.value; // Update nilai evaluasi untuk parameter tertentu
+                                setFeedback((prev) => ({
+                                  ...prev,
+                                  evaluasi: newEvaluasi,
+                                }));
+                              }}
+                            >
+                              <FormControlLabel
+                                value={`${i + 1}`}
+                                control={<Radio size="small" />}
+                                label=""
+                              />
+                            </RadioGroup>
+                          </Box>
                         </TableCell>
                       ))}
                     </TableRow>

@@ -1,4 +1,5 @@
 import config from "../config";
+import { decodeToken } from "./Auth.Service";
 
 export const getSubmission = async () => {
   try {
@@ -213,6 +214,38 @@ export const reAssign = async (submission) => {
       .catch((error) => {
         console.error("Error:", error);
       });
+  } catch (error) {
+    throw error;
+  }
+};
+
+export const getSubmissionLAData = async () => {
+  try {
+    const token = localStorage.getItem("token");
+    const userData = decodeToken();
+    console.log(userData);
+    let userId = userData.id;
+    let accessId = userData.accessId;
+    // const subHeaders = new Headers({
+    //   "Content-Type": "application/json",
+    //   Authorization: `Bearer ${token}`,
+    // });
+    // const response = await fetch(
+    //   `${config.baseURL}/submission-ladata`,
+    //   { headers: subHeaders }
+    // );
+
+    const response = await fetch(`${config.baseURL}/submission-ladata`, {
+      method: "POST", // change to POST
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify({ userId, accessId }), // send both values
+    });
+
+    const data = await response.json();
+    return data;
   } catch (error) {
     throw error;
   }

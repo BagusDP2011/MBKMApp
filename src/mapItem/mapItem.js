@@ -14,6 +14,7 @@ import ConnectWithoutContactOutlinedIcon from '@mui/icons-material/ConnectWithou
 import AccountBoxOutlinedIcon from '@mui/icons-material/AccountBoxOutlined';
 import AttachFileIcon from '@mui/icons-material/AttachFile';
 import MenuBookIcon from '@mui/icons-material/MenuBook';
+import PrintIcon from '@mui/icons-material/Print';
 
 // Page general
 import DashboardMentorship from "../pages/menu/Dashboard/DashboardMentorship";
@@ -47,6 +48,10 @@ import Logbook from "../pages/menu/Logbook/Logbook";
 import Kuisioner from "../pages/menu/Logbook/Kuisioner";
 import LaporanAkhirStatus from "../pages/menu/Logbook/LaporanAkhirStatus";
 
+//Page konversi
+import KonversiNilai from "../pages/menu/Konversi/KonversiNilai";
+import KonversiMurid from "../pages/menu/Konversi/KonversiMurid";
+
 export const iconsMap = {
     "<SegmentOutlinedIcon />" : <SegmentOutlinedIcon sx={{fontSize:'1.7rem'}}/>,
     "<DashboardOutlinedIcon />" : <DashboardOutlinedIcon sx={{fontSize:'1.7rem'}}/>,
@@ -64,6 +69,7 @@ export const iconsMap = {
     "<HttpsOutlinedIcon />" : <HttpsOutlinedIcon sx={{fontSize:'1.7rem'}}/>,
     // "<FiberManualRecordOutlinedIcon />" : <FiberManualRecordOutlinedIcon sx={{fontSize:'1.2rem'}}/>,
     "<MenuBookIcon />" : <MenuBookIcon sx={{fontSize:'1.7rem'}}/>,
+    "<PrintIcon />" : <PrintIcon sx={{fontSize:'1.7rem'}}/>,
   };
   
   export const componentsMap = {
@@ -90,4 +96,6 @@ export const iconsMap = {
     "<Logbook />" : Logbook,
     "<Kuisioner />" : Kuisioner,
     "<LaporanAkhirStatus />" : LaporanAkhirStatus,
+    "<KonversiNilai />" : KonversiNilai,
+    "<KonversiMurid />" : KonversiMurid,
   };
