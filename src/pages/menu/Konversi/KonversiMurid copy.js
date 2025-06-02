@@ -1,14 +1,5 @@
-/* Perubahan utama: 
-1. Menyaring dokumen berdasarkan SubmissionID bukan LAAttachmentID agar filter dokumen tersimpan relevan.
-2. Memastikan properti "link" pada dokumen tersedia sebelum digunakan untuk membuka PDF.
-3. Menambahkan prop "onRowSelect" ke TableKonversiMurid dan memicu fungsi tersebut saat memilih baris.
-4. Memastikan key pada TableRow tidak undefined (gunakan LAAttachmentID).
-*/
-
-// File: KonversiMurid.js
-
 import React, { useEffect } from "react";
-import TableKonversiMurid from "../../../components/tables/TableKonversiMurid";
+import TableSubmission from "../../../components/tables/TableSubmission";
 import {
   Stack,
   Typography,
@@ -33,11 +24,28 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import DoneOutlineIcon from "@mui/icons-material/DoneOutline";
 import PictureAsPdfIcon from "@mui/icons-material/PictureAsPdf";
 import { getAllSubmissionLAData } from "../../../service/Submission.Service";
+import { decodeToken } from "../../../service/Auth.Service";
+import TableKonversiMurid from "../../../components/tables/TableKonversiMurid";
 
 const stats = [
-  { label: "Pending", value: 0, icon: <HourglassEmptyOutlinedIcon />, backColor: "#2196F3" },
-  { label: "Approved", value: 0, icon: <CheckOutlinedIcon />, backColor: "#4CAF50" },
-  { label: "Rejected", value: 0, icon: <CloseOutlinedIcon />, backColor: "#F44336" },
+  {
+    label: "Pending",
+    value: 0,
+    icon: <HourglassEmptyOutlinedIcon />,
+    backColor: "#2196F3",
+  },
+  {
+    label: "Approved",
+    value: 0,
+    icon: <CheckOutlinedIcon />,
+    backColor: "#4CAF50",
+  },
+  {
+    label: "Rejected",
+    value: 0,
+    icon: <CloseOutlinedIcon />,
+    backColor: "#F44336",
+  },
 ];
 
 export default function KonversiMurid({ menuAccess, accessId }) {
@@ -52,18 +60,21 @@ export default function KonversiMurid({ menuAccess, accessId }) {
         const data = await getAllSubmissionLAData();
         setSubmissions(data);
 
-        stats[0].value = data.filter((x) => x.AttachmentStatus === "Pending").length || 0;
-        stats[1].value = data.filter((x) => x.AttachmentStatus === "Approved").length || 0;
-        stats[2].value = data.filter((x) => x.AttachmentStatus === "Rejected").length || 0;
+        stats[0].value =
+          data.filter((x) => x.AttachmentStatus === "Pending").length || 0;
+        stats[1].value =
+          data.filter((x) => x.AttachmentStatus === "Approved").length || 0;
+        stats[2].value =
+          data.filter((x) => x.AttachmentStatus === "Rejected").length || 0;
 
+        console.log(data);
+        // Dummy data untuk final report
         setFinalReportList(
-          data.map((item) => ({
+          data.map((item, idx) => ({
             AttachmentName: item.AttachmentName,
             AttachType: item.AttachType,
             Status: item.AttachmentStatus,
             LAAttachmentID: item.LAAttachmentID,
-            SubmissionID: item.SubmissionID,
-            link: item.link,
           }))
         );
       } catch (error) {
@@ -75,19 +86,23 @@ export default function KonversiMurid({ menuAccess, accessId }) {
   }, []);
 
   const handleOpenPDF = (doc) => {
-    if (doc.link) window.open(doc.link, "_blank");
+    window.open(doc.link, "_blank");
   };
 
   const deleteFinalReport = (id) => {
-    setFinalReportList((prev) => prev.filter((item) => item.LAAttachmentID !== id));
+    setFinalReportList((prev) =>
+      prev.filter((item) => item.LAAttachmentID !== id)
+    );
   };
 
   const filteredReports = selectedSubmission
-    ? finalReportList.filter((doc) => doc.SubmissionID === selectedSubmission.SubmissionID)
+    ? finalReportList.filter(
+        (doc) => doc.LAAttachmentID === selectedSubmission.LAAttachmentID
+      )
     : [];
 
   return (
-    <>
+    <React.StrictMode>
       <Typography variant="h5" sx={{ mb: 3 }}>
         KONVERSI NILAI MURID OLEH TU
       </Typography>
@@ -106,20 +121,37 @@ export default function KonversiMurid({ menuAccess, accessId }) {
           >
             {stats.map((stat, index) => (
               <React.Fragment key={index}>
-                <Box sx={{ display: "flex", alignItems: "center", justifyContent: "space-between", flex: 1 }}>
+                <Box
+                  sx={{
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "space-between",
+                    flex: 1,
+                  }}
+                >
                   <Box sx={{ display: "flex", flexDirection: "column" }}>
-                    <Typography variant="h5" sx={{ fontWeight: "bold", color: "#333" }}>
+                    <Typography
+                      variant="h5"
+                      sx={{ fontWeight: "bold", color: "#333" }}
+                    >
                       {stat.value}
                     </Typography>
                     <Typography variant="body2" sx={{ color: "#666" }}>
                       {stat.label}
                     </Typography>
                   </Box>
-                  <Avatar variant="rounded" sx={{ backgroundColor: `${stat.backColor}20` }}>
-                    {React.cloneElement(stat.icon, { sx: { color: stat.backColor } })}
+                  <Avatar
+                    variant="rounded"
+                    sx={{ backgroundColor: `${stat.backColor}20` }}
+                  >
+                    {React.cloneElement(stat.icon, {
+                      sx: { color: stat.backColor },
+                    })}
                   </Avatar>
                 </Box>
-                {index < stats.length - 1 && <Divider orientation="vertical" flexItem sx={{ mx: 2 }} />}
+                {index < stats.length - 1 && (
+                  <Divider orientation="vertical" flexItem sx={{ mx: 2 }} />
+                )}
               </React.Fragment>
             ))}
           </Card>
@@ -142,17 +174,23 @@ export default function KonversiMurid({ menuAccess, accessId }) {
                   <TableCell>No</TableCell>
                   <TableCell>File</TableCell>
                   <TableCell>Jenis Dokumen</TableCell>
-                  <TableCell>Status</TableCell>
+                  <TableCell>Link</TableCell>
                   <TableCell>Aksi</TableCell>
                 </TableRow>
               </TableHead>
               <TableBody>
-                {filteredReports.length > 0 ? (
+                {finalReportList.length > 0 ? (
                   filteredReports.map((doc, index) => (
-                    <TableRow key={doc.LAAttachmentID}>
+                    <TableRow
+                      key={doc.id}
+                      hover
+                      onClick={() => onRowSelect && onRowSelect(row)}
+                    >
                       <TableCell>{index + 1}</TableCell>
                       <TableCell>
-                        <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+                        <Box
+                          sx={{ display: "flex", alignItems: "center", gap: 1 }}
+                        >
                           <PictureAsPdfIcon />
                           {doc.AttachmentName}
                         </Box>
@@ -163,10 +201,13 @@ export default function KonversiMurid({ menuAccess, accessId }) {
                         <IconButton onClick={() => handleOpenPDF(doc)}>
                           <VisibilityIcon />
                         </IconButton>
-                        <IconButton onClick={() => console.log("Approve clicked", doc)}>
+                        <IconButton onClick={() => handleOpenPDF(doc)}>
+                          {/* Handler untuk approve attachment */}
                           <DoneOutlineIcon />
                         </IconButton>
-                        <IconButton onClick={() => deleteFinalReport(doc.LAAttachmentID)}>
+                        <IconButton
+                          onClick={() => deleteFinalReport(doc.LAAttachmentID)}
+                        >
                           <DeleteIcon />
                         </IconButton>
                       </TableCell>
@@ -188,20 +229,6 @@ export default function KonversiMurid({ menuAccess, accessId }) {
           Sorry, you don't have access to view this page.
         </Typography>
       )}
-    </>
+    </React.StrictMode>
   );
 }
-
-/* Perubahan pada TableKonversiMurid:
-1. Menambahkan prop onRowSelect.
-2. Menghubungkan event onRowClick ke pemanggilan onRowSelect dengan row data.
-*/
-
-// Tambahkan pada TableKonversiMurid:
-// <DataGrid
-//   onRowClick={(params) => onRowSelect && onRowSelect(params.row)}
-//   ...
-// />
-
-// Dan pada parameter fungsi komponen:
-// export default function TableKonversi({ access, accessId, dataTable, onRowSelect })
