@@ -87,7 +87,7 @@ export const approveSubmission = async (submissionId) => {
 
     const response = await fetch(
       `${config.baseURL}/submission/approve/${submissionId}`,
-      { method:"POST",headers: subHeaders }
+      { method: "POST", headers: subHeaders }
     );
     const data = await response.json();
     return data;
@@ -109,9 +109,61 @@ export const rejectSubmission = async (submissionId, note) => {
     }
     const response = await fetch(
       `${config.baseURL}/submission/reject/${submissionId}`,
-      { method:"POST",
+      {
+        method: "POST",
+        headers: subHeaders,
+        body: JSON.stringify(body),
+      }
+    );
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    throw error;
+  }
+};
+export const approveFinalReport = async (ReportID, accessId) => {
+  try {
+    const token = localStorage.getItem("token");
+    const subHeaders = new Headers({
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    });
+
+    const body = {
+      accessId: accessId
+    }
+    const response = await fetch(
+      `${config.baseURL}/logbook/approve-final-report/${ReportID}`,
+      { method: "PUT",
         headers: subHeaders,
         body: JSON.stringify(body), }
+    );
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    throw error;
+  }
+};
+
+export const rejectFinalReport = async (ReportID, note, accessId) => {
+  try {
+    const token = localStorage.getItem("token");
+    const subHeaders = new Headers({
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    });
+
+    const body = {
+      note: note,
+      accessId: accessId
+    }
+    const response = await fetch(
+      `${config.baseURL}/logbook/reject-final-report/${ReportID}`,
+      {
+        method: "PUT",
+        headers: subHeaders,
+        body: JSON.stringify(body),
+      }
     );
     const data = await response.json();
     return data;
@@ -149,7 +201,7 @@ export const deleteSubmission = async (submissionId) => {
 
     const response = await fetch(
       `http://localhost:3001/api/submission/${submissionId}`,
-      { method:"DELETE",headers: subHeaders }
+      { method: "DELETE", headers: subHeaders }
     );
     const data = await response.json();
     return data;
@@ -159,7 +211,7 @@ export const deleteSubmission = async (submissionId) => {
 };
 
 export const submit = async (submission) => {
-  console.log(submission)
+
   try {
     const token = localStorage.getItem("token");
     const subHeaders = new Headers({

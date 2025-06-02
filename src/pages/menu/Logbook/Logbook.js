@@ -12,8 +12,12 @@ import {
   TextField,
   Typography,
   Paper,
+  Chip,
+  Modal
 } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
+import InfoIcon from '@mui/icons-material/Info';
+import CloseIcon from '@mui/icons-material/Close';
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import AttachmentSubmissionLaporanAkhir from "../Submission/AttachmentSubmissionLaporanAkhir";
 import pdfIcon from "../../../assets/img/icons8-pdf-48.png";
@@ -24,6 +28,19 @@ import { jwtDecode } from "jwt-decode";
 import Dialog from "../../../utils/Dialog";
 
 import { getSubmissionByUserId } from "../../../service/Submission.Service";
+
+// Modal reject Style
+const style = {
+  position: 'absolute',
+  top: '50%',
+  left: '50%',
+  transform: 'translate(-50%, -50%)',
+  width: 400,
+  bgcolor: 'background.paper',
+  border: '2px solid #000',
+  boxShadow: 24,
+  p: 4,
+};
 
 export default function DocumentUpload() {
   const showAlert = useAlert();
@@ -42,6 +59,8 @@ export default function DocumentUpload() {
   const token = localStorage.getItem("token");
   const decodedPayload = jwtDecode(token);
   const [resSuccess, setResSuccess] = useState(false);
+  const [openModalRejectInfo, setOpenModalRejectInfo] = useState(false);
+  const [selectedReportId, setSelectedIdReport] = useState(null);
   const [form, setForm] = useState({
     files: [],
     fileName: "",
@@ -50,7 +69,6 @@ export default function DocumentUpload() {
   });
   const attachmentRef = useRef();
 
-  // console.log('mySubmissionId', mySubmissionId)
   useEffect(() => {
     const fetchRequest = async () => {
       if (!mySubmissionId || !token) return;
@@ -99,7 +117,7 @@ export default function DocumentUpload() {
     }));
   };
 
-  useEffect(() => {}, [infofiles]);
+  useEffect(() => { }, [infofiles]);
 
   const handleFileUpload = (event) => {
     const selectedFiles = Array.from(event.target.files);
@@ -253,6 +271,14 @@ export default function DocumentUpload() {
     );
   };
 
+  const handleOpenInfoReject = (id) => {
+    setSelectedIdReport(id)
+    setOpenModalRejectInfo(true);
+  };
+  const handleCloseModalRejectInfo = () => {
+    setOpenModalRejectInfo(false);
+  };
+
   return (
     <Box className="max-w-4xl mx-auto p-4">
       <Typography variant="subtitle1" fontWeight="bold" gutterBottom>
@@ -264,7 +290,8 @@ export default function DocumentUpload() {
             <TableRow>
               <TableCell>No</TableCell>
               <TableCell>File</TableCell>
-              <TableCell>Jenis Dokumen</TableCell>
+              {/* <TableCell>Jenis Dokumen</TableCell> */}
+              <TableCell>Status</TableCell>
               <TableCell>Aksi</TableCell>
             </TableRow>
           </TableHead>
@@ -278,24 +305,67 @@ export default function DocumentUpload() {
                       style={{
                         display: "flex",
                         alignItems: "center",
-                        gap: "8px",
+                        gap: "3px",
                       }}
                     >
-                      <img alt="pdf" src={pdfIcon} width={30} />
+                      <img alt="pdf" src={pdfIcon} width={20} />
                       {doc.AttachmentName}
                     </div>
                   </TableCell>
-                  <TableCell>{doc.AttachType}</TableCell>
-                  <TableCell>{doc.link}</TableCell>
+                  {/* <TableCell>{doc.AttachType}</TableCell> */}
                   <TableCell>
+                    <Chip
+                      label={doc?.Status}
+                      sx={{
+                        backgroundColor: (doc?.Status ?? '').includes('Approve')
+                          ? 'rgba(76, 175, 80, 0.1)'
+                          : (doc?.Status ?? '').includes('Waiting')
+                            ? 'rgba(33, 150, 243, 0.1)' // biru muda
+                            : 'rgba(244, 67, 54, 0.1)', // merah muda
+
+                        color: (doc?.Status ?? '').includes('Approve')
+                          ? '#4caf50'
+                          : (doc?.Status ?? '').includes('Waiting')
+                            ? '#2196f3' // biru
+                            : '#f44336', // merah
+
+                        fontWeight: 500,
+                        fontSize: '0.8rem',
+                        borderRadius: '8px',
+                        border: `1px solid ${(doc?.Status ?? '').includes('Approve')
+                          ? 'rgba(76, 175, 80, 0.4)'
+                          : (doc?.Status ?? '').includes('Waiting')
+                            ? 'rgba(33, 150, 243, 0.4)'
+                            : 'rgba(244, 67, 54, 0.4)'
+                          }`,
+                      }}
+                    />
+                  </TableCell>
+                  <TableCell
+                    style={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '8px',
+                    }}
+                  >
+
                     <IconButton onClick={() => handleOpenPDF(doc)}>
                       <VisibilityIcon />
                     </IconButton>
-                    <IconButton
-                      onClick={() => deleteFinalReport(doc.LAAttachmentID)}
-                    >
-                      <DeleteIcon />
-                    </IconButton>
+                    {(doc?.Status === 'Waiting Approval' || doc?.Status === 'TU Reject' || doc?.Status === 'KPS Reject') && (
+                      <>
+                        <IconButton onClick={() => deleteFinalReport(doc.LAAttachmentID)}>
+                          <DeleteIcon />
+                        </IconButton>
+
+                        {doc?.Status !== 'Waiting Approval' && (
+                          <IconButton onClick={() => handleOpenInfoReject(doc.LAAttachmentID)}>
+                            <InfoIcon />
+                          </IconButton>
+                        )}
+                      </>
+                    )}
+
                   </TableCell>
                 </TableRow>
               ))
@@ -372,6 +442,63 @@ export default function DocumentUpload() {
       </Box>
 
       {error && <Typography color="error">{error}</Typography>}
+      {/* Modal untuk pesan reject */}
+      {selectedReportId && (
+        <Modal
+          open={openModalRejectInfo}
+          onClose={handleCloseModalRejectInfo}
+          aria-labelledby="modal-modal-title"
+          aria-describedby="modal-modal-description"
+        >
+          <Box
+            sx={{
+              position: 'absolute',
+              top: '50%',
+              left: '50%',
+              transform: 'translate(-50%, -50%)',
+              width: 500,
+              bgcolor: 'background.paper',
+              border: '2px solid #000',
+              boxShadow: 24,
+              p: 4,
+              borderRadius: 2,
+              maxHeight: '90vh',
+              overflowY: 'auto',
+            }}
+          >
+            <IconButton
+              onClick={handleCloseModalRejectInfo}
+              sx={{
+                position: 'absolute',
+                top: 8,
+                right: 8,
+                color: (theme) => theme.palette.grey[500],
+              }}
+            >
+              <CloseIcon />
+            </IconButton>
+            <Typography id="modal-modal-title" variant="h6" component="h2" gutterBottom>
+              Feedback TU/KPS:
+            </Typography>
+
+            {finalReportList?.length > 0 ? (
+              finalReportList
+                .filter(item => item.LAAttachmentID === selectedReportId)
+                .map(item => (
+                  <Typography key={item.LAAttachmentID} sx={{ mt: 2 }}>
+                    {item.Comment || 'Belum ada Feedback yg diberikan.'}
+                  </Typography>
+                ))
+            ) : (
+              <Typography sx={{ mt: 2 }} color="textSecondary">
+                Tidak ada data yang tersedia.
+              </Typography>
+            )}
+
+
+          </Box>
+        </Modal>
+      )}
     </Box>
   );
 }
