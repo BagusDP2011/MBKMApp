@@ -307,11 +307,35 @@ export const getAllSubmissionLAData = async () => {
   try {
     const token = localStorage.getItem("token");
     const userData = decodeToken();
-    console.log(userData);
+    // console.log(userData);
     let userId = userData.id;
     let accessId = userData.accessId;
 
     const response = await fetch(`${config.baseURL}/submission-allladata`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify({ userId, accessId }), // send both values
+    });
+
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    throw error;
+  }
+};
+
+export const getAllSubmissionLASukses = async () => {
+  try {
+    const token = localStorage.getItem("token");
+    const userData = decodeToken();
+    // console.log(userData);
+    let userId = userData.id;
+    let accessId = userData.accessId;
+
+    const response = await fetch(`${config.baseURL}/submission-lasukses`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

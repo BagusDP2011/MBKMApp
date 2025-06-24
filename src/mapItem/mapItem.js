@@ -51,6 +51,8 @@ import LaporanAkhirStatus from "../pages/menu/Logbook/LaporanAkhirStatus";
 //Page konversi
 import KonversiNilai from "../pages/menu/Konversi/KonversiNilai";
 import KonversiMurid from "../pages/menu/Konversi/KonversiMurid";
+import LaporanAkhirNonMurid from "../pages/menu/Konversi/LaporanAkhirNonMurid";
+import LAPilihMurid from "../pages/menu/Konversi/LAPilihMurid";
 
 export const iconsMap = {
     "<SegmentOutlinedIcon />" : <SegmentOutlinedIcon sx={{fontSize:'1.7rem'}}/>,
@@ -98,4 +100,6 @@ export const iconsMap = {
     "<LaporanAkhirStatus />" : LaporanAkhirStatus,
     "<KonversiNilai />" : KonversiNilai,
     "<KonversiMurid />" : KonversiMurid,
+    "<LaporanAkhirNonMurid />" : LaporanAkhirNonMurid,
+    "<LAPilihMurid />" : LAPilihMurid,
   };

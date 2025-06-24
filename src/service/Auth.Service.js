@@ -50,3 +50,8 @@ export function isTokenExpired() {
     return true;
   }
 }
+
+export const getToken = () => {
+  return localStorage.getItem("token");
+};
+
