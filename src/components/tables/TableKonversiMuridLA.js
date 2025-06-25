@@ -6,7 +6,15 @@ import {
   GridToolbarFilterButton,
   GridToolbarExport,
 } from "@mui/x-data-grid";
-import { Box, Stack, Tooltip, Typography, IconButton } from "@mui/material";
+import {
+  Box,
+  Stack,
+  Tooltip,
+  Typography,
+  IconButton,
+  TextField,
+  Button,
+} from "@mui/material";
 import {
   getSubmission,
   deleteSubmission,
@@ -18,7 +26,6 @@ import Swal from "sweetalert2";
 import { useNavigate } from "react-router-dom";
 import { useAlert } from "../AlertProvider";
 
-// Komponen IconButton yang disesuaikan
 const IconButtonCustom = ({
   icon,
   onClick,
@@ -37,7 +44,6 @@ const IconButtonCustom = ({
   </IconButton>
 );
 
-// Toolbar untuk DataGrid
 function CustomToolbar() {
   return (
     <GridToolbarContainer sx={{ pb: 1, px: 1.5 }}>
@@ -53,9 +59,6 @@ function CustomToolbar() {
   );
 }
 
-const paginationModel = { page: 0, pageSize: 10 };
-
-// [UPDATE] Tambahkan onRowSelect ke parameter props
 export default function TableKonversiMuridLA({
   access,
   accessId,
@@ -63,9 +66,12 @@ export default function TableKonversiMuridLA({
   onRowSelect,
 }) {
   const [submissions, setSubmissions] = useState([]);
+  const [filteredRows, setFilteredRows] = useState([]);
   const [selectedRows, setSelectedRows] = useState([]);
   const [columnVisibilityModel, setColumnVisibilityModel] = useState();
   const [columns, setColumns] = useState([]);
+  const [fromDate, setFromDate] = useState("");
+  const [toDate, setToDate] = useState("");
   const navigate = useNavigate();
   const showAlert = useAlert();
 
@@ -78,9 +84,10 @@ export default function TableKonversiMuridLA({
       try {
         const processedData = dataTable.map((item, index) => ({
           ...item,
-          id: item.SubmissionID || `temp-id-${index}`, // fallback id
+          id: item.SubmissionID || `temp-id-${index}`,
         }));
         setSubmissions(processedData);
+        setFilteredRows(processedData); // Awal: tampilkan semua
         const columnData = await getColumn("Konversi", accessId);
         setColumns(columnData.column);
         setColumnVisibilityModel(columnData.visibility);
@@ -107,7 +114,7 @@ export default function TableKonversiMuridLA({
 
   const handleSelectionChange = (selectionModel) => {
     const selectedIDs = new Set(selectionModel);
-    const selectedData = submissions.filter((row) => selectedIDs.has(row.id));
+    const selectedData = filteredRows.filter((row) => selectedIDs.has(row.id));
     setSelectedRows(selectedData);
   };
 
@@ -124,14 +131,19 @@ export default function TableKonversiMuridLA({
     }).then(async (result) => {
       if (result.isConfirmed) {
         try {
-          var response = await deleteSubmission(submissionId);
+          const response = await deleteSubmission(submissionId);
           showAlert(response.message, "success");
+
+          const refreshed = await getSubmission(accessId);
+          const updated = refreshed.map((item, index) => ({
+            ...item,
+            id: item.SubmissionID || `temp-id-${index}`,
+          }));
+          setSubmissions(updated);
+          setFilteredRows(updated);
         } catch (error) {
           showAlert("Error while delete submission", "error");
         }
-
-        const breadcrumbData = await getSubmission(accessId);
-        setSubmissions(breadcrumbData);
       }
     });
   };
@@ -151,7 +163,7 @@ export default function TableKonversiMuridLA({
                 <Tooltip title="Detail" placement="top">
                   <IconButtonCustom
                     icon={<VisibilityOutlinedIcon />}
-                    onClick={() => onRowSelect?.(params.row)} // [UPDATE] Memanggil onRowSelect
+                    onClick={() => onRowSelect?.(params.row)}
                     hoverColor="#3F8CFE"
                   />
                 </Tooltip>
@@ -227,38 +239,65 @@ export default function TableKonversiMuridLA({
       return col;
     });
 
+  const handleSearch = () => {
+    const from = fromDate ? new Date(fromDate) : null;
+    const to = toDate ? new Date(toDate) : null;
+
+    const filtered = submissions.filter((item) => {
+      const date = new Date(item.SubmissionDate);
+      if (from && date < from) return false;
+      if (to && date > to) return false;
+      return true;
+    });
+
+    setFilteredRows(filtered);
+  };
+
   return (
-    <DataGrid
-      sx={{ px: "1rem", py: "2rem" }}
-      rows={submissions}
-      columns={processColumns()}
-      initialState={{
-        pagination: { paginationModel },
-        density: "comfortable",
-      }}
-      pageSizeOptions={[5, 10]}
-      selectionModel={selectedRows}
-      slots={{
-        toolbar: access.CanPrint ? CustomToolbar : null,
-      }}
-      slotProps={{
-        toolbar: { csvOptions: { fields: getExportColumn } },
-      }}
-      columnVisibilityModel={columnVisibilityModel}
-      onColumnVisibilityModelChange={handleColumnVisibilityChange}
-      onColumnResize={handleColumnResizeCommitted}
-      disableRowSelectionOnClick
-      // [UPDATE] Tambahkan onRowClick dan teruskan ke onRowSelect
-      // onRowClick={(params) => {
-      //   if (onRowSelect) {
-      //     onRowSelect(params.row);
-      //   }
-      // }}
-      // onRowClick={(params) => {
-      //   navigate("/menu/konversi nilai/hasil mbkm", {
-      //     state: { SubmissionID: params.row.SubmissionID },
-      //   });
-      // }}
-    />
+    <>
+      {/* Filter Tanggal */}
+      <Box sx={{ display: "flex", gap: 2, px: 3, mt: 2, alignItems: "center" }}>
+        <TextField
+          label="From Date"
+          type="date"
+          InputLabelProps={{ shrink: true }}
+          value={fromDate}
+          onChange={(e) => setFromDate(e.target.value)}
+        />
+        <TextField
+          label="To Date"
+          type="date"
+          InputLabelProps={{ shrink: true }}
+          value={toDate}
+          onChange={(e) => setToDate(e.target.value)}
+        />
+        <Button variant="contained" onClick={handleSearch}>
+          Search
+        </Button>
+      </Box>
+
+      {/* Tabel */}
+      <DataGrid
+        sx={{ px: "1rem", py: "2rem" }}
+        rows={filteredRows}
+        columns={processColumns()}
+        pageSizeOptions={[5, 10]}
+        initialState={{
+          pagination: { paginationModel: { page: 0, pageSize: 10 } },
+          density: "comfortable",
+        }}
+        selectionModel={selectedRows}
+        slots={{
+          toolbar: access.CanPrint ? CustomToolbar : null,
+        }}
+        slotProps={{
+          toolbar: { csvOptions: { fields: getExportColumn } },
+        }}
+        columnVisibilityModel={columnVisibilityModel}
+        onColumnVisibilityModelChange={handleColumnVisibilityChange}
+        onColumnResize={handleColumnResizeCommitted}
+        disableRowSelectionOnClick
+      />
+    </>
   );
 }
