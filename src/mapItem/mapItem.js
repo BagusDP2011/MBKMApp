@@ -49,7 +49,7 @@ import Kuisioner from "../pages/menu/Logbook/Kuisioner";
 import LaporanAkhirStatus from "../pages/menu/Logbook/LaporanAkhirStatus";
 
 //Page konversi
-import KonversiNilai from "../pages/menu/Konversi/KonversiNilai";
+import Konversi from "../pages/menu/Konversi/Konversi";
 import KonversiMurid from "../pages/menu/Konversi/KonversiMurid";
 import LaporanAkhirNonMurid from "../pages/menu/Konversi/LaporanAkhirNonMurid";
 import LAPilihMurid from "../pages/menu/Konversi/LAPilihMurid";
@@ -98,7 +98,7 @@ export const iconsMap = {
     "<Logbook />" : Logbook,
     "<Kuisioner />" : Kuisioner,
     "<LaporanAkhirStatus />" : LaporanAkhirStatus,
-    "<KonversiNilai />" : KonversiNilai,
+    "<Konversi />" : Konversi,
     "<KonversiMurid />" : KonversiMurid,
     "<LaporanAkhirNonMurid />" : LaporanAkhirNonMurid,
     "<LAPilihMurid />" : LAPilihMurid,

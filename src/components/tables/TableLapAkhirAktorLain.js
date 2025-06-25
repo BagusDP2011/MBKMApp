@@ -402,11 +402,7 @@ export default function TableLapAKhirAktorLain({
         rows={dataUntukTable}
         getRowId={(row) => row.HasilID ?? row.id}
         columns={processColumns()}
-        initialState={{
-          pagination: { paginationModel },
-          density: "comfortable",
-        }}
-        pageSizeOptions={[5, 10]}
+        pagination={false}
         selectionModel={selectedRows}
         slots={{
           toolbar: access.CanPrint ? CustomToolbar : null,

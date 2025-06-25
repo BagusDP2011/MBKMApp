@@ -13,11 +13,11 @@ import {
   Typography,
   Paper,
   Chip,
-  Modal
+  Modal,
 } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
-import InfoIcon from '@mui/icons-material/Info';
-import CloseIcon from '@mui/icons-material/Close';
+import InfoIcon from "@mui/icons-material/Info";
+import CloseIcon from "@mui/icons-material/Close";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import AttachmentSubmissionLaporanAkhir from "../Submission/AttachmentSubmissionLaporanAkhir";
 import pdfIcon from "../../../assets/img/icons8-pdf-48.png";
@@ -31,13 +31,13 @@ import { getSubmissionByUserId } from "../../../service/Submission.Service";
 
 // Modal reject Style
 const style = {
-  position: 'absolute',
-  top: '50%',
-  left: '50%',
-  transform: 'translate(-50%, -50%)',
+  position: "absolute",
+  top: "50%",
+  left: "50%",
+  transform: "translate(-50%, -50%)",
   width: 400,
-  bgcolor: 'background.paper',
-  border: '2px solid #000',
+  bgcolor: "background.paper",
+  border: "2px solid #000",
   boxShadow: 24,
   p: 4,
 };
@@ -117,7 +117,7 @@ export default function DocumentUpload() {
     }));
   };
 
-  useEffect(() => { }, [infofiles]);
+  useEffect(() => {}, [infofiles]);
 
   const handleFileUpload = (event) => {
     const selectedFiles = Array.from(event.target.files);
@@ -222,7 +222,12 @@ export default function DocumentUpload() {
     const fetchRequest = async () => {
       try {
         const data = await getSubmissionByUserId(decodedPayload.id);
-        getMySubmissionId(data[0].SubmissionID);
+        console.log(data);
+        console.log(decodedPayload);
+        const sortedData = data.sort(
+          (a, b) => new Date(b.SubmissionDate) - new Date(a.SubmissionDate)
+        );
+        getMySubmissionId(sortedData[0].SubmissionID);
       } catch (error) {
         console.log(error);
       }
@@ -272,7 +277,7 @@ export default function DocumentUpload() {
   };
 
   const handleOpenInfoReject = (id) => {
-    setSelectedIdReport(id)
+    setSelectedIdReport(id);
     setOpenModalRejectInfo(true);
   };
   const handleCloseModalRejectInfo = () => {
@@ -317,55 +322,62 @@ export default function DocumentUpload() {
                     <Chip
                       label={doc?.Status}
                       sx={{
-                        backgroundColor: (doc?.Status ?? '').includes('Approve')
-                          ? 'rgba(76, 175, 80, 0.1)'
-                          : (doc?.Status ?? '').includes('Waiting')
-                            ? 'rgba(33, 150, 243, 0.1)' // biru muda
-                            : 'rgba(244, 67, 54, 0.1)', // merah muda
+                        backgroundColor: (doc?.Status ?? "").includes("Approve")
+                          ? "rgba(76, 175, 80, 0.1)"
+                          : (doc?.Status ?? "").includes("Waiting")
+                          ? "rgba(33, 150, 243, 0.1)" // biru muda
+                          : "rgba(244, 67, 54, 0.1)", // merah muda
 
-                        color: (doc?.Status ?? '').includes('Approve')
-                          ? '#4caf50'
-                          : (doc?.Status ?? '').includes('Waiting')
-                            ? '#2196f3' // biru
-                            : '#f44336', // merah
+                        color: (doc?.Status ?? "").includes("Approve")
+                          ? "#4caf50"
+                          : (doc?.Status ?? "").includes("Waiting")
+                          ? "#2196f3" // biru
+                          : "#f44336", // merah
 
                         fontWeight: 500,
-                        fontSize: '0.8rem',
-                        borderRadius: '8px',
-                        border: `1px solid ${(doc?.Status ?? '').includes('Approve')
-                          ? 'rgba(76, 175, 80, 0.4)'
-                          : (doc?.Status ?? '').includes('Waiting')
-                            ? 'rgba(33, 150, 243, 0.4)'
-                            : 'rgba(244, 67, 54, 0.4)'
-                          }`,
+                        fontSize: "0.8rem",
+                        borderRadius: "8px",
+                        border: `1px solid ${
+                          (doc?.Status ?? "").includes("Approve")
+                            ? "rgba(76, 175, 80, 0.4)"
+                            : (doc?.Status ?? "").includes("Waiting")
+                            ? "rgba(33, 150, 243, 0.4)"
+                            : "rgba(244, 67, 54, 0.4)"
+                        }`,
                       }}
                     />
                   </TableCell>
                   <TableCell
                     style={{
-                      display: 'flex',
-                      alignItems: 'center',
-                      gap: '8px',
+                      display: "flex",
+                      alignItems: "center",
+                      gap: "8px",
                     }}
                   >
-
                     <IconButton onClick={() => handleOpenPDF(doc)}>
                       <VisibilityIcon />
                     </IconButton>
-                    {(doc?.Status === 'Waiting Approval' || doc?.Status === 'TU Reject' || doc?.Status === 'KPS Reject') && (
+                    {(doc?.Status === "Waiting Approval" ||
+                      doc?.Status === "TU Reject" ||
+                      doc?.Status === "KPS Reject") && (
                       <>
-                        <IconButton onClick={() => deleteFinalReport(doc.LAAttachmentID)}>
+                        <IconButton
+                          onClick={() => deleteFinalReport(doc.LAAttachmentID)}
+                        >
                           <DeleteIcon />
                         </IconButton>
 
-                        {doc?.Status !== 'Waiting Approval' && (
-                          <IconButton onClick={() => handleOpenInfoReject(doc.LAAttachmentID)}>
+                        {doc?.Status !== "Waiting Approval" && (
+                          <IconButton
+                            onClick={() =>
+                              handleOpenInfoReject(doc.LAAttachmentID)
+                            }
+                          >
                             <InfoIcon />
                           </IconButton>
                         )}
                       </>
                     )}
-
                   </TableCell>
                 </TableRow>
               ))
@@ -416,11 +428,7 @@ export default function DocumentUpload() {
           fullWidth
           margin="normal"
           name="fileType"
-          value={
-            infofiles && fileExt
-              ? fileExt
-              : "Jenis Dokumen"
-          }
+          value={infofiles && fileExt ? fileExt : "Jenis Dokumen"}
           disabled
         />
         <TextField
@@ -452,24 +460,24 @@ export default function DocumentUpload() {
         >
           <Box
             sx={{
-              position: 'absolute',
-              top: '50%',
-              left: '50%',
-              transform: 'translate(-50%, -50%)',
+              position: "absolute",
+              top: "50%",
+              left: "50%",
+              transform: "translate(-50%, -50%)",
               width: 500,
-              bgcolor: 'background.paper',
-              border: '2px solid #000',
+              bgcolor: "background.paper",
+              border: "2px solid #000",
               boxShadow: 24,
               p: 4,
               borderRadius: 2,
-              maxHeight: '90vh',
-              overflowY: 'auto',
+              maxHeight: "90vh",
+              overflowY: "auto",
             }}
           >
             <IconButton
               onClick={handleCloseModalRejectInfo}
               sx={{
-                position: 'absolute',
+                position: "absolute",
                 top: 8,
                 right: 8,
                 color: (theme) => theme.palette.grey[500],
@@ -477,16 +485,21 @@ export default function DocumentUpload() {
             >
               <CloseIcon />
             </IconButton>
-            <Typography id="modal-modal-title" variant="h6" component="h2" gutterBottom>
+            <Typography
+              id="modal-modal-title"
+              variant="h6"
+              component="h2"
+              gutterBottom
+            >
               Feedback TU/KPS:
             </Typography>
 
             {finalReportList?.length > 0 ? (
               finalReportList
-                .filter(item => item.LAAttachmentID === selectedReportId)
-                .map(item => (
+                .filter((item) => item.LAAttachmentID === selectedReportId)
+                .map((item) => (
                   <Typography key={item.LAAttachmentID} sx={{ mt: 2 }}>
-                    {item.Comment || 'Belum ada Feedback yg diberikan.'}
+                    {item.Comment || "Belum ada Feedback yg diberikan."}
                   </Typography>
                 ))
             ) : (
@@ -494,8 +507,6 @@ export default function DocumentUpload() {
                 Tidak ada data yang tersedia.
               </Typography>
             )}
-
-
           </Box>
         </Modal>
       )}

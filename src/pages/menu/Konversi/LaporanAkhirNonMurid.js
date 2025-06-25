@@ -53,7 +53,7 @@ export default function LaporanAkhirNonMurid({ menuAccess, accessId }) {
   return (
     <>
       <Typography variant="h5" sx={{ mb: 3 }}>
-        KONVERSI NILAI MURID OLEH TU
+        Lembar Hasil Nilai Mahasiswa
       </Typography>
 
       {menuAccess.CanRead ? (

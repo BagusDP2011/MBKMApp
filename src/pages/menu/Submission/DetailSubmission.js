@@ -30,7 +30,7 @@ import {
   Paper,
   TableSortLabel,
   TablePagination,
-  Chip
+  Chip,
 } from "@mui/material";
 import {
   Timeline,
@@ -46,7 +46,7 @@ import {
   approveSubmission,
   rejectSubmission,
   approveFinalReport,
-  rejectFinalReport
+  rejectFinalReport,
 } from "../../../service/Submission.Service";
 import pdfIcon from "../../../assets/img/icons8-pdf-48.png";
 import { useParams } from "react-router-dom";
@@ -69,7 +69,6 @@ import { DemoContainer } from "@mui/x-date-pickers/internals/demo";
 import AddIcon from "@mui/icons-material/Add";
 import axios from "axios";
 import { jwtDecode } from "jwt-decode";
-
 
 import {
   submitLogbook,
@@ -113,7 +112,6 @@ export default function DetailSubmission({ menuAccess, accessId }) {
 
   const [totalCredits, setTotalCredits] = React.useState(0);
 
-
   const [order, setOrder] = useState("desc"); // Sorting order
   const [orderBy, setOrderBy] = useState("date"); // Default sort column
   const [page, setPage] = useState(0); // Current page
@@ -131,24 +129,25 @@ export default function DetailSubmission({ menuAccess, accessId }) {
     const fetchRequest = async () => {
       if (!id) return;
       try {
-        const data = await axios.get('http://localhost:3001/api/logbook/get-final-report', {
-          params: { SubmissionID: id },
-          headers: {
-            'Authorization': `Bearer ${token}`,
+        const data = await axios.get(
+          "http://localhost:3001/api/logbook/get-final-report",
+          {
+            params: { SubmissionID: id },
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
           }
-        });
-        setFinalReportList(data.data.result)
+        );
+        setFinalReportList(data.data.result);
         if (data.data.message) {
-          setMessage('Belum ada dokumen yg di upload.')
+          setMessage("Belum ada dokumen yg di upload.");
         }
-
       } catch (error) {
-        console.log(error)
+        console.log(error);
       }
-    }
-    fetchRequest()
-  }, [token])
-
+    };
+    fetchRequest();
+  }, [token]);
 
   const [formLogbook, setFormLogbook] = useState({
     SubmissionID: "",
@@ -417,7 +416,11 @@ export default function DetailSubmission({ menuAccess, accessId }) {
 
     if (rejectionNote) {
       setIsLoading(true);
-      var response = await rejectFinalReport(ReportID, rejectionNote, findAksesId.accessId);
+      var response = await rejectFinalReport(
+        ReportID,
+        rejectionNote,
+        findAksesId.accessId
+      );
       setIsLoading(false);
       window.location.reload();
       setTabValue(1);
@@ -430,8 +433,8 @@ export default function DetailSubmission({ menuAccess, accessId }) {
     const padding = base64String.endsWith("==")
       ? 2
       : base64String.endsWith("=")
-        ? 1
-        : 0;
+      ? 1
+      : 0;
     const sizeInBytes = (stringLength * 3) / 4 - padding;
     return sizeInBytes;
   }
@@ -482,7 +485,6 @@ export default function DetailSubmission({ menuAccess, accessId }) {
     }
     return a.label.localeCompare(b.label) * (order === "asc" ? 1 : -1);
   });
-
 
   // Paginated data
   const paginatedLogbook = sortedLogbook.slice(
@@ -1009,36 +1011,38 @@ export default function DetailSubmission({ menuAccess, accessId }) {
                   <Typography variant="subtitle1" fontWeight="medium">
                     Dokumen Kegiatan
                   </Typography>
-                  {submissionAttachment?.length > 0 ? submissionAttachment.map((attch) => (
-                    <Button
-                      key={attch.AttachID}
-                      sx={{
-                        justifyContent: "space-between",
-                        textTransform: "none",
-                        alignItems: "center",
-                        padding: 0,
-                      }}
-                      onClick={() => showPdf(attch.Base64)}
-                    >
-                      <Box
+                  {submissionAttachment?.length > 0 ? (
+                    submissionAttachment.map((attch) => (
+                      <Button
+                        key={attch.AttachID}
                         sx={{
-                          display: "flex",
+                          justifyContent: "space-between",
+                          textTransform: "none",
                           alignItems: "center",
-                          cursor: "pointer",
+                          padding: 0,
                         }}
+                        onClick={() => showPdf(attch.Base64)}
                       >
-                        <img alt="pdf" src={pdfIcon} width={30} />
-                        <Tooltip title="Preview" placement="right">
-                          <Typography variant="body2" color="#2E263DB2">
-                            {attch.AttachName}
-                          </Typography>
-                        </Tooltip>
-                      </Box>
-                      <Typography variant="body2" color="#2E263DB2">
-                        {formatFileSize(getBase64FileSize(attch.Base64))}
-                      </Typography>
-                    </Button>
-                  )) : (
+                        <Box
+                          sx={{
+                            display: "flex",
+                            alignItems: "center",
+                            cursor: "pointer",
+                          }}
+                        >
+                          <img alt="pdf" src={pdfIcon} width={30} />
+                          <Tooltip title="Preview" placement="right">
+                            <Typography variant="body2" color="#2E263DB2">
+                              {attch.AttachName}
+                            </Typography>
+                          </Tooltip>
+                        </Box>
+                        <Typography variant="body2" color="#2E263DB2">
+                          {formatFileSize(getBase64FileSize(attch.Base64))}
+                        </Typography>
+                      </Button>
+                    ))
+                  ) : (
                     <Typography variant="body2" color="#2E263DB2">
                       Belum ada file yg di upload.
                     </Typography>
@@ -1049,148 +1053,167 @@ export default function DetailSubmission({ menuAccess, accessId }) {
           )}
           {tabValue === 1 && (
             <>
-            {(findAksesId.accessId === 2 || findAksesId.accessId === 4) && (
-              <Card
-                sx={{
-                  marginTop: "1.5rem",
-                  boxShadow: "none",
-                  border: "1px solid rgba(224, 224, 224, 1)",
-                }}
-              >
-                <CardContent>
-                  <Box
-                    sx={{
-                      display: "flex",
-                      flexDirection: "column",
-                      // rowGap: "1rem",
-                      rowGap: 1,
-                    }}
-                  >
-                    <Typography variant="subtitle1" fontWeight="medium">
-                      Dokumen Laporan Akhir
-                    </Typography>
-                    {finalReportList?.length > 0 ? (
-                      finalReportList.map((attch) => (
-                        <Box
-                          key={attch.SubmissionID}
-                          sx={{
-                            display: "flex",
-                            alignItems: "center",
-                            justifyContent: "space-between",
-                            paddingY: 1,
-                            borderBottom: "1px solid #ccc",
-                          }}
-                        >
-                          {/* Bagian file info */}
+              {(findAksesId.accessId === 2 || findAksesId.accessId === 4) && (
+                <Card
+                  sx={{
+                    marginTop: "1.5rem",
+                    boxShadow: "none",
+                    border: "1px solid rgba(224, 224, 224, 1)",
+                  }}
+                >
+                  <CardContent>
+                    <Box
+                      sx={{
+                        display: "flex",
+                        flexDirection: "column",
+                        // rowGap: "1rem",
+                        rowGap: 1,
+                      }}
+                    >
+                      <Typography variant="subtitle1" fontWeight="medium">
+                        Dokumen Laporan Akhir
+                      </Typography>
+                      {finalReportList?.length > 0 ? (
+                        finalReportList.map((attch) => (
                           <Box
+                            key={attch.SubmissionID}
                             sx={{
                               display: "flex",
                               alignItems: "center",
-                              cursor: "pointer",
-                              gap: 1,
-                              flexGrow: 1,
+                              justifyContent: "space-between",
+                              paddingY: 1,
+                              borderBottom: "1px solid #ccc",
                             }}
-                            onClick={() => showPdf(attch.Base64)}
                           >
-                            <img alt="pdf" src={pdfIcon} width={30} />
-                            <Tooltip title="Preview" placement="right">
-                              <Typography variant="body2" color="#2E263DB2">
-                                {attch?.AttachmentName}
-                              </Typography>
-                            </Tooltip>
-                            {/* <Typography variant="body2" color="#2E263DB2" sx={{ marginLeft: 2 }}>
+                            {/* Bagian file info */}
+                            <Box
+                              sx={{
+                                display: "flex",
+                                alignItems: "center",
+                                cursor: "pointer",
+                                gap: 1,
+                                flexGrow: 1,
+                              }}
+                              onClick={() => showPdf(attch.Base64)}
+                            >
+                              <img alt="pdf" src={pdfIcon} width={30} />
+                              <Tooltip title="Preview" placement="right">
+                                <Typography variant="body2" color="#2E263DB2">
+                                  {attch?.AttachmentName}
+                                </Typography>
+                              </Tooltip>
+                              {/* <Typography variant="body2" color="#2E263DB2" sx={{ marginLeft: 2 }}>
                             {formatFileSize(getBase64FileSize(attch.Base64))}
                           </Typography> */}
-                          </Box>
-
-                          {(
-                            (findAksesId.accessId === 2 && ['TU Approve', 'TU Reject', 'KPS Approve', 'KPS Reject'].includes(attch?.Status)) ||
-                            (findAksesId.accessId === 4 && ['KPS Approve', 'KPS Reject'].includes(attch?.Status))
-                          ) ? (
-
-                            <Chip
-                              label={attch?.Status}
-                              sx={{
-                                backgroundColor: attch?.Status.includes('Approve')
-                                  ? 'rgba(76, 175, 80, 0.1)'
-                                  : attch?.Status.includes('Waiting')
-                                    ? 'rgba(33, 150, 243, 0.1)'
-                                    : 'rgba(244, 67, 54, 0.1)',
-                                color: attch?.Status.includes('Approve')
-                                  ? '#4caf50'
-                                  : attch?.Status.includes('Waiting')
-                                    ? '#2196f3'
-                                    : '#f44336',
-                                fontWeight: 500,
-                                fontSize: '0.8rem',
-                                borderRadius: '8px',
-                                border: `1px solid ${attch?.Status.includes('Approve')
-                                  ? 'rgba(76, 175, 80, 0.4)'
-                                  : attch?.Status.includes('Waiting')
-                                    ? 'rgba(33, 150, 243, 0.4)'
-                                    : 'rgba(244, 67, 54, 0.4)'
-                                  }`,
-                              }}
-                            />
-                          ) : findAksesId.accessId === 4 && (attch?.Status === 'Waiting Approval' || attch?.Status === 'TU Reject') ? (
-
-                            <Chip
-                              label={attch?.Status}
-                              sx={{
-                                backgroundColor: attch?.Status.includes('Approve')
-                                  ? 'rgba(76, 175, 80, 0.1)'
-                                  : attch?.Status.includes('Waiting')
-                                    ? 'rgba(33, 150, 243, 0.1)'
-                                    : 'rgba(244, 67, 54, 0.1)',
-                                color: attch?.Status.includes('Approve')
-                                  ? '#4caf50'
-                                  : attch?.Status.includes('Waiting')
-                                    ? '#2196f3'
-                                    : '#f44336',
-                                fontWeight: 500,
-                                fontSize: '0.8rem',
-                                borderRadius: '8px',
-                                border: `1px solid ${attch?.Status.includes('Approve')
-                                  ? 'rgba(76, 175, 80, 0.4)'
-                                  : attch?.Status.includes('Waiting')
-                                    ? 'rgba(33, 150, 243, 0.4)'
-                                    : 'rgba(244, 67, 54, 0.4)'
-                                  }`,
-                              }}
-                            />
-                          ) : (
-
-                            <Box sx={{ display: "flex", gap: 1 }}>
-                              <Button
-                                variant="contained"
-                                color="success"
-                                onClick={() => handleApproveFinalReport(attch?.LAAttachmentID)}
-                                sx={{ minWidth: 40, padding: 0 }}
-                              >
-                                <CheckCircleIcon />
-                              </Button>
-                              <Button
-                                variant="contained"
-                                color="error"
-                                onClick={() => handleRejectFinalReport(attch?.LAAttachmentID)}
-                                sx={{ minWidth: 40, padding: 0 }}
-                              >
-                                <CancelIcon />
-                              </Button>
                             </Box>
-                          )}
-                        </Box>
-                      ))
-                    ) : (
-                      <Typography variant="body2" color="#2E263DB2">
-                        Belum ada file yg di upload.
-                      </Typography>
-                    )}
 
-                  </Box>
-                </CardContent>
-              </Card>
-            )}
+                            {(findAksesId.accessId === 2 &&
+                              [
+                                "TU Approve",
+                                "TU Reject",
+                                "KPS Approve",
+                                "KPS Reject",
+                              ].includes(attch?.Status)) ||
+                            (findAksesId.accessId === 4 &&
+                              ["KPS Approve", "KPS Reject"].includes(
+                                attch?.Status
+                              )) ? (
+                              <Chip
+                                label={attch?.Status}
+                                sx={{
+                                  backgroundColor: attch?.Status.includes(
+                                    "Approve"
+                                  )
+                                    ? "rgba(76, 175, 80, 0.1)"
+                                    : attch?.Status.includes("Waiting")
+                                    ? "rgba(33, 150, 243, 0.1)"
+                                    : "rgba(244, 67, 54, 0.1)",
+                                  color: attch?.Status.includes("Approve")
+                                    ? "#4caf50"
+                                    : attch?.Status.includes("Waiting")
+                                    ? "#2196f3"
+                                    : "#f44336",
+                                  fontWeight: 500,
+                                  fontSize: "0.8rem",
+                                  borderRadius: "8px",
+                                  border: `1px solid ${
+                                    attch?.Status.includes("Approve")
+                                      ? "rgba(76, 175, 80, 0.4)"
+                                      : attch?.Status.includes("Waiting")
+                                      ? "rgba(33, 150, 243, 0.4)"
+                                      : "rgba(244, 67, 54, 0.4)"
+                                  }`,
+                                }}
+                              />
+                            ) : findAksesId.accessId === 4 &&
+                              (attch?.Status === "Waiting Approval" ||
+                                attch?.Status === "TU Reject") ? (
+                              <Chip
+                                label={attch?.Status}
+                                sx={{
+                                  backgroundColor: attch?.Status.includes(
+                                    "Approve"
+                                  )
+                                    ? "rgba(76, 175, 80, 0.1)"
+                                    : attch?.Status.includes("Waiting")
+                                    ? "rgba(33, 150, 243, 0.1)"
+                                    : "rgba(244, 67, 54, 0.1)",
+                                  color: attch?.Status.includes("Approve")
+                                    ? "#4caf50"
+                                    : attch?.Status.includes("Waiting")
+                                    ? "#2196f3"
+                                    : "#f44336",
+                                  fontWeight: 500,
+                                  fontSize: "0.8rem",
+                                  borderRadius: "8px",
+                                  border: `1px solid ${
+                                    attch?.Status.includes("Approve")
+                                      ? "rgba(76, 175, 80, 0.4)"
+                                      : attch?.Status.includes("Waiting")
+                                      ? "rgba(33, 150, 243, 0.4)"
+                                      : "rgba(244, 67, 54, 0.4)"
+                                  }`,
+                                }}
+                              />
+                            ) : (
+                              <Box sx={{ display: "flex", gap: 1 }}>
+                                <Button
+                                  variant="contained"
+                                  color="success"
+                                  onClick={() =>
+                                    handleApproveFinalReport(
+                                      attch?.LAAttachmentID
+                                    )
+                                  }
+                                  sx={{ minWidth: 40, padding: 0 }}
+                                >
+                                  <CheckCircleIcon />
+                                </Button>
+                                <Button
+                                  variant="contained"
+                                  color="error"
+                                  onClick={() =>
+                                    handleRejectFinalReport(
+                                      attch?.LAAttachmentID
+                                    )
+                                  }
+                                  sx={{ minWidth: 40, padding: 0 }}
+                                >
+                                  <CancelIcon />
+                                </Button>
+                              </Box>
+                            )}
+                          </Box>
+                        ))
+                      ) : (
+                        <Typography variant="body2" color="#2E263DB2">
+                          Belum ada file yg di upload.
+                        </Typography>
+                      )}
+                    </Box>
+                  </CardContent>
+                </Card>
+              )}
             </>
           )}
 
