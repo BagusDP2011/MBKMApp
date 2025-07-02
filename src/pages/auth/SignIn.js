@@ -96,7 +96,6 @@ export default function SignIn(props) {
     try {
       const token = await login({
         user: data.get("user"),
-        email: data.get("email"),
         password: data.get("password"),
       });
       if (token) {
@@ -107,9 +106,13 @@ export default function SignIn(props) {
           icon: "success",
         });
         let redirectMenu = await getRedirectMenu();
-        navigate(redirectMenu.Path);
+        navigate(redirectMenu?.Path || '/menu/mbkm/informasi');
       } else {
-        console.error("Login failed, no token returned");
+        Swal.fire({
+          title: "Error!",
+          text: "Login gagal!",
+          icon: "error",
+        });
       }
     } catch (error) {
       Swal.fire({
