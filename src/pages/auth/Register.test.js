@@ -57,6 +57,9 @@ describe("RegistrationForm", () => {
     // Simulasi fetch register sukses
     fetch.mockResolvedValueOnce({
       ok: true,
+      headers: {
+        get: () => "application/json", // <== WAJIB! untuk lulus pengecekan content-type
+      },
       json: async () => ({ message: "User registered successfully" }),
     });
 
@@ -65,10 +68,13 @@ describe("RegistrationForm", () => {
 
     fireEvent.click(screen.getByRole("button", { name: /submit/i }));
 
-    await waitFor(() => expect(fetch).toHaveBeenCalled());
+    await waitFor(() => {
+      expect(fetch).toHaveBeenCalled();
+    });
 
-    // ✅ Verifikasi redirect
-    expect(mockedNavigate).toHaveBeenCalledWith("/signin");
+    await waitFor(() => {
+      expect(mockedNavigate).toHaveBeenCalledWith("/signin");
+    });
 
     // ✅ Cleanup: Hapus user dari database via fetch (jika ada API endpoint delete)
     await fetch(`http://localhost:3001/api/user/12345`, {

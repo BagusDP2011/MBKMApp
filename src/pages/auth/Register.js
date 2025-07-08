@@ -65,26 +65,41 @@ const RegistrationForm = () => {
   };
 
   const handleSubmit = async () => {
-    try {
-      const response = await fetch("http://localhost:3001/api/register", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(formData),
-      });
+  try {
+    const response = await fetch("http://localhost:3001/api/register", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(formData),
+    });
 
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
+    if (!response.ok) {
+      let errorMessage = "Registration failed";
+      try {
+        const errorData = await response.json();
+        errorMessage = errorData.error || errorMessage;
+      } catch (e) {
+        // response is not JSON, do nothing
       }
-
-      const data = await response.json();
-      alert("Registration successful! Redirecting to login page.");
-      navigate("/signin");
-    } catch (error) {
-      alert("Registration failed: " + error.message);
+      throw new Error(errorMessage);
     }
-  };
+
+    // Coba parse hanya jika response punya content
+    const contentType = response.headers.get("content-type");
+    if (contentType && contentType.includes("application/json")) {
+      const data = await response.json();
+      alert(data.message || "Registration successful!");
+    } else {
+      alert("Registration successful!");
+    }
+
+    navigate("/signin");
+  } catch (error) {
+    alert("Registration failed: " + error.message);
+  }
+};
+
 
   return (
     <RegisterContainer>
