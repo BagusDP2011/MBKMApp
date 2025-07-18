@@ -15,12 +15,13 @@ Aplikasi MBKM untuk Polibatam adalah sebuah platform berbasis web yang dirancang
 ## Teknologi yang Digunakan
 - **Frontend:** 
   - HTML5, CSS3, JavaScript
-  - Framework: React.js
+  - Framework: React.js, MaterialUI, TailwindJS
 - **Backend:**
   - Node.js dengan Express.js
-  - Database: MongoDB
-- **Deployment:** [Belum di deploy]
-  - Platform: [Heroku](https://heroku.com) / [Vercel](https://vercel.com)
+  - Database: MySQL
+- **Deployment:**
+  - Live at: mbkmapp.vercel.app [mbkmapp.vercel.app](mbkmapp.vercel.app)
+  - Platform: [Vercel](https://vercel.com)
   - Version Control: GitHub
 
 ## Instalasi
